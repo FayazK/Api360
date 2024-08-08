@@ -29,8 +29,8 @@ async def chart(
       Example:
         {
             "data": {
-                "key1": [1, 2, 3, 4],
-                "key2": [5, 6, 7]
+                "label1": [1, 2, 3, 4],
+                "label2": [5, 6, 7]
             }
         }
 
