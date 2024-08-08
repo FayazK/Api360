@@ -86,5 +86,4 @@ async def chart(
     full_url = f"https://fast.three60.click/{svg_dir}/{svg_filename}"
 
     # Return the full URL in the response
-    embed_code = f"<embed src='{full_url}' type='image/svg+xml' />"
-    return JSONResponse(content={"embed": embed_code})
+    return JSONResponse(content={"url": full_url})
