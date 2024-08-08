@@ -5,9 +5,12 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict
 import pygal
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI()
+
+app.mount("/charts", StaticFiles(directory="charts"), name="charts")
 
 
 class ChartData(BaseModel):

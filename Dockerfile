@@ -17,6 +17,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code to the working directory
 COPY . /app/
 
+# Create the charts directory
+RUN mkdir -p /app/charts
+
 # Expose the port that the FastAPI app runs on
 EXPOSE 8000
 
