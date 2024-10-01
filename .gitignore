@@ -1,6 +1,7 @@
 .env
 __pycache__
 fastenv
+venv
 .idea
 
 # Byte-compiled / optimized / DLL files

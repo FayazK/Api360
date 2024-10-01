@@ -1,0 +1,153 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Tools API",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://fast.three60.click"
+    }
+  ],
+  "paths": {
+    "/chart": {
+      "post": {
+        "summary": "Create Chart",
+        "description": "Visualize data using a variety of chart types.",
+        "operationId": "visualize_chart",
+        "parameters": [
+          {
+            "name": "chart_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(bar|pie|line|area)$",
+              "description": "Type of the chart. Can be one of 'bar', 'pie', 'line', or 'area'.",
+              "title": "Chart Type"
+            },
+            "description": "Type of the chart. Can be one of 'bar', 'pie', 'line', or 'area'."
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Title of the chart. Optional.",
+              "title": "Title"
+            },
+            "description": "Title of the chart. Optional."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChartData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChartData": {
+        "properties": {
+          "data": {
+            "additionalProperties": {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "ChartData"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
