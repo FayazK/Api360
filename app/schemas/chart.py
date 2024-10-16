@@ -6,7 +6,7 @@ class ChartData(BaseModel):
     data: Dict[str, List[int]]
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "data": {
                     "label1": [1, 2, 3, 4],
