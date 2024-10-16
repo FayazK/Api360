@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     CHART_SAVE_DIR: str = "static/charts"
     CHART_URL_PATH: str = "/static/charts"
 
+    MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10 MB
+
     class Config:
         case_sensitive = True
         env_file = ".env"
