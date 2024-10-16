@@ -74,7 +74,7 @@ async def chart(
 
     # Generate a unique filename
     svg_filename = f"{uuid.uuid4()}.svg"
-    svg_dir = "charts"  # Directory to save SVG files
+    svg_dir = "../charts"  # Directory to save SVG files
     os.makedirs(svg_dir, exist_ok=True)
     svg_path = os.path.join(svg_dir, svg_filename)
 
