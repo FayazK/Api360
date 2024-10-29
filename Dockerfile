@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install Python, textract, and other required dependencies in a single step
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    python3.10 \
+    python3.11 \  # Changed from python3.10
     python3-pip \
     # textract dependencies
     libxml2-dev \
