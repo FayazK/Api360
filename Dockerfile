@@ -7,9 +7,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install Python, textract, and other required dependencies in a single step
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    python3.11 \  # Changed from python3.10
+    python3.11 \
     python3-pip \
-    # textract dependencies
     libxml2-dev \
     libxslt1-dev \
     antiword \
@@ -23,7 +22,6 @@ RUN apt-get update && \
     lame \
     libmad0 \
     libpulse-dev \
-    # PDF and document conversion dependencies
     libreoffice \
     swig \
     build-essential \
