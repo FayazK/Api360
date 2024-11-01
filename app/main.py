@@ -19,7 +19,6 @@ app.add_middleware(
 # Include routers
 app.include_router(document_routes.router, prefix="/api/documents", tags=["documents"])
 app.include_router(chart_routes.router, prefix="/api/charts", tags=["charts"])
-
 app.include_router(pdf_routes.router, prefix="/api/pdf", tags=["pdf"])
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
