@@ -25,6 +25,7 @@ RUN apt-get update && \
     libreoffice \
     swig \
     build-essential \
+    weasyprint \
     default-jre && \
     apt-get autoremove -y && \
     apt-get clean && \
