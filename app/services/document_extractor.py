@@ -21,19 +21,10 @@ class DocumentExtractor:
         'text/csv': 'csv',
         # Microsoft Office
         'application/msword': 'doc',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
-        'application/vnd.ms-excel': 'xls',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
-        'application/vnd.ms-powerpoint': 'ppt',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
         # PDF
         'application/pdf': 'pdf',
-        # Email
-        'message/rfc822': 'eml',
-        'application/vnd.ms-outlook': 'msg',
         # OpenOffice/LibreOffice
         'application/vnd.oasis.opendocument.text': 'odt',
-        'application/vnd.oasis.opendocument.spreadsheet': 'ods',
         'application/vnd.oasis.opendocument.presentation': 'odp',
         # Images (with OCR)
         'image/jpeg': 'jpg',
@@ -93,11 +84,6 @@ class DocumentExtractor:
                     text, metadata = self._extract_from_doc(temp_path)
                 elif mime_type == 'text/html':
                     text, metadata = self._extract_from_html(content)
-                elif mime_type in ['application/vnd.ms-excel',
-                                   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-                    text, metadata = self._extract_from_excel(temp_path)
-                elif mime_type in ['message/rfc822', 'application/vnd.ms-outlook']:
-                    text, metadata = self._extract_from_email(temp_path)
                 elif mime_type.startswith('image/'):
                     text, metadata = self._extract_from_image(temp_path)
                 else:
@@ -120,7 +106,8 @@ class DocumentExtractor:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error extracting text: {str(e)}")
 
-    def _extract_from_pdf(self, filepath: str) -> tuple[str, Dict[str, Any]]:
+    @staticmethod
+    def _extract_from_pdf(filepath: str) -> tuple[str, Dict[str, Any]]:
         """Extract text and metadata from PDF files."""
         text = ""
         metadata = {}
@@ -176,7 +163,8 @@ class DocumentExtractor:
             text = textract.process(filepath).decode('utf-8')
             return text.strip(), self._get_basic_metadata(filepath)
 
-    def _extract_from_html(self, content: bytes) -> tuple[str, Dict[str, Any]]:
+    @staticmethod
+    def _extract_from_html(content: bytes) -> tuple[str, Dict[str, Any]]:
         """Extract text and metadata from HTML content."""
         soup = BeautifulSoup(content, 'html.parser')
 
@@ -197,73 +185,6 @@ class DocumentExtractor:
         # Get text content
         text = soup.get_text(separator='\n', strip=True)
         return text, metadata
-
-    def _extract_from_excel(self, filepath: str) -> tuple[str, Dict[str, Any]]:
-        """Extract text and metadata from Excel files."""
-        try:
-            import pandas as pd
-            # Read all sheets
-            excel_file = pd.ExcelFile(filepath)
-            sheets_data = []
-
-            for sheet_name in excel_file.sheet_names:
-                df = pd.read_excel(filepath, sheet_name=sheet_name)
-                sheets_data.append(f"Sheet: {sheet_name}\n{df.to_string()}")
-
-            text = "\n\n".join(sheets_data)
-            metadata = {
-                "sheets": excel_file.sheet_names,
-                "file_properties": excel_file.book.properties.__dict__
-            }
-
-            return text, metadata
-
-        except Exception as e:
-            # Fallback to textract
-            text = textract.process(filepath).decode('utf-8')
-            return text, self._get_basic_metadata(filepath)
-
-    def _extract_from_email(self, filepath: str) -> tuple[str, Dict[str, Any]]:
-        """Extract text and metadata from email files."""
-        if not self.email_enabled:
-            return "Email parsing not enabled", {"error": "Email parsing dependencies not available"}
-
-        try:
-            with open(filepath, 'rb') as fhdl:
-                raw_email = fhdl.read()
-
-            ep = self.eml_parser.EmlParser()
-            parsed_eml = ep.decode_email_bytes(raw_email)
-
-            # Extract text content
-            text_parts = []
-            if 'body' in parsed_eml:
-                if 'plain' in parsed_eml['body']:
-                    text_parts.append(parsed_eml['body']['plain'])
-                if 'html' in parsed_eml['body']:
-                    # Convert HTML to text
-                    from bs4 import BeautifulSoup
-                    soup = BeautifulSoup(parsed_eml['body']['html'], 'html.parser')
-                    text_parts.append(soup.get_text())
-
-            text = "\n\n".join(text_parts)
-
-            # Extract metadata
-            metadata = {
-                "subject": parsed_eml.get('subject'),
-                "from": parsed_eml.get('from'),
-                "to": parsed_eml.get('to'),
-                "date": parsed_eml.get('date'),
-                "attachments": parsed_eml.get('attachments', [])
-            }
-
-            return text, metadata
-
-        except Exception as e:
-            # Fallback to basic text extraction
-            import textract
-            text = textract.process(filepath).decode('utf-8')
-            return text, self._get_basic_metadata(filepath)
 
     def _extract_from_image(self, filepath: str) -> tuple[str, Dict[str, Any]]:
         """Extract text from images using OCR if enabled."""
