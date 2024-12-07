@@ -41,8 +41,13 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Create a directory for temporary files
-RUN mkdir /app/temp
+# Create necessary directories
+RUN mkdir -p /app/static/charts \
+    && mkdir -p /app/temp \
+    && chmod -R 755 /app/static
+
+# Add the current directory to PYTHONPATH
+ENV PYTHONPATH=/app
 
 # Run the FastAPI application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
