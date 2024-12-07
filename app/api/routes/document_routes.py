@@ -1,9 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
-from typing import Optional, List
+from typing import List
 from pathlib import Path
 import asyncio
-import json
 
 from app.services.document_extractor import DocumentExtractor
 from app.schemas.document import ExtractedDocument, ExtractionResponse
