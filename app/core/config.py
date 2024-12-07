@@ -24,6 +24,10 @@ class Settings(BaseSettings):
 
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10 MB
 
+    # Template Settings
+    TEMPLATES_DIR: str = "app/templates"
+    TEMPLATE_CACHE_SIZE: int = 100
+
     class Config:
         case_sensitive = True
         env_file = ".env"
