@@ -1,12 +1,15 @@
-# app/services/ai_service.py
-
 from typing import Dict, List, Tuple, Optional
-from anthropic import Anthropic
+import anthropic
 import aiohttp
 from app.schemas.ai import ProductDescriptionRequest
 from .template_manager import TemplateManager
 import base64
 
+# Create an instance of the Anthropic API client
+client = anthropic.Anthropic()
+
+# Set the default model
+DEFAULT_MODEL="claude-3-haiku-20241022"
 
 class AIService:
     def __init__(self, api_key: str):
