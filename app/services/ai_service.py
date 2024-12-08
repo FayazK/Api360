@@ -1,5 +1,5 @@
 import uuid
-from typing import Dict, List, Tuple, Optional
+from typing import Dict
 import anthropic
 from fastapi.logger import logger
 
@@ -12,6 +12,7 @@ from ..utils.image_helpers import (
     get_base64_encoded_image,
     cleanup_temp_file
 )
+
 
 class AIService:
     def __init__(self, api_key: str):
@@ -59,7 +60,7 @@ class AIService:
                 # Continue without image if there's an error
 
         try:
-            response =  self.client.messages.create(
+            response = self.client.messages.create(
                 model=self.model,
                 max_tokens=2000,
                 system=self.template_manager.render_prompt(
