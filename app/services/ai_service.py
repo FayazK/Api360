@@ -91,10 +91,10 @@ class AIService:
             builder = await builder.download(url=image_url)
 
             # Generate temp filename
-            temp_filename = f"{uuid.uuid4()}.jpg"
+            temp_filename = f"{uuid.uuid4()}.png"
 
             # Get processed image data and mime type
-            processed_image = builder.resize(width=900).quality(85).get()
+            processed_image = builder.resize(width=1000).get()
             mime_type = builder.get_mime_type()
 
             # Save to temp file
