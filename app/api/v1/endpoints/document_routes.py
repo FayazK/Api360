@@ -4,8 +4,8 @@ from typing import List
 from pathlib import Path
 import asyncio
 
-from app.services.document_extractor import DocumentExtractor
-from app.schemas.document import ExtractedDocument, ExtractionResponse
+from app.schemas.documents.extraction import ExtractionResponse
+from app.services.documents.base import DocumentExtractor
 
 router = APIRouter()
 

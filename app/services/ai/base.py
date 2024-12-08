@@ -1,20 +1,13 @@
 import uuid
 from typing import Dict
-
 import aiohttp
 import anthropic
 from fastapi import HTTPException
 from fastapi.logger import logger
 
-from app.schemas.ai import ProductDescriptionRequest
-from .template_manager import TemplateManager
-
-from ..utils.image_helpers import (
-    ImageBuilder,
-    save_temp_image,
-    get_base64_encoded_image,
-    cleanup_temp_file
-)
+from ..template_manager import TemplateManager
+from ...schemas.ai.product import ProductDescriptionRequest
+from ...utils.image_helpers import ImageBuilder, save_temp_image, get_base64_encoded_image, cleanup_temp_file
 
 
 class AIService:

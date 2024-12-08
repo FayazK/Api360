@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
+from app.api.v1.endpoints import document_routes, chart_routes, pdf_routes, ai_routes
 from app.core.config import settings
-from app.api.routes import document_routes, chart_routes
-from app.api.routes import pdf_routes
-from app.api.routes import ai_routes
 
 
 app = FastAPI(title=settings.PROJECT_NAME)
