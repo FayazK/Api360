@@ -15,9 +15,6 @@ async def get_ai_service():
 @router.post("/product-description",
              response_model=ProductDescriptionResponse,
              summary="Generate Product Description")
-@router.post("/product-description",
-             response_model=ProductDescriptionResponse,
-             summary="Generate Product Description")
 async def generate_product_description(
     request: ProductDescriptionRequest,
     ai_service: AIService = Depends(get_ai_service)

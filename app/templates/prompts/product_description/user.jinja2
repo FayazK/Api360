@@ -1,10 +1,4 @@
-I need a detailed product description following these specifications:
-
-{% if product_name %}
-<product_name>
-{{product_name}}
-</product_name>
-{% endif %}
+I need a detailed product description combining image analysis and provided information.
 
 <product_description>
 {{product_description}}
@@ -24,19 +18,30 @@ Context:
 </brand_guidelines>
 {% endif %}
 
-Please analyze the provided information and create a complete product listing with the following elements wrapped in <product_snippet> tags:
+Based on both the image analysis and provided information, create a complete product listing with the following elements:
 
-1. <product_name>
-2. <seo_title>
-3. <seo_description>
-4. <description> [in Markdown format]
-5. <care_instructions> [if applicable]
-6. <short_description> [~50 words]
-7. <sku>
-8. <category>
-9. <tags>
-10. <seo>
-    - <primary_keyword>
-    - <secondary_keywords>
-    - <long_keywords>
-    - <search_terms>
+<product_name>: A short, sweet product name that accurately reflects the product's features and benefits.
+<seo_title>: A concise, SEO-optimized title that accurately reflects the product's features and benefits.
+<seo_description>: A detailed, SEO-optimized description that accurately reflects the product's features and benefits.
+<description>: A detailed, Markdown-formatted description of the product that conveys the right message to the consumer and targeted audience. This should be long and detailed.
+<features_benefits>: A list of features and corresponding benefits, highlighting the unique selling points of the product.
+<care_instructions>: Care instructions for the product, if applicable.
+<short_description>: A concise paragraph of approximately 50 words describing the product.
+<sku>: A suggested SKU for the product.
+<category>: The retail category and subcategory to which the product belongs.
+<tags>: Comma-separated SEO tags (e.g., tag1, tag2, tag3).
+<seo>: Generate SEO keywords for this product based on the product name and category. Include:
+    - <primary_keyword> One primary keyword
+    - <secondary_keywords> 3-4 secondary keywords
+    - <long_keywords> 2-3 long-tail keywords
+    - <search_terms> 2-3 related search terms
+<visual_highlights>: A list of visual elements that highlight the product's features and benefits.
+
+
+Ensure all descriptions:
+- Accurately reflect what's visible in the image
+- Connect visual features to customer benefits
+- Use specific, descriptive language for materials and design elements
+- Maintain consistency between visual analysis and written content
+- Follow provided tone and style guidelines
+- wrap your output in <product_snippet> tags.

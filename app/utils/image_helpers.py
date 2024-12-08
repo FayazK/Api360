@@ -131,7 +131,7 @@ class ImageBuilder:
             self._dimensions.height = height
 
             original_width, original_height = self._image.size
-            new_width, new_height = self._calculate_dimensions(
+            new_width, new_height = _calculate_dimensions(
                 original_width, original_height, width, height
             )
 

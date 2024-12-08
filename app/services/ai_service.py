@@ -26,21 +26,7 @@ class AIService:
         """Generate product description using Claude with image analysis if provided."""
 
         # Initialize message content
-        message_content = [
-            {
-                "type": "text",
-                "text": self.template_manager.render_prompt(
-                    "prompts/product_description/user.jinja2",
-                    {
-                        "product_name": request.product_name,
-                        "product_description": request.product_description,
-                        "audience": request.target_audience,
-                        "tone": request.tone,
-                        "style": request.style,
-                    }
-                )
-            }
-        ]
+        message_content = []
 
         # Add image if URL is provided
         if request.image_url:
@@ -59,6 +45,19 @@ class AIService:
                 logger.error(f"Error processing image: {str(e)}")
                 # Continue without image if there's an error
 
+        message_content.append({
+            "type": "text",
+            "text": self.template_manager.render_prompt(
+                "prompts/product_description/user.jinja2",
+                {
+                    "product_description": request.product_description,
+                    "audience": request.target_audience,
+                    "tone": request.tone,
+                    "style": request.style,
+                }
+            )
+        })
+
         try:
             response = self.client.messages.create(
                 model=self.model,
@@ -66,7 +65,9 @@ class AIService:
                 system=self.template_manager.render_prompt(
                     "prompts/product_description/system.jinja2",
                     {
-                        'audience': request.target_audience
+                        'audience': request.target_audience,
+                        'industry': request.industry,
+                        'specialization': request.specialization
                     }
                 ),
                 messages=[{
