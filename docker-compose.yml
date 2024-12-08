@@ -9,11 +9,12 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app/app
+      #- ./app:/app/app
       - ./static:/app/static
       - ./temp:/app/temp
     environment:
       - PYTHONPATH=/app
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/three60}
       - SECRET_KEY=${SECRET_KEY:-your_secret_key_here}
