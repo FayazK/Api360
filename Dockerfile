@@ -1,53 +1,41 @@
-# Use Ubuntu as base image for better package support
-FROM ubuntu:22.04
-
-# Set environment to prevent timezone prompt during installation
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install Python, textract, and other required dependencies in a single step
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3.11 \
-    python3-pip \
-    libxml2-dev \
-    libxslt1-dev \
-    antiword \
-    unrtf \
-    poppler-utils \
-    pstotext \
-    tesseract-ocr \
-    tesseract-ocr-eng \
-    flac \
-    ffmpeg \
-    lame \
-    libmad0 \
-    libpulse-dev \
-    libreoffice \
-    swig \
-    build-essential \
-    weasyprint \
-    default-jre && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Use Python slim image as base
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy and install Python dependencies, including textract
+# Install system dependencies
+# Note: Combined into single RUN command to reduce layers
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    # Required for text extraction
+    poppler-utils \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    libreoffice \
+    # Required for build dependencies
+    build-essential \
+    libxml2-dev \
+    libxslt1-dev \
+    # Required for PDF processing
+    weasyprint \
+    # Required for audio processing
+    ffmpeg \
+    # Cleanup apt cache to reduce image size
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . .
+COPY app/ app/
+COPY static/ static/
 
 # Create necessary directories
-RUN mkdir -p /app/static/charts \
-    && mkdir -p /app/temp \
-    && chmod -R 755 /app/static
-
-# Add the current directory to PYTHONPATH
-ENV PYTHONPATH=/app
+RUN mkdir -p /app/temp && \
+    chmod 777 /app/temp
 
 # Run the FastAPI application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

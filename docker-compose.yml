@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: three60_fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - ./static:/app/static
+      - ./temp:/app/temp
+    environment:
+      - PYTHONPATH=/app
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/three60}
+      - SECRET_KEY=${SECRET_KEY:-your_secret_key_here}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-["http://localhost:3000","http://localhost:8000"]}
+#    depends_on:
+#      - db
+    networks:
+      - three60_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+#  db:
+#    image: postgres:15-alpine
+#    container_name: three60_postgres
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    environment:
+#      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+#      - POSTGRES_DB=${POSTGRES_DB:-three60}
+#    ports:
+#      - "5432:5432"
+#    networks:
+#      - three60_network
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U postgres"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+
+#  redis:
+#    image: redis:alpine
+#    container_name: three60_redis
+#    ports:
+#      - "6379:6379"
+#    volumes:
+#      - redis_data:/data
+#    networks:
+#      - three60_network
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+
+#volumes:
+#  postgres_data:
+#  redis_data:
+
+networks:
+  three60_network:
+    driver: bridge
