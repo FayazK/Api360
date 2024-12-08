@@ -185,7 +185,7 @@ class ImageBuilder:
             optimize=True
         )
 
-        self._image_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        self._image_data = base64.standard_b64encode(buffer.getvalue()).decode('utf-8')
         return self
 
     def get(self) -> Union[str, bytes, Image.Image]:

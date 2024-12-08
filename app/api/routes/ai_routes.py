@@ -10,7 +10,7 @@ from app.core.config import settings
 router = APIRouter()
 
 async def get_ai_service():
-    return AIService(api_key=settings.OPENAI_API_KEY)
+    return AIService(api_key=settings.ANTHROPIC_API_KEY)
 
 @router.post("/product-description",
              response_model=ProductDescriptionResponse,

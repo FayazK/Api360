@@ -1,5 +1,7 @@
 from typing import Dict, List, Tuple, Optional
 import anthropic
+from fastapi.logger import logger
+
 from app.schemas.ai import ProductDescriptionRequest
 from .template_manager import TemplateManager
 from ..utils.image_helpers import ImageBuilder
@@ -7,8 +9,8 @@ from ..utils.image_helpers import ImageBuilder
 
 class AIService:
     def __init__(self, api_key: str):
-        self.client = anthropic.Anthropic()
-        self.model = "claude-3-haiku-20241022"
+        self.client = anthropic.Anthropic(api_key=api_key)
+        self.model = "claude-3-5-sonnet-latest"
         self.template_manager = TemplateManager()
 
     async def generate_product_description(
@@ -44,6 +46,8 @@ class AIService:
                 "brand_guidelines": request.brand_guidelines if hasattr(request, 'brand_guidelines') else None,
             }
         )
+        logger.warn(f"System prompt: {image_data['mime_type']}")
+        logger.warn(f"System prompt: {image_data['data']}")
 
         response = await self.client.messages.create(
             model=self.model,
@@ -82,8 +86,7 @@ class AIService:
         """Fetch image from URL and convert to base64."""
         builder = ImageBuilder()
         builder = await builder.download(url=image_url)
-        builder = builder.resize(width=900).quality(85).base64()
-        result = builder.get()
+        result = builder.resize(width=900).quality(85).base64().get()
         mime_type = builder.get_mime_type()
 
         return {
