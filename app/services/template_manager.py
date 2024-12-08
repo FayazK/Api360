@@ -1,5 +1,3 @@
-# app/services/template_manager.py
-
 from typing import Optional, Dict, Any
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -40,15 +38,3 @@ class TemplateManager:
             return rendered
         except Exception as e:
             raise Exception(f"Error rendering template {template_path}: {str(e)}")
-
-    def render_system_prompt(self,
-                             industry: Optional[str] = None,
-                             specialization: Optional[str] = None,
-                             audience: Optional[str] = None) -> str:
-        """Render system prompt template."""
-        variables = {
-            "industry": industry,
-            "specialization": specialization,
-            "audience": audience
-        }
-        return self.render_prompt("prompts/system/roles.jinja2", variables)

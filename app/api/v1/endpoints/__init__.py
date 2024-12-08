@@ -1,5 +1,4 @@
-# app/api/routes/__init__.py
-
 from .chart_routes import router as chart_router
-
-# You can add more route imports here as needed
+from .document_routes import router as document_router
+from .pdf_routes import router as pdf_router
+from .ai_routes import router as ai_router

@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse
 from typing import List
 from pathlib import Path
 import asyncio
-
 from app.schemas.documents.extraction import ExtractionResponse
 from app.services.documents.base import DocumentExtractor
 

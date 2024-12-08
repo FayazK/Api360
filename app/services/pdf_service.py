@@ -1,6 +1,5 @@
 from weasyprint import HTML
 from io import BytesIO
-from typing import Optional
 
 
 async def generate_pdf(html_content: str) -> bytes:

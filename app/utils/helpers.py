@@ -1,5 +1,3 @@
-import os
-import uuid
 from typing import Optional
 
 from fastapi.responses import JSONResponse

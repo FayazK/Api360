@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.logger import logger
-
 from app.core.config import settings
 from app.schemas.ai.product import ProductDescriptionResponse, ProductDescriptionRequest
 from app.services.ai.base import AIService

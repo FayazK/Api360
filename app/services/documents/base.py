@@ -4,10 +4,10 @@ from pathlib import Path
 import tempfile
 import mimetypes
 from fastapi import HTTPException, UploadFile
-import textract  # Main extraction library
-import pdfplumber  # Better PDF handling
-from bs4 import BeautifulSoup  # HTML handling
-import docx  # Specialized DOCX handling
+import textract
+import pdfplumber
+from bs4 import BeautifulSoup
+import docx
 from datetime import datetime
 
 

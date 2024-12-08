@@ -5,7 +5,6 @@ import io
 from fastapi import HTTPException
 from dataclasses import dataclass
 from enum import Enum
-import mimetypes
 import imghdr
 import base64
 import os
