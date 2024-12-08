@@ -10,7 +10,6 @@ class ProductDescriptionRequest(BaseModel):
     image_url: Optional[HttpUrl] = Field(None, description="URL of the product image")
     target_audience: Optional[str] = Field(None, description="Target audience for the product")
     tone: Optional[str] = Field("professional", description="Tone of the description (casual, professional, luxury)")
-    word_count: Optional[int] = Field(150, description="Desired word count for the description", ge=50, le=500)
     style: Optional[str] = Field("informative", description="Writing style (informative, persuasive, technical)")
 
     class Config:
@@ -33,6 +32,3 @@ class ProductDescriptionRequest(BaseModel):
 
 class ProductDescriptionResponse(BaseModel):
     description: str
-    keywords: List[str]
-    seo_title: str
-    image_analysis: Optional[dict] = None

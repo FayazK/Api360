@@ -15,7 +15,7 @@ class AIService:
             self, request: ProductDescriptionRequest
     ) -> Tuple[str, List[str], str, Optional[Dict]]:
 
-        image_data = await self._fetch_image(request.image_url)
+        image_data = await self._fetch_image(str(request.image_url))
 
         """
         Generate product description using Claude with image analysis if provided.
@@ -80,7 +80,8 @@ class AIService:
     @staticmethod
     async def _fetch_image(image_url: str) -> Dict:
         """Fetch image from URL and convert to base64."""
-        builder = await ImageBuilder.download(image_url)
+        builder = ImageBuilder()
+        builder = await builder.download(url=image_url)
         builder = builder.resize(width=900).quality(85).base64()
         result = builder.get()
         mime_type = builder.get_mime_type()

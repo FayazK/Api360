@@ -1,6 +1,8 @@
 # app/api/routes/ai_routes.py
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.logger import logger
+
 from app.schemas.ai import ProductDescriptionRequest, ProductDescriptionResponse
 from app.services.ai_service import AIService
 from app.core.config import settings
@@ -21,13 +23,13 @@ async def generate_product_description(
     Generate an SEO-optimized product description based on provided details.
     """
     try:
-        description, keywords, seo_title = await ai_service.generate_product_description(request)
+        description = await ai_service.generate_product_description(request)
         return ProductDescriptionResponse(
-            description=description,
-            keywords=keywords,
-            seo_title=seo_title
+            description=description
         )
     except Exception as e:
+        logger.error(f"Error generating product description: {str(e)}")
+        logger.exception(e)
         raise HTTPException(
             status_code=500,
             detail=f"Error generating product description: {str(e)}"

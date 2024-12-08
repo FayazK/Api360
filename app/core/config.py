@@ -1,6 +1,10 @@
 from pydantic import AnyHttpUrl
 from pydantic_settings import BaseSettings
 from typing import List, Optional
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 class Settings(BaseSettings):
@@ -27,6 +31,10 @@ class Settings(BaseSettings):
     # Template Settings
     TEMPLATES_DIR: str = "app/templates"
     TEMPLATE_CACHE_SIZE: int = 100
+
+    # AI Settings
+    OPENAI_API_KEY: str = None
+    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
 
     class Config:
         case_sensitive = True
