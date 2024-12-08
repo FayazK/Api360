@@ -1,9 +1,9 @@
 from typing import Dict, List, Tuple, Optional
 import anthropic
-import aiohttp
 from app.schemas.ai import ProductDescriptionRequest
 from .template_manager import TemplateManager
-import base64
+from ..utils.image_helpers import ImageBuilder
+
 
 class AIService:
     def __init__(self, api_key: str):
@@ -14,136 +14,78 @@ class AIService:
     async def generate_product_description(
             self, request: ProductDescriptionRequest
     ) -> Tuple[str, List[str], str, Optional[Dict]]:
+
+        image_data = await self._fetch_image(request.image_url)
+
         """
         Generate product description using Claude with image analysis if provided.
         """
         # Render system prompt
-        system_prompt = self.template_manager.render_system_prompt(
-            industry=request.industry if hasattr(request, 'industry') else None,
-            specialization="product marketing",
-            audience=request.target_audience
-        )
-
-        # Prepare main description prompt
-        description_variables = {
-            "product_name": request.product_name,
-            "product_description": request.product_description,
-            "product_features": request.product_features,
-            "target_audience": request.target_audience,
-            "tone": request.tone,
-            "style": request.style,
-            "word_count": request.word_count,
-        }
-
-        main_prompt = self.template_manager.render_prompt(
-            "prompts/product/description.jinja2",
-            description_variables
-        )
-
-        messages = []
-        image_analysis = None
-
-        # Handle image analysis if provided
-        if request.image_url:
-            try:
-                image_data = await self._fetch_image(request.image_url)
-
-                # Render image analysis prompt
-                image_prompt = self.template_manager.render_prompt(
-                    "prompts/product/image_analysis.jinja2",
-                    {"product_name": request.product_name}
-                )
-
-                messages.append(
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "image",
-                                "source": {
-                                    "type": "base64",
-                                    "media_type": "image/jpeg",
-                                    "data": image_data
-                                }
-                            },
-                            {
-                                "type": "text",
-                                "text": image_prompt
-                            }
-                        ]
-                    }
-                )
-
-                image_response = await self.client.messages.create(
-                    model=self.model,
-                    max_tokens=1000,
-                    messages=messages,
-                    system=system_prompt
-                )
-
-                image_analysis = image_response.content[0].text
-
-                # Add image analysis to main prompt
-                main_prompt += f"\n\nImage Analysis:\n{image_analysis}"
-
-            except Exception as e:
-                print(f"Error processing image: {str(e)}")
-                pass
-
-        # Generate product description
-        messages = [
+        system_prompt = self.template_manager.render_prompt(
+            "prompts/product_description/system.jinja2",
             {
-                "role": "user",
-                "content": main_prompt
+                'industry': request.industry if hasattr(request, 'industry') else None,
+                'specialization': "product marketing",
+                'audience': request.target_audience
             }
-        ]
+        )
+
+        user_prompt = self.template_manager.render_prompt(
+            "prompts/product_description/user.jinja2",
+            {
+                "product_name": request.product_name,
+                "product_description": request.product_description,
+                "industry": request.industry if hasattr(request, 'industry') else None,
+                "specialization": request.specialization if hasattr(request, 'specialization') else None,
+                "audience": request.target_audience,
+                "usage_context": request.usage_context if hasattr(request, 'usage_context') else None,
+                "tone": request.tone if hasattr(request, 'tone') else None,
+                "style": request.style if hasattr(request, 'style') else None,
+                "brand_guidelines": request.brand_guidelines if hasattr(request, 'brand_guidelines') else None,
+            }
+        )
 
         response = await self.client.messages.create(
             model=self.model,
             max_tokens=2000,
-            messages=messages,
-            system=system_prompt
+            system=system_prompt,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": user_prompt
+                        },
+                        {
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": image_data['mime_type'],
+                                "data": image_data['data'],
+                            },
+                        },
+                    ],
+                }
+            ],
         )
 
         try:
             description = response.content[0].text
-
-            # Generate SEO keywords using template
-            seo_prompt = self.template_manager.render_prompt(
-                "prompts/product/seo.jinja2",
-                {
-                    "product_name": request.product_name,
-                    "category": request.category if hasattr(request, 'category') else None
-                }
-            )
-
-            keyword_messages = [
-                {
-                    "role": "user",
-                    "content": f"{seo_prompt}\n\nBased on this description:\n{description}"
-                }
-            ]
-
-            keywords_response = await self.client.messages.create(
-                model=self.model,
-                max_tokens=500,
-                messages=keyword_messages
-            )
-
-            keywords = keywords_response.content[0].text.split(',')
-            seo_title = f"{request.product_name} - {keywords[0]}"
-
-            return description.strip(), [k.strip() for k in keywords], seo_title, image_analysis
+            return description
 
         except Exception as e:
             raise Exception(f"Error processing Claude response: {str(e)}")
 
-    async def _fetch_image(self, image_url: str) -> str:
+    @staticmethod
+    async def _fetch_image(image_url: str) -> Dict:
         """Fetch image from URL and convert to base64."""
-        async with aiohttp.ClientSession() as session:
-            async with session.get(str(image_url)) as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    return base64.b64encode(image_data).decode('utf-8')
-                else:
-                    raise Exception(f"Failed to fetch image: {response.status}")
+        builder = await ImageBuilder.download(image_url)
+        builder = builder.resize(width=900).quality(85).base64()
+        result = builder.get()
+        mime_type = builder.get_mime_type()
+
+        return {
+            'data': result,
+            'mime_type': mime_type
+        }

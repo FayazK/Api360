@@ -6,12 +6,18 @@ import base64
 from fastapi import HTTPException
 from dataclasses import dataclass
 from enum import Enum
+import mimetypes
+import imghdr
+from pathlib import Path
 
 
 class ImageFormat(Enum):
     JPEG = "JPEG"
     PNG = "PNG"
     WEBP = "WEBP"
+    GIF = "GIF"
+    BMP = "BMP"
+    TIFF = "TIFF"
 
 
 @dataclass
@@ -29,6 +35,56 @@ class ImageBuilder:
         self._max_size: int = 10 * 1024 * 1024  # 10MB
         self._dimensions: ImageDimensions = ImageDimensions()
         self._background_color: tuple = (255, 255, 255)  # white
+        self._mime_type: Optional[str] = None
+
+    def _detect_mime_type(self) -> str:
+        """
+        Detect image MIME type using multiple methods for accuracy.
+        """
+        if not self._image_data and not self._image:
+            raise HTTPException(status_code=400, detail="No image data available")
+
+        try:
+            # Method 1: Try using imghdr with raw data
+            if self._image_data and isinstance(self._image_data, bytes):
+                img_type = imghdr.what(None, h=self._image_data)
+                if img_type:
+                    return f"image/{img_type}"
+
+            # Method 2: Try using PIL's format
+            if self._image and hasattr(self._image, 'format'):
+                if self._image.format:
+                    return f"image/{self._image.format.lower()}"
+
+            # Method 3: Fallback to current format setting
+            if self._format:
+                return f"image/{self._format.value.lower()}"
+
+            raise ValueError("Could not detect image type")
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Error detecting image MIME type: {str(e)}"
+            )
+
+    def mime_type(self) -> 'ImageBuilder':
+        """
+        Detect and store the MIME type of the image.
+        Returns self for method chaining.
+        """
+        self._mime_type = self._detect_mime_type()
+        return self
+
+    def get_mime_type(self) -> str:
+        """
+        Get the MIME type of the image.
+        Returns the MIME type string directly.
+        """
+        if not self._mime_type:
+            self._mime_type = self._detect_mime_type()
+        return self._mime_type
+
 
     async def download(self, url: str) -> 'ImageBuilder':
         """Download image from URL."""
@@ -49,6 +105,7 @@ class ImageBuilder:
                         )
 
                     self._image_data = await response.read()
+                    self._image = Image.open(io.BytesIO(self._image_data))
                     if len(self._image_data) > self._max_size:
                         raise HTTPException(
                             status_code=400,
@@ -56,6 +113,7 @@ class ImageBuilder:
                         )
 
                     self._image = Image.open(io.BytesIO(self._image_data))
+                    self.mime_type()
                     return self
 
         except aiohttp.ClientError as e:

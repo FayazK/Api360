@@ -1,0 +1,42 @@
+I need a detailed product description following these specifications:
+
+{% if product_name %}
+<product_name>
+{{product_name}}
+</product_name>
+{% endif %}
+
+<product_description>
+{{product_description}}
+</product_description>
+
+Context:
+- Industry: {{industry}}
+- Specialization: {{specialization}}
+- Target Audience: {{audience}}
+- Usage Context: {{usage_context|default("general", true)}}
+- Tone: {{tone|default("professional", true)}}
+- Style: {{style|default("informative", true)}}
+
+{% if brand_guidelines %}
+<brand_guidelines>
+{{brand_guidelines}}
+</brand_guidelines>
+{% endif %}
+
+Please analyze the provided information and create a complete product listing with the following elements wrapped in <product_snippet> tags:
+
+1. <product_name>
+2. <seo_title>
+3. <seo_description>
+4. <description> [in Markdown format]
+5. <care_instructions> [if applicable]
+6. <short_description> [~50 words]
+7. <sku>
+8. <category>
+9. <tags>
+10. <seo>
+    - <primary_keyword>
+    - <secondary_keywords>
+    - <long_keywords>
+    - <search_terms>
