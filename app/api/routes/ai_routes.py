@@ -15,22 +15,20 @@ async def get_ai_service():
 @router.post("/product-description",
              response_model=ProductDescriptionResponse,
              summary="Generate Product Description")
+@router.post("/product-description",
+             response_model=ProductDescriptionResponse,
+             summary="Generate Product Description")
 async def generate_product_description(
     request: ProductDescriptionRequest,
     ai_service: AIService = Depends(get_ai_service)
 ):
-    """
-    Generate an SEO-optimized product description based on provided details.
-    """
+    """Generate an SEO-optimized product description based on provided details."""
     try:
         description = await ai_service.generate_product_description(request)
-        return ProductDescriptionResponse(
-            description=description
-        )
+        return ProductDescriptionResponse(description=description)
     except Exception as e:
-        logger.error(f"Error generating product description: {str(e)}")
-        logger.exception(e)
+        logger.error(f"Error in product description endpoint: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Error generating product description: {str(e)}"
+            detail=str(e)
         )

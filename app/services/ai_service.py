@@ -4,6 +4,7 @@ from fastapi.logger import logger
 
 from app.schemas.ai import ProductDescriptionRequest
 from .template_manager import TemplateManager
+
 from ..utils.image_helpers import ImageBuilder
 
 
@@ -15,81 +16,87 @@ class AIService:
 
     async def generate_product_description(
             self, request: ProductDescriptionRequest
-    ) -> Tuple[str, List[str], str, Optional[Dict]]:
+    ) -> str:
+        """Generate product description using Claude with image analysis if provided."""
 
-        image_data = await self._fetch_image(str(request.image_url))
-
-        """
-        Generate product description using Claude with image analysis if provided.
-        """
-        # Render system prompt
-        system_prompt = self.template_manager.render_prompt(
-            "prompts/product_description/system.jinja2",
+        # Initialize message content
+        message_content = [
             {
-                'industry': request.industry if hasattr(request, 'industry') else None,
-                'specialization': "product marketing",
-                'audience': request.target_audience
+                "type": "text",
+                "text": self.template_manager.render_prompt(
+                    "prompts/product_description/user.jinja2",
+                    {
+                        "product_name": request.product_name,
+                        "product_description": request.product_description,
+                        "audience": request.target_audience,
+                        "tone": request.tone,
+                        "style": request.style,
+                    }
+                )
             }
-        )
+        ]
 
-        user_prompt = self.template_manager.render_prompt(
-            "prompts/product_description/user.jinja2",
-            {
-                "product_name": request.product_name,
-                "product_description": request.product_description,
-                "industry": request.industry if hasattr(request, 'industry') else None,
-                "specialization": request.specialization if hasattr(request, 'specialization') else None,
-                "audience": request.target_audience,
-                "usage_context": request.usage_context if hasattr(request, 'usage_context') else None,
-                "tone": request.tone if hasattr(request, 'tone') else None,
-                "style": request.style if hasattr(request, 'style') else None,
-                "brand_guidelines": request.brand_guidelines if hasattr(request, 'brand_guidelines') else None,
-            }
-        )
-        logger.warn(f"System prompt: {image_data['mime_type']}")
-        logger.warn(f"System prompt: {image_data['data']}")
-
-        response = await self.client.messages.create(
-            model=self.model,
-            max_tokens=2000,
-            system=system_prompt,
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": user_prompt
-                        },
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": image_data['mime_type'],
-                                "data": image_data['data'],
-                            },
-                        },
-                    ],
-                }
-            ],
-        )
+        # Add image if URL is provided
+        if request.image_url:
+            try:
+                image_data = await self._fetch_image(str(request.image_url))
+                if image_data['data'] and image_data['mime_type']:
+                    message_content.append({
+                        "type": "image",
+                        "source": {
+                            "type": "base64",
+                            "media_type": image_data['mime_type'],
+                            "data": image_data['data']
+                        }
+                    })
+            except Exception as e:
+                logger.error(f"Error processing image: {str(e)}")
+                # Continue without image if there's an error
 
         try:
-            description = response.content[0].text
-            return description
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=2000,
+                system=self.template_manager.render_prompt(
+                    "prompts/product_description/system.jinja2",
+                    {
+                        'audience': request.target_audience
+                    }
+                ),
+                messages=[{
+                    "role": "user",
+                    "content": message_content
+                }]
+            )
+
+            return response.content[0].text
 
         except Exception as e:
-            raise Exception(f"Error processing Claude response: {str(e)}")
+            logger.error(f"Error from Claude API: {str(e)}")
+            raise Exception(f"Error generating product description: {str(e)}")
 
     @staticmethod
     async def _fetch_image(image_url: str) -> Dict:
         """Fetch image from URL and convert to base64."""
-        builder = ImageBuilder()
-        builder = await builder.download(url=image_url)
-        result = builder.resize(width=900).quality(85).base64().get()
-        mime_type = builder.get_mime_type()
+        try:
+            builder = ImageBuilder()
+            builder = await builder.download(url=image_url)
+            # Don't include the "data:image/..." prefix in base64 string
+            base64_data = builder.resize(width=900).quality(85).base64().get()
+            mime_type = builder.get_mime_type()
 
-        return {
-            'data': result,
-            'mime_type': mime_type
-        }
+            # Remove any potential data URI prefix
+            if isinstance(base64_data, str) and ',' in base64_data:
+                base64_data = base64_data.split(',')[1]
+
+            return {
+                'data': base64_data,
+                'mime_type': mime_type
+            }
+        except Exception as e:
+            logger.error(f"Error fetching image: {str(e)}")
+            # Return None for both if image fetch fails
+            return {
+                'data': None,
+                'mime_type': None
+            }
