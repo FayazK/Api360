@@ -1,5 +1,3 @@
-# app/api/routes/ai_routes.py
-
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.logger import logger
 
@@ -23,9 +21,12 @@ async def generate_product_description(
     try:
         description = await ai_service.generate_product_description(request)
         return ProductDescriptionResponse(description=description)
+    except HTTPException as he:
+        # Re-raise HTTP exceptions as they already have proper error formatting
+        raise he
     except Exception as e:
         logger.error(f"Error in product description endpoint: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=str(e)
+            detail="An unexpected error occurred while generating the product description."
         )
