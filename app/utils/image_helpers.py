@@ -2,13 +2,16 @@ from typing import Optional, Tuple, Union
 import aiohttp
 from PIL import Image
 import io
-import base64
 from fastapi import HTTPException
 from dataclasses import dataclass
 from enum import Enum
 import mimetypes
 import imghdr
+import base64
+import os
 from pathlib import Path
+
+from fastapi.logger import logger
 
 
 class ImageFormat(Enum):
@@ -84,7 +87,6 @@ class ImageBuilder:
         if not self._mime_type:
             self._mime_type = self._detect_mime_type()
         return self._mime_type
-
 
     async def download(self, url: str) -> 'ImageBuilder':
         """Download image from URL."""
@@ -199,24 +201,52 @@ class ImageBuilder:
         else:
             raise HTTPException(status_code=400, detail="No image data available")
 
-    @staticmethod
-    def _calculate_dimensions(
-            original_width: int,
-            original_height: int,
-            target_width: Optional[int],
-            target_height: Optional[int]
-    ) -> Tuple[int, int]:
-        """Calculate new dimensions maintaining aspect ratio."""
-        if target_width is None and target_height is None:
-            return original_width, original_height
 
-        aspect_ratio = original_width / original_height
+def _calculate_dimensions(
+        original_width: int,
+        original_height: int,
+        target_width: Optional[int],
+        target_height: Optional[int]
+) -> Tuple[int, int]:
+    """Calculate new dimensions maintaining aspect ratio."""
+    if target_width is None and target_height is None:
+        return original_width, original_height
 
-        if target_width and target_height:
-            return target_width, target_height
-        elif target_width:
-            new_height = int(target_width / aspect_ratio)
-            return target_width, new_height
-        else:  # target_height is provided
-            new_width = int(target_height * aspect_ratio)
-            return new_width, target_height
+    aspect_ratio = original_width / original_height
+
+    if target_width and target_height:
+        return target_width, target_height
+    elif target_width:
+        new_height = int(target_width / aspect_ratio)
+        return target_width, new_height
+    else:  # target_height is provided
+        new_width = int(target_height * aspect_ratio)
+        return new_width, target_height
+
+
+def save_temp_image(image_data: bytes, filename: str) -> Path:
+    """Save image data to temporary directory."""
+    temp_dir = Path("temp")
+    temp_dir.mkdir(exist_ok=True)
+
+    file_path = temp_dir / filename
+    with open(file_path, "wb") as f:
+        f.write(image_data)
+    return file_path
+
+
+def get_base64_encoded_image(image_path: Path) -> str:
+    """Read image from path and return base64 encoded string."""
+    with open(image_path, "rb") as image_file:
+        binary_data = image_file.read()
+        base_64_encoded_data = base64.b64encode(binary_data)
+        return base_64_encoded_data.decode('utf-8')
+
+
+def cleanup_temp_file(file_path: Path):
+    """Remove temporary file."""
+    try:
+        if file_path.exists():
+            os.remove(file_path)
+    except Exception as e:
+        logger.error(f"Error cleaning up temp file {file_path}: {e}")

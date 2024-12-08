@@ -1,3 +1,4 @@
+import uuid
 from typing import Dict, List, Tuple, Optional
 import anthropic
 from fastapi.logger import logger
@@ -5,8 +6,12 @@ from fastapi.logger import logger
 from app.schemas.ai import ProductDescriptionRequest
 from .template_manager import TemplateManager
 
-from ..utils.image_helpers import ImageBuilder
-
+from ..utils.image_helpers import (
+    ImageBuilder,
+    save_temp_image,
+    get_base64_encoded_image,
+    cleanup_temp_file
+)
 
 class AIService:
     def __init__(self, api_key: str):
@@ -54,7 +59,7 @@ class AIService:
                 # Continue without image if there's an error
 
         try:
-            response = self.client.messages.create(
+            response =  self.client.messages.create(
                 model=self.model,
                 max_tokens=2000,
                 system=self.template_manager.render_prompt(
@@ -77,26 +82,34 @@ class AIService:
 
     @staticmethod
     async def _fetch_image(image_url: str) -> Dict:
-        """Fetch image from URL and convert to base64."""
+        """Fetch image from URL and process for Claude."""
         try:
+            # Download and process image
             builder = ImageBuilder()
             builder = await builder.download(url=image_url)
-            # Don't include the "data:image/..." prefix in base64 string
-            base64_data = builder.resize(width=900).quality(85).base64().get()
+
+            # Generate temp filename
+            temp_filename = f"{uuid.uuid4()}.jpg"
+
+            # Get processed image data and mime type
+            processed_image = builder.resize(width=900).quality(85).get()
             mime_type = builder.get_mime_type()
 
-            # Remove any potential data URI prefix
-            if isinstance(base64_data, str) and ',' in base64_data:
-                base64_data = base64_data.split(',')[1]
+            # Save to temp file
+            temp_path = save_temp_image(processed_image, temp_filename)
 
-            return {
-                'data': base64_data,
-                'mime_type': mime_type
-            }
+            try:
+                # Get base64 encoded image
+                base64_data = get_base64_encoded_image(temp_path)
+
+                return {
+                    'data': base64_data,
+                    'mime_type': mime_type
+                }
+            finally:
+                # Clean up temp file
+                cleanup_temp_file(temp_path)
+
         except Exception as e:
-            logger.error(f"Error fetching image: {str(e)}")
-            # Return None for both if image fetch fails
-            return {
-                'data': None,
-                'mime_type': None
-            }
+            logger.error(f"Error processing image: {e}")
+            raise Exception(f"Error processing image: {str(e)}")
