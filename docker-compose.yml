@@ -1,13 +1,12 @@
-version: '3.8'
-
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile
+    image: three60_fastapi:v1.0
     container_name: three60_fastapi
     ports:
-      - "8000:8000"
+      - "8778:8000"
     volumes:
       #- ./app:/app/app
       - ./static:/app/static
@@ -19,12 +18,12 @@ services:
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/three60}
       - SECRET_KEY=${SECRET_KEY:-your_secret_key_here}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-["http://localhost:3000","http://localhost:8000"]}
-#    depends_on:
-#      - db
+    #    depends_on:
+    #      - db
     networks:
       - three60_network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/docs" ]
       interval: 30s
       timeout: 10s
       retries: 3
