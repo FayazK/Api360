@@ -292,6 +292,72 @@
   },
   "components": {
     "schemas": {
+      "ProductDescriptionResponse": {
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "description": "Generated product description",
+      "title": "Description"
+    },
+    "keywords_used": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Keywords that were incorporated into the description",
+      "title": "Keywords Used"
+    }
+  },
+  "required": ["description"],
+  "title": "ProductDescriptionResponse"
+},
+      "ProductDescriptionRequest": {
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string",
+      "description": "Name of the product",
+      "title": "Product Name"
+    },
+    "key_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of key product features",
+      "title": "Key Features"
+    },
+    "target_audience": {
+      "type": "string",
+      "description": "Target audience for the product",
+      "title": "Target Audience"
+    },
+    "tone": {
+      "type": "string",
+      "enum": ["professional", "casual", "luxury", "technical"],
+      "description": "Desired tone for the description",
+      "default": "professional",
+      "title": "Tone"
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "SEO keywords to include",
+      "title": "Keywords"
+    },
+    "max_length": {
+      "type": "integer",
+      "description": "Maximum length of the description in characters",
+      "default": 500,
+      "title": "Max Length"
+    }
+  },
+  "required": ["product_name", "key_features"],
+  "title": "ProductDescriptionRequest"
+},
       "Body_batch_extract_documents_api_documents_batch_extract_post": {
         "properties": {
           "files": {
