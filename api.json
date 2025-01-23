@@ -1,68 +1,90 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Tools API",
-    "version": "0.1.0"
+    "title": "FastAPI Chart Application",
+    "version": "0.1.0",
+    "description": "API for document processing, chart generation, PDF creation and AI-powered product descriptions"
   },
   "servers": [
     {
-      "url": "https://fast.three60.click"
+      "url": "https://fast.three60.click",
+      "description": "Production server"
     }
   ],
   "paths": {
-    "/chart": {
+    "/api/documents/extract": {
       "post": {
-        "summary": "Create Chart",
-        "description": "Visualize data using a variety of chart types.",
-        "operationId": "visualize_chart",
+        "tags": ["documents"],
+        "summary": "Extract Document",
+        "description": "Extract text and metadata from a document. Supports various document formats including PDF, DOCX, TXT etc. The API uses OCR capabilities to extract text from images and scanned documents.\n\nCommon Use Cases:\n- Extracting text from scanned PDFs\n- Converting documents to machine-readable format\n- Extracting tables and metadata from structured documents",
+        "operationId": "extract_document_api_documents_extract_post",
         "parameters": [
           {
-            "name": "chart_type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^(bar|pie|line|area)$",
-              "description": "Type of the chart. Can be one of 'bar', 'pie', 'line', or 'area'.",
-              "title": "Chart Type"
-            },
-            "description": "Type of the chart. Can be one of 'bar', 'pie', 'line', or 'area'."
-          },
-          {
-            "name": "title",
+            "name": "enable_ocr",
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Title of the chart. Optional.",
-              "title": "Title"
+              "type": "boolean",
+              "default": true,
+              "title": "Enable Ocr"
             },
-            "description": "Title of the chart. Optional."
+            "description": "Enable Optical Character Recognition for processing scanned documents and images. Recommended for PDFs containing scanned pages."
+          },
+          {
+            "name": "extract_tables",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean", 
+              "default": true,
+              "title": "Extract Tables"
+            },
+            "description": "Extract tabular data from documents. The tables will be converted to a structured format."
+          },
+          {
+            "name": "extract_metadata",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Extract Metadata"
+            },
+            "description": "Extract document metadata like author, creation date, modified date etc."
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ChartData"
+                "$ref": "#/components/schemas/Body_extract_document_api_documents_extract_post"
               }
             }
-          }
+          },
+          "description": "The document file to be processed. Supported formats include PDF, DOCX, DOC, TXT, RTF etc."
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Document extracted successfully",
             "content": {
               "application/json": {
                 "schema": {
+                  "$ref": "#/components/schemas/ExtractionResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Document extracted successfully",
+                  "data": {
+                    "filename": "sample.pdf",
+                    "mime_type": "application/pdf",
+                    "text": "Extracted document content...",
+                    "metadata": {
+                      "author": "John Doe",
+                      "created": "2024-01-20T10:30:00Z"
+                    },
+                    "extraction_timestamp": "2024-01-23T15:45:30Z"
+                  }
                 }
               }
             }
@@ -79,10 +101,226 @@
           }
         }
       }
+    },
+    "/api/documents/batch-extract": {
+      "post": {
+        "tags": ["documents"],
+        "summary": "Batch Extract Documents",
+        "description": "Process multiple documents in parallel for efficient bulk extraction. Ideal for processing large document sets.\n\nUse Cases:\n- Batch processing of invoice PDFs\n- Converting multiple legacy documents\n- Bulk metadata extraction",
+        "operationId": "batch_extract_documents_api_documents_batch_extract_post",
+        "parameters": [
+          {
+            "name": "enable_ocr",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Enable Ocr"
+            },
+            "description": "Enable OCR processing for all documents in the batch. Increases processing time but improves accuracy for scanned documents."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_batch_extract_documents_api_documents_batch_extract_post"
+              }
+            }
+          },
+          "description": "Array of document files to process. All supported formats can be mixed in a single batch request."
+        },
+        "responses": {
+          "200": {
+            "description": "Batch processing completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ExtractionResponse"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/charts/": {
+      "post": {
+        "tags": ["charts"],
+        "summary": "Create Chart",
+        "description": "Generate visualization charts from data. Supports multiple chart types and customization options.",
+        "operationId": "chart_api_charts__post",
+        "parameters": [
+          {
+            "name": "chart_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(bar|pie|line|area)$",
+              "title": "Chart Type"
+            },
+            "description": "Type of chart to generate. Available options: bar, pie, line, area"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "title": "Title"
+            },
+            "description": "Chart title to display"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChartData"
+              }
+            }
+          },
+          "description": "Data series for chart generation. Each key represents a data series label."
+        },
+        "responses": {
+          "200": {
+            "description": "Chart generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "chart_url": {
+                      "type": "string",
+                      "description": "URL to the generated chart image"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pdf/generate": {
+      "post": {
+        "tags": ["pdf"],
+        "summary": "Generate PDF from HTML",
+        "description": "Convert HTML content to PDF with customizable options. Useful for generating reports, invoices, and documents programmatically.",
+        "operationId": "create_pdf_api_pdf_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTMLToPDFRequest"
+              }
+            }
+          },
+          "required": true,
+          "description": "HTML content and optional filename for the generated PDF"
+        },
+        "responses": {
+          "200": {
+            "description": "PDF generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pdf_url": {
+                      "type": "string",
+                      "description": "URL to download the generated PDF"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ai/product-description": {
+      "post": {
+        "tags": ["ai"],
+        "summary": "Generate Product Description",
+        "description": "Generate SEO-optimized product descriptions using AI. Customizable for different tones, styles and target audiences.\n\nFeatures:\n- Keyword optimization\n- Target audience adaptation\n- Customizable tone and style\n- Industry-specific terminology",
+        "operationId": "generate_product_description_api_ai_product_description_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDescriptionRequest"
+              }
+            }
+          },
+          "required": true,
+          "description": "Product details and generation parameters"
+        },
+        "responses": {
+          "200": {
+            "description": "Description generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDescriptionResponse"
+                },
+                "example": {
+                  "description": "Experience unparalleled comfort with our premium ergonomic office chair..."
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Body_batch_extract_documents_api_documents_batch_extract_post": {
+        "properties": {
+          "files": {
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "Array of document files to process"
+          }
+        },
+        "type": "object",
+        "required": ["files"],
+        "title": "BatchExtractRequest"
+      },
+      "Body_extract_document_api_documents_extract_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "Document file to process"
+          }
+        },
+        "type": "object",
+        "required": ["file"],
+        "title": "ExtractRequest"
+      },
       "ChartData": {
         "properties": {
           "data": {
@@ -93,60 +331,19 @@
               "type": "array"
             },
             "type": "object",
-            "title": "Data"
+            "title": "Data",
+            "description": "Chart data series. Keys are labels, values are arrays of data points"
           }
         },
         "type": "object",
-        "required": [
-          "data"
-        ],
-        "title": "ChartData"
-      },
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "type": "array",
-            "title": "Detail"
+        "required": ["data"],
+        "title": "ChartData",
+        "example": {
+          "data": {
+            "Sales 2023": [100, 150, 200, 250],
+            "Sales 2024": [120, 170, 220, 270]
           }
-        },
-        "type": "object",
-        "title": "HTTPValidationError"
-      },
-      "ValidationError": {
-        "properties": {
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "type": "array",
-            "title": "Location"
-          },
-          "msg": {
-            "type": "string",
-            "title": "Message"
-          },
-          "type": {
-            "type": "string",
-            "title": "Error Type"
-          }
-        },
-        "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError"
+        }
       }
     }
   }
