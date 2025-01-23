@@ -321,6 +321,43 @@
         "required": ["file"],
         "title": "ExtractRequest"
       },
+      "HTMLToPDFRequest": {
+  "type": "object",
+  "properties": {
+    "html_content": {
+      "type": "string",
+      "description": "HTML content to convert to PDF",
+      "title": "Html Content"
+    },
+    "filename": {
+      "type": "string",
+      "description": "Optional filename for the generated PDF",
+      "title": "Filename",
+      "default": "document.pdf"
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "margin": {
+          "type": "object",
+          "properties": {
+            "top": {"type": "string", "default": "1cm"},
+            "right": {"type": "string", "default": "1cm"},
+            "bottom": {"type": "string", "default": "1cm"},
+            "left": {"type": "string", "default": "1cm"}
+          }
+        },
+        "paper_format": {
+          "type": "string",
+          "enum": ["A4", "Letter", "Legal"],
+          "default": "A4"
+        }
+      }
+    }
+  },
+  "required": ["html_content"],
+  "title": "HTMLToPDFRequest"
+},
       "ChartData": {
         "properties": {
           "data": {
