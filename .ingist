@@ -1,0 +1,3 @@
+ALLOWED_FILES=.json,.py,.md,.txt,.yml,.jinja2
+EXCLUDE_DIRECTORIES=cache,static,fastenv
+EXCLUDE_FILES=
