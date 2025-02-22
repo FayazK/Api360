@@ -117,3 +117,73 @@ class ImageConversionResponse(BaseModel):
     height: int
     size_bytes: int
     original_filename: str
+
+
+class BatchImageConversionResponse(BaseModel):
+    results: List[ImageConversionResponse]
+    total_images: int
+    successful_conversions: int
+    failed_conversions: int
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "results": [
+                    {
+                        "url": "/static/charts/image1_a1b2c3d4.webp",
+                        "format": "webp",
+                        "width": 800,
+                        "height": 600,
+                        "size_bytes": 24680,
+                        "original_filename": "image1.jpg"
+                    },
+                    {
+                        "url": "/static/charts/image2_e5f6g7h8.webp",
+                        "format": "webp",
+                        "width": 1024,
+                        "height": 768,
+                        "size_bytes": 35791,
+                        "original_filename": "image2.png"
+                    }
+                ],
+                "total_images": 2,
+                "successful_conversions": 2,
+                "failed_conversions": 0
+            }
+        }
+
+
+class BatchImageItem(BaseModel):
+    file_index: int
+    conversion_options: ImageConversionRequest
+
+
+class BatchConversionWithIndividualOptionsRequest(BaseModel):
+    items: List[BatchImageItem]
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "items": [
+                    {
+                        "file_index": 0,
+                        "conversion_options": {
+                            "output_format": "webp",
+                            "quality": 85,
+                            "resize": True,
+                            "width": 800,
+                            "height": 600
+                        }
+                    },
+                    {
+                        "file_index": 1,
+                        "conversion_options": {
+                            "output_format": "png",
+                            "compression_type": "lossless",
+                            "resize": True,
+                            "width": 1024
+                        }
+                    }
+                ]
+            }
+        }

@@ -1,6 +1,6 @@
 import os
 import uuid
-from typing import Optional, Dict, Any, Tuple, BinaryIO
+from typing import Optional, Dict, Any, Tuple, BinaryIO, List
 from fastapi import UploadFile, HTTPException
 from pathlib import Path
 from wand.image import Image
@@ -287,3 +287,86 @@ class ImageService:
         top = max(0, min(top, height - crop_height))
 
         return left, top
+
+    async def process_images_batch(
+            self,
+            files: List[UploadFile],
+            options: ImageConversionRequest
+    ) -> Dict[str, Any]:
+        """Process multiple images according to the specified options.
+
+        Args:
+            files: List of uploaded image files
+            options: Image conversion and processing options
+
+        Returns:
+            Dict containing information about all processed images and batch stats
+        """
+        results = []
+        errors = []
+
+        for file in files:
+            try:
+                # Process each image
+                result = await self.process_image(file, options)
+                results.append(result)
+            except Exception as e:
+                logger.error(f"Error processing {file.filename}: {str(e)}")
+                errors.append({
+                    "filename": file.filename,
+                    "error": str(e)
+                })
+
+        return {
+            "results": results,
+            "errors": errors,
+            "total_images": len(files),
+            "successful_conversions": len(results),
+            "failed_conversions": len(errors)
+        }
+
+    async def process_images_with_individual_options(
+            self,
+            files: List[UploadFile],
+            items: List[Dict]
+    ) -> Dict[str, Any]:
+        """Process multiple images with individual options for each.
+
+        Args:
+            files: List of uploaded image files
+            items: List of dictionaries containing file_index and conversion_options
+
+        Returns:
+            Dict containing information about all processed images and batch stats
+        """
+        results = []
+        errors = []
+
+        for item in items:
+            try:
+                file_index = item["file_index"]
+                options = item["conversion_options"]
+
+                # Ensure file index is valid
+                if file_index < 0 or file_index >= len(files):
+                    raise ValueError(f"Invalid file_index: {file_index}")
+
+                # Process the image with its specific options
+                result = await self.process_image(files[file_index], options)
+                results.append(result)
+            except Exception as e:
+                filename = files[item["file_index"]].filename if 0 <= item["file_index"] < len(files) else "unknown"
+                logger.error(f"Error processing {filename}: {str(e)}")
+                errors.append({
+                    "file_index": item["file_index"],
+                    "filename": filename,
+                    "error": str(e)
+                })
+
+        return {
+            "results": results,
+            "errors": errors,
+            "total_images": len(items),
+            "successful_conversions": len(results),
+            "failed_conversions": len(errors)
+        }
