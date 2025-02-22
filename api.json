@@ -1,68 +1,92 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Tools API",
-    "version": "0.1.0"
+    "title": "FastAPI Chart Application",
+    "version": "0.1.0",
+    "description": "API for document processing, chart generation, PDF creation and AI-powered product descriptions"
   },
   "servers": [
     {
-      "url": "https://fast.three60.click"
+      "url": "https://fast.three60.click",
+      "description": "Production server"
     }
   ],
   "paths": {
-    "/chart": {
+    "/api/documents/extract": {
       "post": {
-        "summary": "Create Chart",
-        "description": "Visualize data using a variety of chart types.",
-        "operationId": "visualize_chart",
+        "tags": [
+          "documents"
+        ],
+        "summary": "Extract Document",
+        "description": "Extract text and metadata from a document. Supports various document formats including PDF, DOCX, TXT etc. The API uses OCR capabilities to extract text from images and scanned documents.\n\nCommon Use Cases:\n- Extracting text from scanned PDFs\n- Converting documents to machine-readable format\n- Extracting tables and metadata from structured documents",
+        "operationId": "extract_document_api_documents_extract_post",
         "parameters": [
           {
-            "name": "chart_type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^(bar|pie|line|area)$",
-              "description": "Type of the chart. Can be one of 'bar', 'pie', 'line', or 'area'.",
-              "title": "Chart Type"
-            },
-            "description": "Type of the chart. Can be one of 'bar', 'pie', 'line', or 'area'."
-          },
-          {
-            "name": "title",
+            "name": "enable_ocr",
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Title of the chart. Optional.",
-              "title": "Title"
+              "type": "boolean",
+              "default": true,
+              "title": "Enable Ocr"
             },
-            "description": "Title of the chart. Optional."
+            "description": "Enable Optical Character Recognition for processing scanned documents and images. Recommended for PDFs containing scanned pages."
+          },
+          {
+            "name": "extract_tables",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Extract Tables"
+            },
+            "description": "Extract tabular data from documents. The tables will be converted to a structured format."
+          },
+          {
+            "name": "extract_metadata",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Extract Metadata"
+            },
+            "description": "Extract document metadata like author, creation date, modified date etc."
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ChartData"
+                "$ref": "#/components/schemas/Body_extract_document_api_documents_extract_post"
               }
             }
-          }
+          },
+          "description": "The document file to be processed. Supported formats include PDF, DOCX, DOC, TXT, RTF etc."
         },
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Document extracted successfully",
             "content": {
               "application/json": {
                 "schema": {
+                  "$ref": "#/components/schemas/ExtractionResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Document extracted successfully",
+                  "data": {
+                    "filename": "sample.pdf",
+                    "mime_type": "application/pdf",
+                    "text": "Extracted document content...",
+                    "metadata": {
+                      "author": "John Doe",
+                      "created": "2024-01-20T10:30:00Z"
+                    },
+                    "extraction_timestamp": "2024-01-23T15:45:30Z"
+                  }
                 }
               }
             }
@@ -79,28 +103,486 @@
           }
         }
       }
+    },
+    "/api/documents/batch-extract": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Batch Extract Documents",
+        "description": "Process multiple documents in parallel for efficient bulk extraction. Ideal for processing large document sets.\n\nUse Cases:\n- Batch processing of invoice PDFs\n- Converting multiple legacy documents\n- Bulk metadata extraction",
+        "operationId": "batch_extract_documents_api_documents_batch_extract_post",
+        "parameters": [
+          {
+            "name": "enable_ocr",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Enable Ocr"
+            },
+            "description": "Enable OCR processing for all documents in the batch. Increases processing time but improves accuracy for scanned documents."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_batch_extract_documents_api_documents_batch_extract_post"
+              }
+            }
+          },
+          "description": "Array of document files to process. All supported formats can be mixed in a single batch request."
+        },
+        "responses": {
+          "200": {
+            "description": "Batch processing completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ExtractionResponse"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/charts/": {
+      "post": {
+        "tags": [
+          "charts"
+        ],
+        "summary": "Create Chart",
+        "description": "Generate visualization charts from data. Supports multiple chart types and customization options.",
+        "operationId": "chart_api_charts__post",
+        "parameters": [
+          {
+            "name": "chart_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(bar|pie|line|area)$",
+              "title": "Chart Type"
+            },
+            "description": "Type of chart to generate. Available options: bar, pie, line, area"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "title": "Title"
+            },
+            "description": "Chart title to display"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChartData"
+              }
+            }
+          },
+          "description": "Data series for chart generation. Each key represents a data series label."
+        },
+        "responses": {
+          "200": {
+            "description": "Chart generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "chart_url": {
+                      "type": "string",
+                      "description": "URL to the generated chart image"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pdf/generate": {
+      "post": {
+        "tags": [
+          "pdf"
+        ],
+        "summary": "Generate PDF from HTML",
+        "description": "Convert HTML content to PDF with customizable options. Useful for generating reports, invoices, and documents programmatically.",
+        "operationId": "create_pdf_api_pdf_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTMLToPDFRequest"
+              }
+            }
+          },
+          "required": true,
+          "description": "HTML content and optional filename for the generated PDF"
+        },
+        "responses": {
+          "200": {
+            "description": "PDF generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pdf_url": {
+                      "type": "string",
+                      "description": "URL to download the generated PDF"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ai/product-description": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Generate Product Description",
+        "description": "Generate SEO-optimized product descriptions using AI. Customizable for different tones, styles and target audiences.\n\nFeatures:\n- Keyword optimization\n- Target audience adaptation\n- Customizable tone and style\n- Industry-specific terminology",
+        "operationId": "generate_product_description_api_ai_product_description_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDescriptionRequest"
+              }
+            }
+          },
+          "required": true,
+          "description": "Product details and generation parameters"
+        },
+        "responses": {
+          "200": {
+            "description": "Description generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDescriptionResponse"
+                },
+                "example": {
+                  "description": "Experience unparalleled comfort with our premium ergonomic office chair..."
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Body_batch_extract_documents_api_documents_batch_extract_post": {
+        "properties": {
+          "files": {
+            "items": {
+              "type": "string",
+              "format": "binary",
+              "description": "Individual document file in binary format. Supported formats include:\n- PDF (.pdf): Both searchable and scanned documents\n- Word Documents (.doc, .docx): Microsoft Word formats\n- Text Files (.txt): Plain text documents\n- Rich Text (.rtf): Rich Text Format documents\n- Images (.png, .jpg, .jpeg): Scanned documents or images containing text\n\nFile size limits:\n- Individual file: Maximum 25MB\n- Total batch size: Maximum 100MB\n\nRecommended practices:\n- Ensure files are not password protected\n- For scanned documents, minimum 300 DPI recommended\n- UTF-8 encoding preferred for text files"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "Array of document files to process in parallel. Important considerations:\n\n- Batch Processing Behavior:\n  * Files are processed concurrently for efficiency\n  * Processing order is not guaranteed\n  * Failed files don't affect processing of other files\n\n- Batch Limits:\n  * Minimum files per batch: 1\n  * Maximum files per batch: 50\n  * Maximum total batch size: 100MB\n\n- Error Handling:\n  * Individual file failures return error in results array\n  * Partial success responses possible\n  * Timeout: 300 seconds for entire batch\n\n- Performance Tips:\n  * Group similar file types together\n  * Consider file sizes when batching\n  * Enable OCR only when needed",
+            "maxItems": 50,
+            "minItems": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "BatchExtractRequest",
+        "description": "Request schema for batch document extraction endpoint. This endpoint enables efficient processing of multiple documents in a single API call.\n\nUse Cases:\n- Bulk document digitization\n- Mass data extraction from forms\n- Archive processing\n- Invoice batch processing\n\nBest Practices:\n1. Group similar documents together\n2. Monitor response timeouts\n3. Implement retry logic for failed items\n4. Consider concurrent batch requests for large archives",
+        "examples": [
+          {
+            "files": [
+              "invoice1.pdf",
+              "invoice2.pdf",
+              "document3.docx"
+            ]
+          }
+        ]
+      },
+      "Body_extract_document_api_documents_extract_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "Document file to extract content from. Supported file formats and specifications:\n\nDocument Formats:\n- PDF (.pdf): Searchable, scanned, and form PDFs\n- Word (.doc, .docx): All Microsoft Word versions\n- Text (.txt): Plain text with UTF-8 encoding\n- Rich Text (.rtf): Rich Text Format documents\n- Images (.png, .jpg): When OCR is enabled\n- Excel (.xls, .xlsx): Spreadsheet data extraction\n\nFile Requirements:\n- Maximum file size: 25MB\n- Recommended minimum DPI for scanned docs: 300\n- Non-corrupted and non-password protected\n- Valid file encoding (UTF-8 preferred)\n\nExtraction Capabilities:\n- Full text content extraction\n- Table and structured data detection\n- Form field recognition\n- Image and diagram extraction\n- Metadata parsing (author, dates, etc.)\n- OCR for scanned content\n\nProcessing Notes:\n- Processing time varies by file size/complexity\n- Timeout limit: 120 seconds\n- Failed extractions return detailed error codes\n- Maintains original document formatting where possible"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "ExtractRequest",
+        "description": "Request schema for single document extraction. This endpoint processes individual documents for content extraction with detailed control and feedback.\n\nKey Features:\n- High-fidelity text extraction\n- Optional OCR processing\n- Metadata extraction\n- Table detection\n- Form field recognition\n\nBest Practices:\n1. Verify file format compatibility before sending\n2. Enable OCR only when needed for scanned docs\n3. Check file size meets limits\n4. Ensure proper file encoding\n5. Remove password protection if present",
+        "examples": [
+          {
+            "file": "document.pdf"
+          }
+        ]
+      },
       "ChartData": {
         "properties": {
           "data": {
             "additionalProperties": {
               "items": {
-                "type": "integer"
+                "type": "integer",
+                "description": "Numeric data point for the series. Values should be finite numbers appropriate for the chart type:\n- Bar/Column: Positive integers for counts/quantities\n- Line/Area: Any numeric value for trends\n- Pie: Positive values that will be converted to percentages"
               },
-              "type": "array"
+              "type": "array",
+              "minItems": 1,
+              "description": "Array of data points for a single series. Requirements:\n- Must contain at least one value\n- All values must be valid numbers\n- Series lengths can vary but should be logical for visualization\n- Missing data points can be represented as null"
             },
             "type": "object",
-            "title": "Data"
+            "title": "Chart Data Series",
+            "description": "Object containing named data series for visualization. Structure:\n\nKey: Series label (string)\nValue: Array of numeric data points\n\nVisualization Behavior:\n- Each key becomes a legend entry\n- Arrays are plotted in order left-to-right\n- Colors are assigned automatically to series\n- Series can have different lengths\n\nLimitations:\n- Maximum 10 series per chart\n- Maximum 100 points per series\n- Labels must be unique\n- Values must be finite numbers",
+            "maxProperties": 10
           }
         },
         "type": "object",
         "required": [
           "data"
         ],
-        "title": "ChartData"
+        "title": "ChartData",
+        "description": "Schema for chart visualization data. Supports multiple chart types including bar, line, area, and pie charts.\n\nData Structure Guidelines:\n1. Organize data in named series (e.g., 'Sales 2023', 'Revenue Q1')\n2. Each series contains an array of numeric values\n3. Series can represent different categories or time periods\n4. Data points should be logically related for meaningful visualization\n\nCommon Use Cases:\n- Time series data\n- Category comparisons\n- Distribution analysis\n- Trend visualization",
+        "examples": [
+          {
+            "data": {
+              "Q1 Sales": [
+                100,
+                150,
+                200
+              ],
+              "Q2 Sales": [
+                120,
+                160,
+                210
+              ],
+              "Q3 Sales": [
+                140,
+                180,
+                220
+              ]
+            }
+          },
+          {
+            "data": {
+              "2023 Revenue": [
+                1000,
+                1200,
+                1400,
+                1600
+              ],
+              "2024 Revenue": [
+                1100,
+                1300,
+                1500,
+                1700
+              ]
+            }
+          }
+        ]
+      },
+      "ExtractedDocument": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "mime_type": {
+            "type": "string",
+            "title": "Mime Type"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "metadata": {
+            "type": "object",
+            "title": "Metadata"
+          },
+          "extraction_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Extraction Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename",
+          "mime_type",
+          "text",
+          "metadata",
+          "extraction_timestamp"
+        ],
+        "title": "ExtractedDocument"
+      },
+      "ExtractionResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ExtractedDocument"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "data",
+          "message"
+        ],
+        "title": "ExtractionResponse"
+      },
+      "HTMLToPDFRequest": {
+        "properties": {
+          "html_content": {
+            "type": "string",
+            "title": "Html Content",
+            "description": "HTML content to convert to PDF. Supports:\n\nHTML Elements:\n- All standard HTML5 tags\n- CSS styling (inline and <style> tags)\n- Web fonts via CSS @font-face\n- SVG graphics\n- Tables and layouts\n- Images (base64 encoded or via URL)\n\nCSS Support:\n- All CSS2.1 properties\n- Most CSS3 properties\n- Flexbox and Grid layouts\n- Media queries\n- Page breaks (@page, break-before/after)\n\nLimitations:\n- Maximum content size: 5MB\n- JavaScript not executed\n- External resources must be accessible\n- Animations not supported\n- Some CSS3 features may render differently",
+            "maxLength": 5242880
+            // 5MB in bytes
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[\\w\\-. ]+\\.pdf$",
+                "maxLength": 255,
+                "description": "Custom filename for the generated PDF. Requirements:\n- Must end with .pdf\n- Only alphanumeric chars, hyphens, underscores\n- Max 255 characters\n- No path traversal characters"
+              },
+              {
+                "type": "null",
+                "description": "If null, a default filename will be generated based on timestamp"
+              }
+            ],
+            "title": "Filename",
+            "description": "Optional custom filename for the generated PDF. If not provided, a default name will be generated."
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "paper_size": {
+                "type": "string",
+                "enum": [
+                  "A4",
+                  "Letter",
+                  "Legal",
+                  "Tabloid"
+                ],
+                "default": "A4",
+                "description": "Page size for the generated PDF"
+              },
+              "orientation": {
+                "type": "string",
+                "enum": [
+                  "portrait",
+                  "landscape"
+                ],
+                "default": "portrait",
+                "description": "Page orientation"
+              },
+              "margins": {
+                "type": "object",
+                "properties": {
+                  "top": {
+                    "type": "string",
+                    "default": "1cm"
+                  },
+                  "right": {
+                    "type": "string",
+                    "default": "1cm"
+                  },
+                  "bottom": {
+                    "type": "string",
+                    "default": "1cm"
+                  },
+                  "left": {
+                    "type": "string",
+                    "default": "1cm"
+                  }
+                },
+                "description": "Page margins in cm, mm, in, or px"
+              },
+              "header_template": {
+                "type": "string",
+                "description": "HTML template for page headers"
+              },
+              "footer_template": {
+                "type": "string",
+                "description": "HTML template for page footers"
+              }
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "html_content"
+        ],
+        "title": "HTMLToPDFRequest",
+        "description": "Request schema for converting HTML content to PDF. Features:\n\n- High-fidelity HTML/CSS rendering\n- Customizable page settings\n- Headers and footers support\n- Custom paper sizes\n- Margin control\n\nProcessing Notes:\n- Renders exactly as modern Chrome browser\n- Timeout: 60 seconds\n- Async processing for large documents\n- Returns error for invalid HTML\n- Maintains hyperlinks in PDF",
+        "examples": [
+          {
+            "html_content": "<html><head><style>body { font-family: Arial; }</style></head><body><h1>Report</h1><p>Content</p></body></html>",
+            "filename": "report.pdf",
+            "options": {
+              "paper_size": "A4",
+              "orientation": "portrait",
+              "margins": {
+                "top": "2cm",
+                "right": "1cm",
+                "bottom": "2cm",
+                "left": "1cm"
+              }
+            }
+          },
+          {
+            "html_content": "<div style='text-align: center'><h1>Invoice</h1><table>...</table></div>",
+            "filename": "invoice-2024-01.pdf",
+            "options": {
+              "paper_size": "Letter",
+              "header_template": "<div style='text-align: right'>Page <span class='pageNumber'></span></div>"
+            }
+          }
+        ]
       },
       "HTTPValidationError": {
         "properties": {
@@ -114,6 +596,111 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "ProductDescriptionRequest": {
+        "properties": {
+          "product_description": {
+            "type": "string",
+            "title": "Product Description",
+            "description": "Basic product description or details"
+          },
+          "image_url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Image Url",
+            "description": "URL of the product image"
+          },
+          "target_audience": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Audience",
+            "description": "Target audience for the product"
+          },
+          "industry": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Industry",
+            "description": "Industry of the product"
+          },
+          "specialization": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Specialization",
+            "description": "Specialization of the product"
+          },
+          "tone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tone",
+            "description": "Tone of the description (casual, professional, luxury)",
+            "default": "professional"
+          },
+          "style": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Style",
+            "description": "Writing style (informative, persuasive, technical)",
+            "default": "informative"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_description",
+          "image_url"
+        ],
+        "title": "ProductDescriptionRequest",
+        "example": {
+          "image_url": "https://example.com/chair-image.jpg",
+          "product_description": "High-end office chair with ergonomic features",
+          "style": "persuasive",
+          "target_audience": "Office professionals and remote workers",
+          "tone": "professional"
+        }
+      },
+      "ProductDescriptionResponse": {
+        "properties": {
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "description"
+        ],
+        "title": "ProductDescriptionResponse"
       },
       "ValidationError": {
         "properties": {
