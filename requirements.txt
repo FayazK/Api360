@@ -58,7 +58,7 @@ python-dateutil==2.9.0.post0
 python-docx==1.1.2
 python-dotenv==1.0.1
 python-magic==0.4.27
-python-multipart==0.0.16
+python-multipart==0.0.19
 python-pptx==0.6.18
 pytz==2024.1
 PyYAML==6.0.2

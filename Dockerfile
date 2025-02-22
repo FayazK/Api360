@@ -13,6 +13,9 @@ RUN apt-get update && \
     tesseract-ocr \
     tesseract-ocr-eng \
     libreoffice \
+    # Add ImageMagick for wand
+    imagemagick \
+    libmagickwand-dev \
     # Required for build dependencies
     build-essential \
     libxml2-dev \
