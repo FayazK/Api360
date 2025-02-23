@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, validator
 from enum import Enum
-from typing import Optional, List, Tuple
+from typing import Optional, List
 
 
 class ImageFormat(str, Enum):

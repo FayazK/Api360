@@ -15,9 +15,6 @@ document_extractor = DocumentExtractor(ocr_enabled=True)
 @router.post("/extract", response_model=ExtractionResponse)
 async def extract_document(
         file: UploadFile = File(...),
-        enable_ocr: bool = True,
-        extract_tables: bool = True,
-        extract_metadata: bool = True,
         background_tasks: BackgroundTasks = None
 ) -> JSONResponse:
     """

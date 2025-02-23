@@ -1,11 +1,10 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
-from typing import Optional, List
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from typing import List
 from app.schemas.image import ImageConversionRequest, ImageConversionResponse, BatchImageConversionResponse, \
     BatchConversionWithIndividualOptionsRequest
 from app.services.image_service import ImageService
 
 router = APIRouter()
-
 
 @router.post("/convert", response_model=ImageConversionResponse, summary="Convert Image Format")
 async def convert_image(
