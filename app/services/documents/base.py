@@ -21,25 +21,20 @@ class DocumentExtractor:
         'text/csv': 'csv',
         # Microsoft Office
         'application/msword': 'doc',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
         # PDF
         'application/pdf': 'pdf',
         # OpenOffice/LibreOffice
         'application/vnd.oasis.opendocument.text': 'odt',
-        'application/vnd.oasis.opendocument.presentation': 'odp',
-        # Images (with OCR)
-        'image/jpeg': 'jpg',
-        'image/png': 'png',
-        'image/tiff': 'tiff'
+        'application/vnd.oasis.opendocument.presentation': 'odp'
     }
 
-    def __init__(self, ocr_enabled: bool = True, email_enabled: bool = True):
+    def __init__(self, email_enabled: bool = True):
         """Initialize the document extractor.
 
         Args:
-            ocr_enabled (bool): Whether to enable OCR for images and scanned PDFs
             email_enabled (bool): Whether to enable email parsing
         """
-        self.ocr_enabled = ocr_enabled
         self.email_enabled = email_enabled
         self._initialize_parsers()
 
@@ -70,7 +65,7 @@ class DocumentExtractor:
 
             # Create temporary file
             with tempfile.NamedTemporaryFile(delete=False,
-                                             suffix=f".{self.SUPPORTED_MIMETYPES[mime_type]}") as temp_file:
+                                           suffix=f".{self.SUPPORTED_MIMETYPES[mime_type]}") as temp_file:
                 content = await file.read()
                 temp_file.write(content)
                 temp_path = temp_file.name
@@ -80,12 +75,10 @@ class DocumentExtractor:
                 if mime_type == 'application/pdf':
                     text, metadata = self._extract_from_pdf(temp_path)
                 elif mime_type in ['application/msword',
-                                   'application/vnd.openxmlformats-officedocument.wordprocessingml.document']:
+                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']:
                     text, metadata = self._extract_from_doc(temp_path)
                 elif mime_type == 'text/html':
                     text, metadata = self._extract_from_html(content)
-                elif mime_type.startswith('image/'):
-                    text, metadata = self._extract_from_image(temp_path)
                 else:
                     # Fallback to textract for other formats
                     text = textract.process(temp_path).decode('utf-8')
@@ -185,34 +178,6 @@ class DocumentExtractor:
         # Get text content
         text = soup.get_text(separator='\n', strip=True)
         return text, metadata
-
-    def _extract_from_image(self, filepath: str) -> tuple[str, Dict[str, Any]]:
-        """Extract text from images using OCR if enabled."""
-        if not self.ocr_enabled:
-            raise HTTPException(status_code=400, detail="OCR is not enabled for image processing")
-
-        try:
-            import pytesseract
-            from PIL import Image
-
-            # Open image and perform OCR
-            image = Image.open(filepath)
-            text = pytesseract.image_to_string(image)
-
-            # Extract image metadata
-            metadata = {
-                "format": image.format,
-                "size": image.size,
-                "mode": image.mode,
-                "info": image.info
-            }
-
-            return text.strip(), metadata
-
-        except ImportError:
-            raise HTTPException(status_code=500, detail="OCR support (pytesseract) is not installed")
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error performing OCR: {str(e)}")
 
     def _get_basic_metadata(self, filepath: str) -> Dict[str, Any]:
         """Get basic file metadata."""

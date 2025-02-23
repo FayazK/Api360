@@ -10,8 +10,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     # Required for text extraction
     poppler-utils \
-    tesseract-ocr \
-    tesseract-ocr-eng \
     libreoffice \
     # Add ImageMagick for wand
     imagemagick \
@@ -35,7 +33,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY app/ app/
 COPY app/main.py .
-
 
 # Create necessary directories
 RUN mkdir -p /app/temp && \

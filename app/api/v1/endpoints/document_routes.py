@@ -9,7 +9,7 @@ from app.services.documents.base import DocumentExtractor
 router = APIRouter()
 
 # Initialize document extractor
-document_extractor = DocumentExtractor(ocr_enabled=True)
+document_extractor = DocumentExtractor(email_enabled=True)
 
 
 @router.post("/extract", response_model=ExtractionResponse)
@@ -22,9 +22,6 @@ async def extract_document(
 
     Args:
         file: The document file to process
-        enable_ocr: Whether to enable OCR for images and scanned PDFs
-        extract_tables: Whether to extract tables from documents
-        extract_metadata: Whether to extract document metadata
         background_tasks: FastAPI background tasks
 
     Returns:
@@ -32,9 +29,7 @@ async def extract_document(
     """
     try:
         # Extract document content
-        result = await document_extractor.extract_text(
-            file=file
-        )
+        result = await document_extractor.extract_text(file=file)
 
         # Clean up temporary files in background
         if background_tasks:
@@ -58,7 +53,6 @@ async def extract_document(
 @router.post("/batch-extract")
 async def batch_extract_documents(
         files: List[UploadFile] = File(...),
-        enable_ocr: bool = True,
         background_tasks: BackgroundTasks = None
 ) -> JSONResponse:
     """
@@ -66,7 +60,6 @@ async def batch_extract_documents(
 
     Args:
         files: List of document files to process
-        enable_ocr: Whether to enable OCR for images and scanned PDFs
         background_tasks: FastAPI background tasks
 
     Returns:
@@ -104,8 +97,7 @@ async def get_supported_formats() -> JSONResponse:
     """Get list of supported document formats."""
     return JSONResponse(
         content={
-            "supported_formats": DocumentExtractor.SUPPORTED_MIMETYPES,
-            "ocr_enabled": document_extractor.ocr_enabled
+            "supported_formats": DocumentExtractor.SUPPORTED_MIMETYPES
         }
     )
 
