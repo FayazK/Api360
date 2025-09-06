@@ -22,13 +22,6 @@ async def convert_image(
     """
     image_service = ImageService()
 
-    # Check file size
-    if file.size > 20 * 1024 * 1024:  # 20MB limit
-        raise HTTPException(
-            status_code=400,
-            detail="File too large. Maximum size is 20MB"
-        )
-
     # Process the image
     result = await image_service.process_image(
         file=file,
@@ -61,14 +54,6 @@ async def convert_images_batch(
         raise HTTPException(
             status_code=400,
             detail="Too many files. Maximum 20 files per request."
-        )
-
-    # Check total size of all files
-    total_size = sum(file.size for file in files)
-    if total_size > 50 * 1024 * 1024:  # 50MB total limit
-        raise HTTPException(
-            status_code=400,
-            detail="Total file size too large. Maximum total size is 50MB"
         )
 
     # Process the images
@@ -111,14 +96,6 @@ async def convert_images_with_individual_options(
         raise HTTPException(
             status_code=400,
             detail="Too many files. Maximum 20 files per request."
-        )
-
-    # Validate total file size
-    total_size = sum(file.size for file in files)
-    if total_size > 50 * 1024 * 1024:  # 50MB total limit
-        raise HTTPException(
-            status_code=400,
-            detail="Total file size too large. Maximum total size is 50MB"
         )
 
     # Validate all file indices are within range

@@ -1,6 +1,6 @@
-from pydantic import AnyHttpUrl
+from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings
-from typing import List, Optional
+from typing import List, Optional, Union
 from dotenv import load_dotenv
 import os
 
@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Chart Application"
     API_V1_STR: str = "/api/v1"
 
-    # e.g: "http://localhost,http://localhost:4200,http://localhost:3000"
+    # Can be CSV string or list in env: "http://localhost,http://localhost:4200"
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
     # Database settings
@@ -52,6 +52,22 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Union[str, List[str]]):
+        """Allow CORS origins to be provided as a CSV string or list.
+        If empty or missing, return an empty list.
+        """
+        if v is None or v == "":
+            return []
+        if isinstance(v, str):
+            # Split CSV, strip spaces, drop empties
+            parts = [p.strip() for p in v.split(",") if p.strip()]
+            return parts
+        if isinstance(v, list):
+            return v
+        return []
 
 
 settings = Settings()

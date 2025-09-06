@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import Mock, patch
 import pygal
 
-from app.services.chart_service import create_chart, ChartService, chart_service
+from app.services.chart_service import create_chart, ChartService
 from app.schemas.chart import ChartData
 from app.services.common.exceptions import ValidationError
 
@@ -59,60 +59,36 @@ class TestCreateChart:
     """Test chart creation functionality."""
     
     @pytest.mark.asyncio
-    async def test_create_chart_without_title(self, sample_chart_data, mock_storage_engine):
-        """Test chart creation without title."""
+    async def test_create_chart_without_title(self, sample_chart_data):
+        """Chart service returns SVG bytes without persisting."""
         chart_data = ChartData(**sample_chart_data)
-        
-        with patch('app.services.chart_service.chart_service._save_chart') as mock_save:
-            mock_save.return_value = {"url": "http://test.com/chart.svg", "filename": "chart.svg"}
-            
-            result = await create_chart(chart_data, "bar")
-            
-            assert result is not None
-            assert result["url"] == "http://test.com/chart.svg"
-            mock_save.assert_called_once()
+        result = await create_chart(chart_data, "bar")
+        assert isinstance(result, (bytes, bytearray))
+        assert b"<svg" in result
     
     @pytest.mark.asyncio
-    async def test_create_chart_with_title(self, sample_chart_data, mock_storage_engine):
-        """Test chart creation with title."""
+    async def test_create_chart_with_title(self, sample_chart_data):
+        """Chart service returns SVG bytes with title set."""
         chart_data = ChartData(**sample_chart_data)
-        
-        with patch('app.services.chart_service.chart_service._save_chart') as mock_save:
-            mock_save.return_value = {"url": "http://test.com/chart.svg", "filename": "chart.svg"}
-            
-            result = await create_chart(chart_data, "bar", "Test Chart Title")
-            
-            assert result is not None
-            assert result["url"] == "http://test.com/chart.svg"
-            mock_save.assert_called_once()
+        result = await create_chart(chart_data, "bar", "Test Chart Title")
+        assert isinstance(result, (bytes, bytearray))
+        assert b"<svg" in result
     
     @pytest.mark.asyncio
-    async def test_create_pie_chart(self, sample_chart_data, mock_storage_engine):
-        """Test pie chart creation."""
+    async def test_create_pie_chart(self, sample_chart_data):
+        """Test pie chart creation returns SVG bytes."""
         chart_data = ChartData(**sample_chart_data)
-        
-        with patch('app.services.chart_service.chart_service._save_chart') as mock_save:
-            mock_save.return_value = {"url": "http://test.com/pie.svg", "filename": "pie.svg"}
-            
-            result = await create_chart(chart_data, "pie", "Pie Chart")
-            
-            assert result is not None
-            assert result["url"] == "http://test.com/pie.svg"
-            mock_save.assert_called_once()
+        result = await create_chart(chart_data, "pie", "Pie Chart")
+        assert isinstance(result, (bytes, bytearray))
+        assert b"<svg" in result
     
     @pytest.mark.asyncio
-    async def test_create_line_chart(self, sample_chart_data, mock_storage_engine):
-        """Test line chart creation."""
+    async def test_create_line_chart(self, sample_chart_data):
+        """Test line chart creation returns SVG bytes."""
         chart_data = ChartData(**sample_chart_data)
-        
-        with patch('app.services.chart_service.chart_service._save_chart') as mock_save:
-            mock_save.return_value = {"url": "http://test.com/line.svg", "filename": "line.svg"}
-            
-            result = await create_chart(chart_data, "line", "Line Chart")
-            
-            assert result is not None
-            assert result["url"] == "http://test.com/line.svg"
-            mock_save.assert_called_once()
+        result = await create_chart(chart_data, "line", "Line Chart")
+        assert isinstance(result, (bytes, bytearray))
+        assert b"<svg" in result
     
     @pytest.mark.asyncio
     async def test_create_chart_with_multiple_series(self, mock_storage_engine):
@@ -142,15 +118,9 @@ class TestCreateChart:
             await create_chart(chart_data, "invalid_type")
     
     @pytest.mark.asyncio 
-    async def test_create_chart_empty_data(self, mock_storage_engine):
-        """Test chart creation with empty data."""
+    async def test_create_chart_empty_data(self):
+        """Service should still render an empty chart SVG for empty data."""
         chart_data = ChartData(data={})
-        
-        with patch('app.services.chart_service.chart_service._save_chart') as mock_save:
-            mock_save.return_value = {"url": "http://test.com/empty.svg", "filename": "empty.svg"}
-            
-            result = await create_chart(chart_data, "bar", "Empty Chart")
-            
-            assert result is not None
-            assert result["url"] == "http://test.com/empty.svg"
-            mock_save.assert_called_once()
+        result = await create_chart(chart_data, "bar", "Empty Chart")
+        assert isinstance(result, (bytes, bytearray))
+        assert b"<svg" in result

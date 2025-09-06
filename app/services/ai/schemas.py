@@ -1,14 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, List
 from datetime import datetime
-from enum import Enum
-
-
-class AIProvider(str, Enum):
-    OPENAI = "openai"
-    ANTHROPIC = "anthropic"
-    GEMINI = "gemini"
-    OPENROUTER = "openrouter"
+from app.config.ai_models import AIProvider
 
 
 class AITextRequest(BaseModel):

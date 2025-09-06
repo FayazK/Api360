@@ -4,8 +4,8 @@ from ..template_manager import TemplateManager
 
 from .base import BaseAITextGenerator
 from .drivers.openai_driver import OpenAIDriver
-from .schemas import AIProvider, AITextGenerationError
-from app.config.ai_models import get_ai_model_config, AIProvider as ConfigAIProvider
+from .schemas import AITextGenerationError
+from app.config.ai_models import get_ai_model_config, AIProvider
 
 
 class AITextGeneratorService(BaseAITextGenerator):
@@ -24,7 +24,7 @@ class AITextGeneratorService(BaseAITextGenerator):
         
         # Register OpenAI driver if API key is available
         if settings.OPENAI_API_KEY:
-            openai_config = ai_config.get_provider_config(ConfigAIProvider.OPENAI)
+            openai_config = ai_config.get_provider_config(AIProvider.OPENAI)
             openai_driver = OpenAIDriver(
                 api_key=settings.OPENAI_API_KEY,
                 config=openai_config,

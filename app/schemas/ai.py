@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 
-from app.services.ai.schemas import AIProvider
+from app.config.ai_models import AIProvider
 
 
 class AITextGenerationRequest(BaseModel):

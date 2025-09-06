@@ -289,7 +289,8 @@ class StorageEngine:
         """Clean up old temporary files."""
         try:
             temp_fs = self.get_fs(StorageType.TEMP)
-            cutoff_time = datetime.now() - timedelta(hours=self.temp_cleanup_hours)
+            # Use timezone-aware cutoff matched to each file's modified tzinfo to avoid naive/aware comparisons
+            base_cutoff = timedelta(hours=self.temp_cleanup_hours)
             
             deleted_count = 0
             total_size_freed = 0
@@ -302,10 +303,26 @@ class StorageEngine:
                             try:
                                 # Get file details safely  
                                 details = temp_fs.getinfo(file_path, namespaces=['details'])
-                                if details.modified and details.modified < cutoff_time:
-                                    total_size_freed += details.size
-                                    temp_fs.remove(file_path)
-                                    deleted_count += 1
+                                modified = details.modified
+                                if modified:
+                                    try:
+                                        # Align cutoff tzinfo with modified timestamp tzinfo
+                                        cutoff_time = datetime.now(tz=modified.tzinfo) - base_cutoff
+                                        if modified < cutoff_time:
+                                            total_size_freed += details.size
+                                            temp_fs.remove(file_path)
+                                            deleted_count += 1
+                                    except Exception as tz_err:
+                                        # Fallback: attempt naive comparison by dropping tzinfo
+                                        try:
+                                            naive_modified = modified.replace(tzinfo=None)
+                                            naive_cutoff = datetime.now() - base_cutoff
+                                            if naive_modified < naive_cutoff:
+                                                total_size_freed += details.size
+                                                temp_fs.remove(file_path)
+                                                deleted_count += 1
+                                        except Exception as e2:
+                                            logger.warning(f"Failed to compare modified time for {file_path}: {e2}")
                             except FSError as e:
                                 logger.warning(f"Failed to delete temp file {file_path}: {e}")
             

@@ -155,18 +155,19 @@ class TestDocumentEndpoints:
         with open(sample_document_file, 'rb') as f:
             files = {"file": ("test.txt", f, "text/plain")}
             
-            with patch('app.services.documents.base.DocumentExtractor.extract_text') as mock_extract:
+            with patch('app.services.documents.unstructured_extractor.UnstructuredExtractor.extract_text') as mock_extract:
                 mock_extract.return_value = {
                     "text": "Extracted text content",
-                    "metadata": {"filename": "test.txt"}
+                    "markdown": "Extracted text content",
+                    "metadata": {"filename": "test.txt", "mime_type": "text/plain"}
                 }
                 
                 response = client.post("/api/documents/extract", files=files)
                 
                 assert response.status_code == 200
                 result = response.json()
-                assert "text" in result
-                assert "metadata" in result
+                assert result.get("status")
+                assert result.get("data", {}).get("markdown")
     
     def test_extract_document_no_file(self, client: TestClient):
         """Test document extraction without file."""

@@ -1,16 +1,14 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
-from fastapi.responses import JSONResponse
-from fastapi.concurrency import run_in_threadpool
+from fastapi import APIRouter, UploadFile, File, HTTPException
 from typing import List
-from pathlib import Path
 import asyncio
 from app.schemas.documents.extraction import (
-    ExtractionResponse, 
-    BatchExtractionResponse, 
+    ExtractionResponse,
+    BatchExtractionResponse,
     SupportedFormatsResponse,
-    ExtractedDocument
+    ExtractedDocument,
 )
 from app.services.documents.unstructured_extractor import UnstructuredExtractor
+from app.services.common.exceptions import ValidationError, ServiceError
 
 router = APIRouter()
 
@@ -20,9 +18,8 @@ document_extractor = UnstructuredExtractor()
 
 @router.post("/extract", response_model=ExtractionResponse)
 async def extract_document(
-        file: UploadFile = File(...),
-        background_tasks: BackgroundTasks = None
-) -> JSONResponse:
+    file: UploadFile = File(...),
+):
     """
     Extract text and metadata from a document and convert to markdown format.
 
@@ -34,11 +31,8 @@ async def extract_document(
         JSONResponse containing extracted text, markdown content, and enhanced metadata
     """
     try:
-        # Extract document content using unstructured library
-        # Run in thread pool to avoid blocking the event loop
-        result = await run_in_threadpool(
-            lambda: asyncio.run(document_extractor.extract_text(file))
-        )
+        # Extract document content using unstructured library (async)
+        result = await document_extractor.extract_text(file)
 
         # Create ExtractedDocument response
         extracted_doc = ExtractedDocument(
@@ -49,32 +43,24 @@ async def extract_document(
             metadata=result["metadata"]
         )
 
-        # Clean up temporary files in background
-        if background_tasks:
-            background_tasks.add_task(cleanup_temp_files)
-
-        return JSONResponse(
-            content={
-                "status": "success",
-                "data": extracted_doc.model_dump(),
-                "message": "Document extracted and converted to markdown successfully"
-            }
+        return ExtractionResponse(
+            status="success",
+            data=extracted_doc,
+            message="Document extracted and converted to markdown successfully",
         )
 
-    except HTTPException:
-        raise
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail={"error": e.error_code or "VALIDATION_ERROR", "message": e.message, "details": e.details})
+    except ServiceError as e:
+        raise HTTPException(status_code=500, detail={"error": e.error_code or "SERVICE_ERROR", "message": e.message, "details": e.details})
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error processing document: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
 
 
 @router.post("/batch-extract", response_model=BatchExtractionResponse)
 async def batch_extract_documents(
-        files: List[UploadFile] = File(...),
-        background_tasks: BackgroundTasks = None
-) -> JSONResponse:
+    files: List[UploadFile] = File(...),
+):
     """
     Extract text and metadata from multiple documents in parallel and convert to markdown.
 
@@ -88,9 +74,7 @@ async def batch_extract_documents(
     try:
         # Process documents in parallel using thread pool
         async def process_single_file(file: UploadFile):
-            return await run_in_threadpool(
-                lambda: asyncio.run(document_extractor.extract_text(file))
-            )
+            return await document_extractor.extract_text(file)
 
         extraction_tasks = [process_single_file(file) for file in files]
         results = await asyncio.gather(*extraction_tasks, return_exceptions=True)
@@ -115,18 +99,14 @@ async def batch_extract_documents(
                 except Exception as e:
                     errors.append(f"File {files[i].filename}: Failed to create response - {str(e)}")
 
-        # Clean up temporary files in background
-        if background_tasks:
-            background_tasks.add_task(cleanup_temp_files)
-
-        response_data = {
-            "status": "success" if not errors else "partial_success",
-            "data": [doc.model_dump() for doc in extracted_docs],
-            "message": f"Successfully processed {len(extracted_docs)} documents" + 
-                      (f", with {len(errors)} errors: {'; '.join(errors)}" if errors else "")
-        }
-
-        return JSONResponse(content=response_data)
+        return BatchExtractionResponse(
+            status="success" if not errors else "partial_success",
+            data=extracted_docs,
+            message=(
+                f"Successfully processed {len(extracted_docs)} documents"
+                + (f", with {len(errors)} errors: {'; '.join(errors)}" if errors else "")
+            ),
+        )
 
     except Exception as e:
         raise HTTPException(
@@ -136,19 +116,8 @@ async def batch_extract_documents(
 
 
 @router.get("/supported-formats", response_model=SupportedFormatsResponse)
-async def get_supported_formats() -> JSONResponse:
+async def get_supported_formats() -> SupportedFormatsResponse:
     """Get list of supported document formats with categories and enhanced details."""
     formats_info = document_extractor.get_supported_formats()
-    
-    return JSONResponse(content=formats_info)
 
-
-async def cleanup_temp_files():
-    """Clean up temporary files created during extraction."""
-    temp_dir = Path("temp")
-    if temp_dir.exists():
-        for file in temp_dir.glob("*"):
-            try:
-                file.unlink()
-            except Exception:
-                pass
+    return SupportedFormatsResponse(**formats_info)

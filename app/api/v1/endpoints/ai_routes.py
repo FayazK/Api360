@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
+from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends, Request
 from fastapi.responses import JSONResponse
 from typing import Dict, Any
 
@@ -9,21 +9,22 @@ from app.schemas.ai import (
     AIHealthCheckResponse
 )
 from app.services.ai.factory import get_ai_service, AITextGeneratorFactory
-from app.services.ai.schemas import AIProvider, AITextGenerationError, AITextRequest
+from app.services.ai.schemas import AITextGenerationError, AITextRequest
+from app.config.ai_models import AIProvider
 from app.core.config import settings
 
 router = APIRouter()
 
 
-async def get_ai_text_service():
-    """Dependency to get the AI text generation service"""
+async def get_ai_text_service(request: Request):
+    """Get the AI text generation service from app state or fallback factory."""
     try:
+        svc = getattr(request.app.state, "ai_service", None)
+        if svc is not None:
+            return svc
         return await get_ai_service()
     except Exception as e:
-        raise HTTPException(
-            status_code=503, 
-            detail=f"AI service unavailable: {str(e)}"
-        )
+        raise HTTPException(status_code=503, detail=f"AI service unavailable: {str(e)}")
 
 
 @router.post("/generate", response_model=AITextGenerationResponse)

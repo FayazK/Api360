@@ -1,6 +1,6 @@
 from typing import Dict, Any, IO, List
 from datetime import datetime
-from fastapi import UploadFile, HTTPException
+from fastapi import UploadFile
 import uuid
 from pathlib import Path
 
@@ -10,6 +10,9 @@ try:
     from unstructured.documents.elements import Element, Title
 except ImportError:
     raise ImportError("unstructured library is required. Install with: pip install 'unstructured[all-docs]'")
+
+
+from app.services.common.exceptions import ValidationError, ServiceError
 
 
 class UnstructuredExtractor:
@@ -104,36 +107,36 @@ class UnstructuredExtractor:
             # Validate file type
             mime_type = file.content_type
             if not mime_type or mime_type not in self.SUPPORTED_MIMETYPES:
-                raise HTTPException(
-                    status_code=400, 
-                    detail=f"Unsupported file type: {mime_type}. Supported types: {list(self.SUPPORTED_MIMETYPES.keys())}"
+                raise ValidationError(
+                    f"Unsupported file type: {mime_type}.",
+                    field="content_type",
+                    value=mime_type,
                 )
 
             # Use storage engine for temporary file handling
             from app.core.storage_engine import get_storage_engine
-            
+
             content = await file.read()
             storage = get_storage_engine()
-            
+
             # Create temporary file with storage engine
             file_extension = self.SUPPORTED_MIMETYPES[mime_type]
-            temp_filename = f"document_{uuid.uuid4().hex}.{file_extension}"
-            
+
             with storage.temp_file(suffix=f".{file_extension}") as (temp_path, temp_fs):
                 # Write content to temp file
                 with temp_fs.open(temp_path, 'wb') as f:
                     f.write(content)
-                
+
                 # Reset file position for unstructured
                 await file.seek(0)
-                
+
                 # Partition the document using unstructured
                 elements = partition(
                     file=file.file,
                     file_filename=file.filename,
                     content_type=mime_type,
-                    strategy="auto",  # Let unstructured choose the best strategy
-                    include_page_breaks=True,  # Include page break information
+                    strategy="auto",
+                    include_page_breaks=True,
                 )
 
                 # Convert elements to markdown
@@ -144,14 +147,16 @@ class UnstructuredExtractor:
 
                 return {
                     "text": markdown_content,
-                    "markdown": markdown_content,  # Alias for backward compatibility
-                    "metadata": metadata
+                    "markdown": markdown_content,
+                    "metadata": metadata,
                 }
 
+        except ValidationError:
+            raise
         except Exception as e:
-            raise HTTPException(
-                status_code=500, 
-                detail=f"Error processing document '{file.filename}': {str(e)}"
+            raise ServiceError(
+                f"Error processing document '{file.filename}': {str(e)}",
+                error_code="DOCUMENT_EXTRACTION_FAILED",
             )
 
     def get_supported_formats(self) -> Dict[str, List[str]]:

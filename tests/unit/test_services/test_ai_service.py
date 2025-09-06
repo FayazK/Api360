@@ -1,7 +1,8 @@
 import pytest
 from unittest.mock import Mock, AsyncMock, patch
 from app.services.ai.factory import AITextGeneratorFactory, AITextGeneratorService
-from app.services.ai.schemas import AIProvider, AITextRequest, AITextResponse
+from app.config.ai_models import AIProvider
+from app.services.ai.schemas import AITextRequest, AITextResponse
 from app.services.ai.drivers.openai_driver import OpenAIDriver
 
 

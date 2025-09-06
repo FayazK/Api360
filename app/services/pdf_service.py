@@ -2,7 +2,7 @@ from weasyprint import HTML
 from io import BytesIO
 
 
-async def generate_pdf(html_content: str) -> bytes:
+def generate_pdf(html_content: str) -> bytes:
     """
     Generate PDF from HTML content.
 
@@ -15,7 +15,7 @@ async def generate_pdf(html_content: str) -> bytes:
     # Create PDF in memory
     pdf_buffer = BytesIO()
 
-    # Generate PDF from HTML
+    # Generate PDF from HTML (blocking)
     HTML(string=html_content).write_pdf(pdf_buffer)
 
     # Get the PDF content

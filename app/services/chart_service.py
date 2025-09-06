@@ -3,7 +3,6 @@ import pygal
 from app.schemas.chart import ChartData
 from app.services.common.base_service import BaseService
 from app.services.common.exceptions import ValidationError, ServiceError
-from app.core.storage_engine import get_storage_engine, StorageType
 
 
 class ChartService(BaseService):
@@ -22,8 +21,8 @@ class ChartService(BaseService):
         self,
         chart_data: ChartData,
         chart_type: str,
-        title: Optional[str] = None
-    ) -> Dict[str, Any]:
+        title: Optional[str] = None,
+    ) -> bytes:
         try:
             self.log_operation("create_chart", {"chart_type": chart_type})
             
@@ -38,10 +37,7 @@ class ChartService(BaseService):
                 chart.add(key, values)
             
             svg_data = chart.render()
-            
-            file_info = self._save_chart(svg_data)
-            
-            return {"url": file_info["url"]}
+            return svg_data
             
         except Exception as error:
             self.handle_error(error, "chart creation")
@@ -63,23 +59,8 @@ class ChartService(BaseService):
                 value=chart_type
             )
     
-    def _save_chart(self, svg_data: bytes) -> Dict[str, Any]:
-        import uuid
-        
-        filename = f"{uuid.uuid4()}.svg"
-        
-        storage = get_storage_engine()
-        return storage.store_bytes(
-            data=svg_data,
-            category="charts",
-            filename=filename,
-            content_type="image/svg+xml",
-            storage_type=StorageType.PUBLIC
-        )
-
-
 chart_service = ChartService()
 
 
-async def create_chart(chart_data: ChartData, chart_type: str, title: str = None):
+async def create_chart(chart_data: ChartData, chart_type: str, title: str = None) -> bytes:
     return await chart_service.create_chart(chart_data, chart_type, title)

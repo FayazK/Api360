@@ -1,6 +1,9 @@
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+import logging
+import yaml
 
 
 class AIProvider(str, Enum):
@@ -47,7 +50,50 @@ class AIModelConfig:
     """Centralized configuration for AI models and providers"""
     
     def __init__(self):
-        self._providers = self._initialize_providers()
+        # Try to load from YAML first, fallback to built-ins
+        loaded = self._load_from_yaml()
+        self._providers = loaded if loaded else self._initialize_providers()
+
+    def _load_from_yaml(self) -> Optional[Dict[AIProvider, ProviderConfig]]:
+        """Load provider/model configuration from YAML file if present."""
+        try:
+            cfg_path = Path("config/ai_models.yaml")
+            if not cfg_path.exists():
+                return None
+            with cfg_path.open("r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+
+            providers: Dict[AIProvider, ProviderConfig] = {}
+            raw_providers = (data or {}).get("providers", {})
+            for key, entry in raw_providers.items():
+                provider_enum = AIProvider(key)
+                models: Dict[str, ModelConfig] = {}
+                for model_name, m in entry.get("models", {}).items():
+                    models[model_name] = ModelConfig(
+                        name=model_name,
+                        provider=provider_enum,
+                        pricing=ModelPricing(
+                            input_cost_per_token=float(m["pricing"].get("input_cost_per_token", 0.0)),
+                            output_cost_per_token=float(m["pricing"].get("output_cost_per_token", 0.0)),
+                        ),
+                        context_length=int(m.get("context_length", 0)),
+                        supports_functions=bool(m.get("supports_functions", False)),
+                        supports_vision=bool(m.get("supports_vision", False)),
+                    )
+
+                providers[provider_enum] = ProviderConfig(
+                    name=entry.get("name", provider_enum.value.title()),
+                    provider=provider_enum,
+                    default_model=entry.get("default_model"),
+                    models=models,
+                    base_url=entry.get("base_url"),
+                    organization=entry.get("organization"),
+                )
+
+            return providers
+        except Exception as e:
+            logging.getLogger(__name__).warning(f"Failed to load AI models from YAML: {e}")
+            return None
     
     def _initialize_providers(self) -> Dict[AIProvider, ProviderConfig]:
         """Initialize all provider configurations"""

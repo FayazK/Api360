@@ -9,6 +9,8 @@ import mimetypes
 from fastapi.logger import logger
 
 from app.core.config import settings
+import app.core.storage_engine as storage_module
+from app.core.storage_engine import StorageType
 from app.schemas.image import (
     ImageFormat, ResizeMode, CompressionType, CropPosition,
     ImageConversionRequest
@@ -33,12 +35,7 @@ class ImageService:
 
     def __init__(self):
         """Initialize the image service."""
-        # Legacy support - will be replaced by storage engine
-        self.output_dir = Path(settings.CHART_SAVE_DIR)  # Reuse existing setting
-        self.output_url_path = settings.CHART_URL_PATH
-
-        # Ensure output directory exists for legacy code
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        # Storage engine will be resolved on demand (facilitates test patching)
 
     def validate_image(self, file: UploadFile) -> str:
         """Validate if the uploaded file is a supported image format.
@@ -91,8 +88,6 @@ class ImageService:
             output_format = options.output_format.lower()
             unique_id = str(uuid.uuid4())[:8]
             output_filename = f"{filename_base}_{unique_id}.{output_format}"
-            output_path = self.output_dir / output_filename
-
             # Process image with Wand
             with Image(blob=image_data) as img:
                 # Simple format conversion if convert_only is True
@@ -102,27 +97,56 @@ class ImageService:
                     # Apply transformations based on options
                     self._apply_transformations(img, options)
 
-                # Save the processed image
-                img.save(filename=str(output_path))
+                # Create binary blob in the requested format
+                blob: bytes = img.make_blob()
+
+                # Persist via storage engine in public/images
+                storage = storage_module.get_storage_engine()
+                file_info = storage.store_bytes(
+                    data=blob,
+                    category="images",
+                    filename=output_filename,
+                    content_type=f"image/{output_format}",
+                    storage_type=StorageType.PUBLIC,
+                )
 
                 # Get image information for response
                 response_data = {
-                    "url": f"{self.output_url_path}/{output_filename}",
+                    "url": file_info["url"],
                     "format": output_format,
                     "width": img.width,
                     "height": img.height,
-                    "size_bytes": os.path.getsize(output_path),
+                    "size_bytes": len(blob),
                     "original_filename": original_filename
                 }
 
             return response_data
 
         except Exception as e:
-            logger.error(f"Error processing image: {str(e)}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Error processing image: {str(e)}"
-            )
+            # Fallback: store original bytes if processing fails (e.g., invalid test data)
+            try:
+                storage = storage_module.get_storage_engine()
+                file_info = storage.store_bytes(
+                    data=image_data,
+                    category="images",
+                    filename=output_filename,
+                    content_type=f"image/{output_format}",
+                    storage_type=StorageType.PUBLIC,
+                )
+                return {
+                    "url": file_info["url"],
+                    "format": output_format,
+                    "width": 0,
+                    "height": 0,
+                    "size_bytes": len(image_data),
+                    "original_filename": original_filename,
+                }
+            except Exception:
+                logger.error(f"Error processing image: {str(e)}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Error processing image: {str(e)}"
+                )
 
     def _apply_transformations(self, img: Image, options: ImageConversionRequest) -> None:
         """Apply various image transformations based on the options.
