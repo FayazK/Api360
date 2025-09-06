@@ -81,6 +81,7 @@ class DocumentExtractor:
                 # Get the actual filesystem path for processing
                 if hasattr(temp_fs, 'getsyspath'):
                     actual_path = temp_fs.getsyspath(temp_path)
+                    temp_cleanup_needed = False
                 else:
                     # Fallback: create a real temp file for libraries that need it
                     with tempfile.NamedTemporaryFile(delete=False, 
@@ -88,8 +89,6 @@ class DocumentExtractor:
                         fallback_file.write(content)
                         actual_path = fallback_file.name
                     temp_cleanup_needed = True
-                else:
-                    temp_cleanup_needed = False
                 
                 try:
                     # Extract based on file type
