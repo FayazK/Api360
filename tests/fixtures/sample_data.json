@@ -1,0 +1,43 @@
+{
+  "sample_charts": {
+    "sales_data": {
+      "data": {
+        "Q1 Sales": [100, 150, 200, 180],
+        "Q2 Sales": [120, 160, 220, 200],
+        "Q3 Sales": [140, 180, 240, 220],
+        "Q4 Sales": [160, 200, 260, 240]
+      }
+    },
+    "pie_data": {
+      "data": {
+        "Desktop": [45],
+        "Mobile": [35],
+        "Tablet": [20]
+      }
+    }
+  },
+  "sample_products": [
+    {
+      "product_description": "Premium wireless noise-cancelling headphones",
+      "image_url": "https://example.com/headphones.jpg",
+      "target_audience": "Music professionals and audiophiles",
+      "industry": "Consumer Electronics",
+      "specialization": "Audio Equipment",
+      "tone": "professional",
+      "style": "technical"
+    },
+    {
+      "product_description": "Ergonomic office chair with lumbar support",
+      "image_url": "https://example.com/chair.jpg",
+      "target_audience": "Office workers and remote employees",
+      "industry": "Furniture",
+      "specialization": "Office Furniture",
+      "tone": "professional",
+      "style": "informative"
+    }
+  ],
+  "sample_html": {
+    "simple": "<html><body><h1>Simple Test Document</h1><p>This is a test document.</p></body></html>",
+    "complex": "<html><head><style>body { font-family: Arial; } h1 { color: blue; }</style></head><body><h1>Complex Document</h1><p>With styles and formatting.</p><ul><li>Item 1</li><li>Item 2</li></ul></body></html>"
+  }
+}

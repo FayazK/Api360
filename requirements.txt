@@ -94,3 +94,9 @@ importlib_metadata==8.5.0
 tinycss==0.4
 tinyhtml5==2.0.0
 zipp
+
+# Testing Dependencies
+pytest==7.4.4
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0

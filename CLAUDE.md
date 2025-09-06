@@ -18,6 +18,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Install: `pip install -r requirements.txt`
 - Core dependencies: FastAPI, Uvicorn, Pydantic, OpenAI, Anthropic
 
+### Testing Commands
+- Run all tests: `pytest`
+- Run with coverage: `pytest --cov=app --cov-report=html`
+- Run only unit tests: `pytest tests/unit`
+- Run only integration tests: `pytest tests/integration`
+- Run specific test file: `pytest tests/unit/test_services/test_chart_service.py`
+- Run tests with verbose output: `pytest -v`
+- Run tests and stop on first failure: `pytest -x`
+- Run tests matching pattern: `pytest -k "test_chart"`
+- Skip slow tests: `pytest -m "not slow"`
+
 ## Architecture Overview
 
 ### Project Structure

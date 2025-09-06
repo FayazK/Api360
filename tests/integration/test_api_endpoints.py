@@ -1,0 +1,338 @@
+import pytest
+from fastapi.testclient import TestClient
+from httpx import AsyncClient
+from unittest.mock import patch, Mock
+
+
+@pytest.mark.integration
+class TestChartEndpoints:
+    """Test chart API endpoints."""
+    
+    def test_create_bar_chart(self, client: TestClient, mock_storage_engine):
+        """Test creating a bar chart."""
+        chart_data = {
+            "data": {
+                "Q1": [100, 200, 150],
+                "Q2": [150, 250, 200]
+            }
+        }
+        
+        with patch('app.services.chart_service.save_svg') as mock_save_svg:
+            mock_save_svg.return_value = {
+                "url": "http://test.com/chart.svg",
+                "filename": "chart.svg"
+            }
+            
+            response = client.post(
+                "/api/charts/?chart_type=bar&title=Test Chart",
+                json=chart_data
+            )
+            
+            assert response.status_code == 200
+            result = response.json()
+            assert result["url"] == "http://test.com/chart.svg"
+    
+    def test_create_pie_chart(self, client: TestClient, mock_storage_engine):
+        """Test creating a pie chart."""
+        chart_data = {
+            "data": {
+                "Category A": [300],
+                "Category B": [200],
+                "Category C": [100]
+            }
+        }
+        
+        with patch('app.services.chart_service.save_svg') as mock_save_svg:
+            mock_save_svg.return_value = {
+                "url": "http://test.com/pie.svg",
+                "filename": "pie.svg"
+            }
+            
+            response = client.post(
+                "/api/charts/?chart_type=pie",
+                json=chart_data
+            )
+            
+            assert response.status_code == 200
+            result = response.json()
+            assert result["url"] == "http://test.com/pie.svg"
+    
+    def test_create_chart_invalid_type(self, client: TestClient):
+        """Test creating chart with invalid type."""
+        chart_data = {
+            "data": {
+                "Series 1": [1, 2, 3]
+            }
+        }
+        
+        response = client.post(
+            "/api/charts/?chart_type=invalid",
+            json=chart_data
+        )
+        
+        assert response.status_code == 422
+    
+    def test_create_chart_missing_data(self, client: TestClient):
+        """Test creating chart with missing data."""
+        response = client.post(
+            "/api/charts/?chart_type=bar",
+            json={}
+        )
+        
+        assert response.status_code == 422
+    
+    def test_create_chart_invalid_chart_type_regex(self, client: TestClient):
+        """Test chart type regex validation."""
+        chart_data = {
+            "data": {
+                "Series 1": [1, 2, 3]
+            }
+        }
+        
+        response = client.post(
+            "/api/charts/?chart_type=scatter",  # Not in allowed types
+            json=chart_data
+        )
+        
+        assert response.status_code == 422
+
+
+@pytest.mark.integration  
+class TestPdfEndpoints:
+    """Test PDF API endpoints."""
+    
+    def test_generate_pdf(self, client: TestClient):
+        """Test PDF generation."""
+        pdf_data = {
+            "html_content": "<html><body><h1>Test PDF</h1></body></html>",
+            "filename": "test.pdf"
+        }
+        
+        with patch('app.services.pdf_service.generate_pdf') as mock_generate_pdf:
+            mock_generate_pdf.return_value = b"fake pdf content"
+            
+            response = client.post("/api/pdf/", json=pdf_data)
+            
+            assert response.status_code == 200
+            assert response.headers["content-type"] == "application/pdf"
+            assert response.headers["content-disposition"] == 'attachment; filename="test.pdf"'
+            assert response.content == b"fake pdf content"
+    
+    def test_generate_pdf_missing_html(self, client: TestClient):
+        """Test PDF generation with missing HTML content."""
+        pdf_data = {"filename": "test.pdf"}
+        
+        response = client.post("/api/pdf/", json=pdf_data)
+        
+        assert response.status_code == 422
+    
+    def test_generate_pdf_missing_filename(self, client: TestClient):
+        """Test PDF generation with missing filename."""
+        pdf_data = {"html_content": "<html><body>Test</body></html>"}
+        
+        response = client.post("/api/pdf/", json=pdf_data)
+        
+        assert response.status_code == 422
+
+
+@pytest.mark.integration
+class TestAIEndpoints:
+    """Test AI API endpoints."""
+    
+    def test_generate_product_description(self, client: TestClient, mock_anthropic_client):
+        """Test product description generation."""
+        request_data = {
+            "product_description": "Wireless headphones",
+            "image_url": "https://example.com/headphones.jpg",
+            "target_audience": "Music lovers",
+            "tone": "professional",
+            "style": "informative"
+        }
+        
+        with patch('app.services.ai.base.AIService._fetch_image') as mock_fetch_image:
+            mock_fetch_image.return_value = {
+                'data': 'base64data',
+                'mime_type': 'image/jpeg'
+            }
+            
+            response = client.post("/api/ai/product-description", json=request_data)
+            
+            assert response.status_code == 200
+            result = response.json()
+            assert "description" in result
+            assert result["description"] == "Generated product description"
+    
+    def test_generate_product_description_missing_required_fields(self, client: TestClient):
+        """Test product description generation with missing required fields."""
+        request_data = {
+            "target_audience": "Music lovers"
+        }
+        
+        response = client.post("/api/ai/product-description", json=request_data)
+        
+        assert response.status_code == 422
+    
+    def test_generate_product_description_invalid_url(self, client: TestClient):
+        """Test product description generation with invalid URL."""
+        request_data = {
+            "product_description": "Test product",
+            "image_url": "not-a-valid-url"
+        }
+        
+        response = client.post("/api/ai/product-description", json=request_data)
+        
+        assert response.status_code == 422
+
+
+@pytest.mark.integration
+class TestDocumentEndpoints:
+    """Test document processing API endpoints."""
+    
+    def test_extract_document_text_file(self, client: TestClient, sample_document_file):
+        """Test document text extraction from text file."""
+        with open(sample_document_file, 'rb') as f:
+            files = {"file": ("test.txt", f, "text/plain")}
+            
+            with patch('app.services.documents.base.DocumentExtractor.extract') as mock_extract:
+                mock_extract.return_value = {
+                    "text": "Extracted text content",
+                    "metadata": {"filename": "test.txt"}
+                }
+                
+                response = client.post("/api/documents/extract", files=files)
+                
+                assert response.status_code == 200
+                result = response.json()
+                assert "text" in result
+                assert "metadata" in result
+    
+    def test_extract_document_no_file(self, client: TestClient):
+        """Test document extraction without file."""
+        response = client.post("/api/documents/extract")
+        
+        assert response.status_code == 422
+
+
+@pytest.mark.integration
+class TestImageEndpoints:
+    """Test image processing API endpoints."""
+    
+    def test_process_image(self, client: TestClient, mock_file_upload):
+        """Test image processing endpoint."""
+        with patch('app.services.image_service.process_image') as mock_process:
+            mock_process.return_value = {
+                "url": "http://test.com/processed.png",
+                "filename": "processed.png"
+            }
+            
+            files = {"file": ("test.jpg", b"fake image data", "image/jpeg")}
+            response = client.post(
+                "/api/images/process?format=png&width=800",
+                files=files
+            )
+            
+            assert response.status_code == 200
+            result = response.json()
+            assert result["url"] == "http://test.com/processed.png"
+    
+    def test_process_image_no_file(self, client: TestClient):
+        """Test image processing without file."""
+        response = client.post("/api/images/process")
+        
+        assert response.status_code == 422
+
+
+@pytest.mark.integration
+class TestAsyncEndpoints:
+    """Test async endpoint behavior."""
+    
+    @pytest.mark.asyncio
+    async def test_async_chart_creation(self, async_client: AsyncClient, mock_storage_engine):
+        """Test async chart creation."""
+        chart_data = {
+            "data": {
+                "Async Series": [1, 2, 3, 4, 5]
+            }
+        }
+        
+        with patch('app.services.chart_service.save_svg') as mock_save_svg:
+            mock_save_svg.return_value = {
+                "url": "http://test.com/async-chart.svg",
+                "filename": "async-chart.svg"
+            }
+            
+            response = await async_client.post(
+                "/api/charts/?chart_type=line",
+                json=chart_data
+            )
+            
+            assert response.status_code == 200
+            result = response.json()
+            assert result["url"] == "http://test.com/async-chart.svg"
+    
+    @pytest.mark.asyncio
+    async def test_async_pdf_generation(self, async_client: AsyncClient):
+        """Test async PDF generation."""
+        pdf_data = {
+            "html_content": "<html><body><h1>Async Test</h1></body></html>",
+            "filename": "async-test.pdf"
+        }
+        
+        with patch('app.services.pdf_service.generate_pdf') as mock_generate_pdf:
+            mock_generate_pdf.return_value = b"async pdf content"
+            
+            response = await async_client.post("/api/pdf/", json=pdf_data)
+            
+            assert response.status_code == 200
+            assert response.headers["content-type"] == "application/pdf"
+            assert response.content == b"async pdf content"
+
+
+@pytest.mark.integration
+@pytest.mark.slow
+class TestEndpointPerformance:
+    """Test endpoint performance characteristics."""
+    
+    def test_multiple_chart_requests(self, client: TestClient, mock_storage_engine):
+        """Test handling multiple chart requests."""
+        chart_data = {
+            "data": {
+                "Performance Test": [i for i in range(100)]
+            }
+        }
+        
+        with patch('app.services.chart_service.save_svg') as mock_save_svg:
+            mock_save_svg.return_value = {
+                "url": "http://test.com/perf.svg",
+                "filename": "perf.svg"
+            }
+            
+            # Send multiple requests
+            for i in range(5):
+                response = client.post(
+                    f"/api/charts/?chart_type=bar&title=Performance Test {i}",
+                    json=chart_data
+                )
+                assert response.status_code == 200
+    
+    def test_large_chart_data(self, client: TestClient, mock_storage_engine):
+        """Test handling large chart datasets."""
+        large_data = {
+            "data": {
+                f"Series {i}": [j for j in range(1000)]
+                for i in range(10)
+            }
+        }
+        
+        with patch('app.services.chart_service.save_svg') as mock_save_svg:
+            mock_save_svg.return_value = {
+                "url": "http://test.com/large.svg",
+                "filename": "large.svg"
+            }
+            
+            response = client.post(
+                "/api/charts/?chart_type=line&title=Large Dataset",
+                json=large_data
+            )
+            
+            assert response.status_code == 200
