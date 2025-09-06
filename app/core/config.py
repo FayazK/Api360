@@ -36,6 +36,18 @@ class Settings(BaseSettings):
     TEMPLATES_DIR: str = "app/templates"
     TEMPLATE_CACHE_SIZE: int = 100
 
+    # AI Service Settings
+    OPENAI_API_KEY: Optional[str] = None
+    ANTHROPIC_API_KEY: Optional[str] = None
+    GEMINI_API_KEY: Optional[str] = None
+    OPENROUTER_API_KEY: Optional[str] = None
+    
+    # AI Service Configuration
+    AI_DEFAULT_PROVIDER: str = "openai"
+    AI_DEFAULT_MODEL: Optional[str] = None
+    AI_MAX_TOKENS_DEFAULT: int = 1000
+    AI_TEMPERATURE_DEFAULT: float = 0.7
+    AI_REQUEST_TIMEOUT: int = 60  # seconds
 
     class Config:
         case_sensitive = True

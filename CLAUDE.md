@@ -5,18 +5,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ### Running the Application
-- Local development: `uvicorn main:app --reload --host 0.0.0.0 --port 8000`
-- Docker: `docker-compose up --build`
+- Local development: `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
+- Docker: `docker-compose up --build` (runs on port 8778, maps to internal port 8000)
 - Production Docker: `docker build -t three60_fastapi:v1.0 .`
 
 ### Environment Setup
 - Copy `.env.example` to `.env` and configure environment variables
-- Required env vars: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`
+- AI Provider Keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`
 - Optional: `DATABASE_URL`, `SECRET_KEY`, `BACKEND_CORS_ORIGINS`
+- AI defaults: `AI_DEFAULT_PROVIDER`, `AI_DEFAULT_MODEL`, `AI_MAX_TOKENS_DEFAULT`, `AI_TEMPERATURE_DEFAULT`
 
 ### Dependencies
 - Install: `pip install -r requirements.txt`
-- Core dependencies: FastAPI, Uvicorn, Pydantic, OpenAI, Anthropic
+- Core dependencies: FastAPI, Uvicorn, Pydantic, OpenAI, PyFilesystem2
+
+### Code Quality
+- No linting/formatting tools configured - manual code review required
+- Follow PEP 8 style guidelines
 
 ### Testing Commands
 - Run all tests: `pytest`
@@ -58,7 +63,11 @@ app/
 - `documents/base.py` - DocumentExtractor for text extraction from various formats
 - `chart_service.py` - Chart generation using data visualization libraries
 - `pdf_service.py` - PDF creation and manipulation
-- `ai/base.py` - AI service integration (OpenAI, Anthropic)
+- `ai/` - AI text generation with driver pattern architecture
+  - `base.py` - BaseAITextGenerator abstract service
+  - `factory.py` - AITextGeneratorFactory and service management
+  - `drivers/openai_driver.py` - OpenAI API implementation
+  - `schemas.py` - Internal AI service data models
 - `image_service.py` - Image processing and format conversion
 - `template_manager.py` - Jinja2 template management for AI prompts
 
@@ -74,10 +83,24 @@ The application follows a layered architecture:
 3. **Schemas** - Define data models and validation rules
 4. **Utils** - Provide shared utility functions
 
-### AI Integration
-- Supports both OpenAI and Anthropic APIs
-- Template-based prompt management with Jinja2
-- AI services handle product description generation and content processing
+### AI Service Architecture
+The AI service implements a driver pattern for multi-provider support:
+- **BaseAITextGenerator** - Abstract service class defining the unified interface
+- **AITextGeneratorFactory** - Singleton factory managing driver registration and service instantiation
+- **Provider Drivers** - Implement BaseAIDriver interface (OpenAI complete, others planned)
+- **Automatic Registration** - Drivers auto-register based on available API keys in environment
+- **Template Integration** - Built-in Jinja2 template processing for dynamic prompt generation
+- **Error Handling** - Structured error responses with provider-specific error codes
+- **Cost Management** - Automatic token counting and cost estimation per provider
+
+### Adding New AI Providers
+To add a new AI provider (e.g., Anthropic, Gemini):
+1. Create driver class extending `BaseAIDriver` in `app/services/ai/drivers/`
+2. Implement abstract methods: `provider_name`, `default_model`, `supported_models`, `generate_text`, etc.
+3. Add provider enum to `AIProvider` in `schemas.py`
+4. Register driver in `AITextGeneratorService._register_available_drivers()`
+5. Add configuration variables to `app/core/config.py`
+6. Update factory validation methods
 
 ### Document Processing
 - Multi-format support: PDF, DOCX, TXT, images, emails
@@ -112,6 +135,37 @@ storage/
 ### Deployment
 - Dockerized application with multi-stage builds
 - Docker Compose for local development
-- Static file serving for generated charts and assets
+- Static file serving for generated charts and assets via `/storage` endpoint
 - Health checks and restart policies configured
-- **Migration script** (`migrate_storage.py`) to move existing files to new structure
+- Background storage cleanup tasks with configurable retention
+
+## Development Patterns
+
+### Service Integration
+- Use dependency injection pattern in route handlers: `ai_service = Depends(get_ai_text_service)`
+- Services are async-first - use `await` for all service calls
+- Factory pattern manages singleton instances and driver registration
+
+### Error Handling
+- Services use structured exceptions (e.g., `AITextGenerationError`) with provider context
+- API routes convert service exceptions to appropriate HTTP status codes
+- Template rendering failures gracefully fall back to original prompt
+
+### Storage Operations
+- Use `StorageEngine` for all file operations instead of direct filesystem access
+- Files auto-organize into `public/`, `temp/`, and `templates/` with subdirectories
+- Public files automatically generate accessible URLs via `/storage/` endpoint
+- Temporary files have automatic cleanup based on retention settings
+
+### Testing Strategy  
+- Unit tests mock external dependencies and use factory reset methods
+- Integration tests use real FastAPI TestClient but expect service unavailability
+- AI service tests require provider API keys or will return 503 responses
+- Use pytest markers: `@pytest.mark.slow`, `@pytest.mark.integration`, `@pytest.mark.external_api`
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+- Always follow KISS and DRY principles

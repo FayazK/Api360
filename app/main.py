@@ -2,7 +2,7 @@ from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from app.api.v1.endpoints import document_routes, chart_routes, pdf_routes, image_routes
+from app.api.v1.endpoints import document_routes, chart_routes, pdf_routes, image_routes, ai_routes
 from app.core.config import settings
 from app.core.storage_engine import init_storage_engine, get_storage_engine
 import asyncio
@@ -48,6 +48,7 @@ app.include_router(document_routes.router, prefix="/api/documents", tags=["docum
 app.include_router(chart_routes.router, prefix="/api/charts", tags=["charts"])
 app.include_router(pdf_routes.router, prefix="/api/pdf", tags=["pdf"])
 app.include_router(image_routes.router, prefix="/api/images", tags=["images"])
+app.include_router(ai_routes.router, prefix="/api/ai", tags=["ai"])
 
 # Mount static files - keep for legacy support and add new storage endpoint
 app.mount("/static", StaticFiles(directory="static"), name="static")

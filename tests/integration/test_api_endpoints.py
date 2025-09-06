@@ -1,7 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, AsyncMock
+from app.main import app
+from app.services.ai.factory import AITextGeneratorFactory
 
 
 @pytest.mark.integration
@@ -288,3 +290,28 @@ class TestEndpointPerformance:
             )
             
             assert response.status_code == 200
+
+
+@pytest.mark.integration
+class TestAIEndpoints:
+    """Test AI API endpoints."""
+    
+    def test_ai_health_check_with_providers(self, client: TestClient):
+        """Test AI health check with providers configured but unavailable."""
+        response = client.get("/api/ai/health")
+        
+        assert response.status_code == 200
+        data = response.json()
+        # With real environment settings, it should be configured but may be unhealthy due to invalid keys
+        assert data["configured"] is True
+    
+    def test_ai_generate_endpoints_exist(self, client: TestClient):
+        """Test AI endpoint exists and handles requests appropriately."""
+        # Test that endpoints exist and return expected error codes
+        response = client.post("/api/ai/generate", json={"prompt": "Test"})
+        # Should be 503 (service unavailable) due to invalid API key or 422 (validation error)
+        assert response.status_code in [503, 422]
+        
+        response = client.post("/api/ai/validate", json={"prompt": "Test"})
+        # Should be 503 (service unavailable) due to invalid API key or 422 (validation error)
+        assert response.status_code in [503, 422, 200]
