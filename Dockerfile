@@ -41,5 +41,11 @@ RUN mkdir -p /app/temp && \
 RUN mkdir -p /app/static && \
     chmod 777 /app/static
 
+# Create new storage directory structure
+RUN mkdir -p /app/storage/public/{charts,images,documents,pdfs} && \
+    mkdir -p /app/storage/temp/{uploads,processing,cache} && \
+    mkdir -p /app/storage/templates && \
+    chmod -R 777 /app/storage
+
 # Run the FastAPI application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

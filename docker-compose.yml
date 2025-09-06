@@ -9,8 +9,7 @@ services:
     ports:
       - "8778:8000"
     volumes:
-      - ./static:/app/static
-      - ./temp:/app/temp
+      - ./storage:/app/storage # New unified storage
     environment:
       - PYTHONPATH=/app
       - OPENAI_API_KEY=${OPENAI_API_KEY}

@@ -223,29 +223,36 @@ def _calculate_dimensions(
         return new_width, target_height
 
 
-def save_temp_image(image_data: bytes, filename: str) -> Path:
-    """Save image data to temporary directory."""
-    temp_dir = Path("temp")
-    temp_dir.mkdir(exist_ok=True)
-
-    file_path = temp_dir / filename
-    with open(file_path, "wb") as f:
-        f.write(image_data)
-    return file_path
-
-
-def get_base64_encoded_image(image_path: Path) -> str:
-    """Read image from path and return base64 encoded string."""
-    with open(image_path, "rb") as image_file:
-        binary_data = image_file.read()
-        base_64_encoded_data = base64.b64encode(binary_data)
-        return base_64_encoded_data.decode('utf-8')
+def save_temp_image(image_data: bytes, filename: str) -> str:
+    """Save image data to temporary directory using storage engine."""
+    from app.core.storage_engine import get_storage_engine, StorageType
+    
+    storage = get_storage_engine()
+    file_info = storage.store_bytes(
+        data=image_data,
+        category="processing",
+        filename=filename,
+        storage_type=StorageType.TEMP
+    )
+    return file_info["path"]
 
 
-def cleanup_temp_file(file_path: Path):
-    """Remove temporary file."""
+def get_base64_encoded_image(image_path: str) -> str:
+    """Read image from storage path and return base64 encoded string."""
+    from app.core.storage_engine import get_storage_engine, StorageType
+    
+    storage = get_storage_engine()
+    binary_data = storage.read_file(image_path, StorageType.TEMP)
+    base_64_encoded_data = base64.b64encode(binary_data)
+    return base_64_encoded_data.decode('utf-8')
+
+
+def cleanup_temp_file(file_path: str):
+    """Remove temporary file from storage."""
+    from app.core.storage_engine import get_storage_engine, StorageType
+    
     try:
-        if file_path.exists():
-            os.remove(file_path)
+        storage = get_storage_engine()
+        storage.delete_file(file_path, StorageType.TEMP)
     except Exception as e:
         logger.error(f"Error cleaning up temp file {file_path}: {e}")

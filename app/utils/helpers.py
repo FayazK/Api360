@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi.responses import JSONResponse
+from app.core.storage_engine import get_storage_engine, StorageType
 
 def save_svg(svg_data: bytes) -> JSONResponse:
     """
@@ -14,20 +15,19 @@ def save_svg(svg_data: bytes) -> JSONResponse:
     """
     # Generate a unique filename
     svg_filename = f"{uuid.uuid4()}.svg"
-    svg_dir = "static/charts"  # Directory to save SVG files
-    os.makedirs(svg_dir, exist_ok=True)
-    svg_path = os.path.join(svg_dir, svg_filename)
-
-    # Save the SVG file
-    with open(svg_path, "wb") as f:
-        f.write(svg_data)
-
-    # Construct the full URL to the SVG file
-    # Note: In a production environment, you'd want to use a configurable base URL
-    full_url = f"/static/charts/{svg_filename}"
+    
+    # Use storage engine to save the file
+    storage = get_storage_engine()
+    file_info = storage.store_bytes(
+        data=svg_data,
+        category="charts",
+        filename=svg_filename,
+        content_type="image/svg+xml",
+        storage_type=StorageType.PUBLIC
+    )
 
     # Return the full URL in the response
-    return JSONResponse(content={"url": full_url})
+    return JSONResponse(content={"url": file_info["url"]})
 
 
 import os
@@ -57,17 +57,14 @@ def save_pdf(pdf_data: bytes, filename: Optional[str] = None) -> JSONResponse:
     # Ensure filename is URL-safe
     filename = "".join(c for c in filename if c.isalnum() or c in ('-', '_', '.')).lower()
 
-    # Create directory if it doesn't exist
-    pdf_dir = Path(settings.CHART_SAVE_DIR)  # Reusing the chart directory setting
-    pdf_dir.mkdir(parents=True, exist_ok=True)
+    # Use storage engine to save the file
+    storage = get_storage_engine()
+    file_info = storage.store_bytes(
+        data=pdf_data,
+        category="pdfs",
+        filename=filename,
+        content_type="application/pdf",
+        storage_type=StorageType.PUBLIC
+    )
 
-    # Save the PDF file
-    pdf_path = pdf_dir / filename
-
-    with open(pdf_path, "wb") as f:
-        f.write(pdf_data)
-
-    # Construct the URL path
-    url_path = f"{settings.CHART_URL_PATH}/{filename}"
-
-    return JSONResponse(content={"url": url_path})
+    return JSONResponse(content={"url": file_info["url"]})

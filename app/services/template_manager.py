@@ -16,6 +16,14 @@ class TemplateManager:
 
         # Template cache
         self._cache: Dict[str, str] = {}
+        
+        # Initialize storage engine integration for future template storage
+        try:
+            from app.core.storage_engine import get_storage_engine, StorageType
+            self.storage_engine = get_storage_engine()
+            self.use_storage = True
+        except:
+            self.use_storage = False
 
     @functools.lru_cache(maxsize=100)
     def get_template(self, template_path: str):

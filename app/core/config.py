@@ -21,7 +21,12 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "YOUR_SECRET_KEY_HERE"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
 
-    # Chart settings
+    # Storage Engine Settings
+    STORAGE_BASE_PATH: str = "storage"
+    TEMP_FILE_CLEANUP_HOURS: int = 24
+    MAX_TEMP_FILE_SIZE_MB: int = 100
+    
+    # Legacy settings (deprecated - use storage engine)
     CHART_SAVE_DIR: str = "static/charts"
     CHART_URL_PATH: str = "/static/charts"
 

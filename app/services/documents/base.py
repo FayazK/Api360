@@ -1,5 +1,6 @@
 from typing import Dict, Any
 import os
+import uuid
 from pathlib import Path
 import tempfile
 import mimetypes
@@ -63,38 +64,59 @@ class DocumentExtractor:
             if not mime_type or mime_type not in self.SUPPORTED_MIMETYPES:
                 raise HTTPException(status_code=400, detail=f"Unsupported file type: {mime_type}")
 
-            # Create temporary file
-            with tempfile.NamedTemporaryFile(delete=False,
-                                           suffix=f".{self.SUPPORTED_MIMETYPES[mime_type]}") as temp_file:
-                content = await file.read()
-                temp_file.write(content)
-                temp_path = temp_file.name
-
-            try:
-                # Extract based on file type
-                if mime_type == 'application/pdf':
-                    text, metadata = self._extract_from_pdf(temp_path)
-                elif mime_type in ['application/msword',
-                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']:
-                    text, metadata = self._extract_from_doc(temp_path)
-                elif mime_type == 'text/html':
-                    text, metadata = self._extract_from_html(content)
+            # Use storage engine for temporary file handling
+            from app.core.storage_engine import get_storage_engine, StorageType
+            
+            content = await file.read()
+            storage = get_storage_engine()
+            
+            # Create temporary file with storage engine
+            temp_filename = f"document_{uuid.uuid4().hex}.{self.SUPPORTED_MIMETYPES[mime_type]}"
+            
+            with storage.temp_file(suffix=f".{self.SUPPORTED_MIMETYPES[mime_type]}") as (temp_path, temp_fs):
+                # Write content to temp file
+                with temp_fs.open(temp_path, 'wb') as f:
+                    f.write(content)
+                
+                # Get the actual filesystem path for processing
+                if hasattr(temp_fs, 'getsyspath'):
+                    actual_path = temp_fs.getsyspath(temp_path)
                 else:
-                    # Fallback to textract for other formats
-                    text = textract.process(temp_path).decode('utf-8')
-                    metadata = self._get_basic_metadata(temp_path)
+                    # Fallback: create a real temp file for libraries that need it
+                    with tempfile.NamedTemporaryFile(delete=False, 
+                                                   suffix=f".{self.SUPPORTED_MIMETYPES[mime_type]}") as fallback_file:
+                        fallback_file.write(content)
+                        actual_path = fallback_file.name
+                    temp_cleanup_needed = True
+                else:
+                    temp_cleanup_needed = False
+                
+                try:
+                    # Extract based on file type
+                    if mime_type == 'application/pdf':
+                        text, metadata = self._extract_from_pdf(actual_path)
+                    elif mime_type in ['application/msword',
+                                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document']:
+                        text, metadata = self._extract_from_doc(actual_path)
+                    elif mime_type == 'text/html':
+                        text, metadata = self._extract_from_html(content)
+                    else:
+                        # Fallback to textract for other formats
+                        text = textract.process(actual_path).decode('utf-8')
+                        metadata = self._get_basic_metadata(actual_path)
 
-                return {
-                    "filename": file.filename,
-                    "mime_type": mime_type,
-                    "text": text,
-                    "metadata": metadata,
-                    "extraction_timestamp": datetime.now().isoformat()
-                }
-
-            finally:
-                # Clean up temp file
-                os.unlink(temp_path)
+                    return {
+                        "filename": file.filename,
+                        "mime_type": mime_type,
+                        "text": text,
+                        "metadata": metadata,
+                        "extraction_timestamp": datetime.now().isoformat()
+                    }
+                
+                finally:
+                    # Clean up fallback temp file if needed
+                    if temp_cleanup_needed and os.path.exists(actual_path):
+                        os.unlink(actual_path)
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error extracting text: {str(e)}")

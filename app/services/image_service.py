@@ -33,10 +33,11 @@ class ImageService:
 
     def __init__(self):
         """Initialize the image service."""
+        # Legacy support - will be replaced by storage engine
         self.output_dir = Path(settings.CHART_SAVE_DIR)  # Reuse existing setting
         self.output_url_path = settings.CHART_URL_PATH
 
-        # Ensure output directory exists
+        # Ensure output directory exists for legacy code
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def validate_image(self, file: UploadFile) -> str:
