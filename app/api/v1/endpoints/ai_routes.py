@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends, Request
 from fastapi.responses import JSONResponse
-from typing import Dict, Any
 
 from app.schemas.ai import (
     AITextGenerationRequest, 
