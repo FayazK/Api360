@@ -44,7 +44,6 @@ RUN mkdir -p /app/static && \
 # Create new storage directory structure
 RUN mkdir -p /app/storage/public/{charts,images,documents,pdfs} && \
     mkdir -p /app/storage/temp/{uploads,processing,cache} && \
-    mkdir -p /app/storage/templates && \
     chmod -R 777 /app/storage
 
 # Run the FastAPI application
