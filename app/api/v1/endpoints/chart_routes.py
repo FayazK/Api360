@@ -8,7 +8,7 @@ router = APIRouter()
 @router.post("/", summary="Create Chart")
 async def chart(
     chart_data: ChartData,
-    chart_type: str = Query(..., regex="^(bar|pie|line|area)$"),
+    chart_type: str = Query(..., pattern="^(bar|pie|line|area)$"),
     title: str = Query(None)
 ):
     try:

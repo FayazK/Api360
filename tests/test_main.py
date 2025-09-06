@@ -36,8 +36,8 @@ class TestApplicationStartup:
         response = client.options("/api/charts/", 
                                 headers={"Origin": "http://localhost:3000",
                                        "Access-Control-Request-Method": "POST"})
-        # FastAPI returns 405 for OPTIONS on non-existent routes, but CORS headers should be present
-        assert "access-control-allow-origin" in response.headers or response.status_code == 405
+        # CORS middleware should add headers regardless of response status
+        assert "access-control-allow-origin" in response.headers or "access-control-allow-methods" in response.headers
 
 
 class TestStorageEndpoints:
@@ -46,16 +46,36 @@ class TestStorageEndpoints:
     def test_storage_stats_endpoint(self, client: TestClient, mock_storage_engine):
         """Test storage stats endpoint."""
         mock_storage_engine.get_storage_stats.return_value = {
-            "total_files": 5,
-            "total_size": 1024
+            "public": {
+                "total_files": 3,
+                "total_size": 2048,
+                "categories": {
+                    "charts": {"files": 1, "size": 1024},
+                    "images": {"files": 2, "size": 1024}
+                }
+            },
+            "temp": {
+                "total_files": 2,
+                "total_size": 512,
+                "categories": {
+                    "uploads": {"files": 1, "size": 256},
+                    "processing": {"files": 1, "size": 256}
+                }
+            },
+            "templates": {
+                "total_files": 0,
+                "total_size": 0,
+                "categories": {}
+            }
         }
         
         response = client.get("/api/storage/stats")
         assert response.status_code == 200
         
         data = response.json()
-        assert "total_files" in data
-        assert "total_size" in data
+        assert "public" in data
+        assert "temp" in data
+        assert "templates" in data
     
     def test_storage_cleanup_endpoint(self, client: TestClient, mock_storage_engine):
         """Test storage cleanup endpoint."""

@@ -2,7 +2,7 @@ from typing import Optional, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime
 
-from ..config.ai_models import AIProvider, get_ai_model_config
+from app.config.ai_models import AIProvider, get_ai_model_config
 
 
 @dataclass

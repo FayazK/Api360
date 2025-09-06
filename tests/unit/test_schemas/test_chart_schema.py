@@ -137,7 +137,7 @@ class TestChartDataSchema:
         
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == "int_type"
+        assert errors[0]["type"] == "int_parsing"  # Updated for Pydantic v2
     
     def test_model_json_schema(self):
         """Test that the model has expected JSON schema."""

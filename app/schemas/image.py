@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from enum import Enum
 from typing import Optional, List
 
@@ -68,32 +68,36 @@ class ImageConversionRequest(BaseModel):
     background_color: Optional[str] = Field(None, description="Background color for transparent areas")
     sharpen: Optional[bool] = Field(None, description="Apply sharpening filter")
 
-    @validator('crop_x', 'crop_y', always=True)
-    def validate_crop_coordinates(cls, v, values):
-        if values.get('crop_position') == CropPosition.CUSTOM and v is None:
+    @field_validator('crop_x', 'crop_y')
+    @classmethod 
+    def validate_crop_coordinates(cls, v, info):
+        if info.data.get('crop_position') == CropPosition.CUSTOM and v is None:
             raise ValueError("crop_x and crop_y are required when crop_position is 'custom'")
         return v
 
-    @validator('crop_width', 'crop_height', always=True)
-    def validate_crop_dimensions(cls, v, values):
-        if values.get('crop') and v is None:
+    @field_validator('crop_width', 'crop_height')
+    @classmethod
+    def validate_crop_dimensions(cls, v, info):
+        if info.data.get('crop') and v is None:
             raise ValueError("crop_width and crop_height are required when crop is True")
         return v
 
-    @validator('resize_mode', always=True)
-    def validate_resize_mode(cls, v, values):
-        if values.get('resize') and v is None:
+    @field_validator('resize_mode')
+    @classmethod
+    def validate_resize_mode(cls, v, info):
+        if info.data.get('resize') and v is None:
             return ResizeMode.PRESERVE_RATIO  # Default to preserving ratio
         return v
 
-    @validator('quality', always=True)
-    def validate_quality(cls, v, values):
-        if not values.get('convert_only') and values.get('compression_type') == CompressionType.LOSSY and v is None:
+    @field_validator('quality')
+    @classmethod
+    def validate_quality(cls, v, info):
+        if not info.data.get('convert_only') and info.data.get('compression_type') == CompressionType.LOSSY and v is None:
             return 85  # Default quality for lossy compression
         return v
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "output_format": "webp",
                 "convert_only": False,
@@ -108,6 +112,7 @@ class ImageConversionRequest(BaseModel):
                 "auto_orient": True
             }
         }
+    )
 
 
 class ImageConversionResponse(BaseModel):

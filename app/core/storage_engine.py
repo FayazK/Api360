@@ -271,11 +271,13 @@ class StorageEngine:
             if fs.exists(category):
                 for file_info in fs.scandir(category):
                     if file_info.is_file:
+                        # Get file details safely
+                        details = fs.getinfo(f"{category}/{file_info.name}", namespaces=['details'])
                         files.append({
                             "name": file_info.name,
                             "path": f"{category}/{file_info.name}",
-                            "size": file_info.size,
-                            "modified": file_info.modified.isoformat() if file_info.modified else None
+                            "size": details.size,
+                            "modified": details.modified.isoformat() if details.modified else None
                         })
             
             return files
@@ -295,15 +297,17 @@ class StorageEngine:
             for subdir in ["uploads", "processing", "cache"]:
                 if temp_fs.exists(subdir):
                     for file_info in temp_fs.scandir(subdir):
-                        if file_info.is_file and file_info.modified:
-                            if file_info.modified < cutoff_time:
-                                file_path = f"{subdir}/{file_info.name}"
-                                try:
-                                    total_size_freed += file_info.size
+                        if file_info.is_file:
+                            file_path = f"{subdir}/{file_info.name}"
+                            try:
+                                # Get file details safely  
+                                details = temp_fs.getinfo(file_path, namespaces=['details'])
+                                if details.modified and details.modified < cutoff_time:
+                                    total_size_freed += details.size
                                     temp_fs.remove(file_path)
                                     deleted_count += 1
-                                except FSError as e:
-                                    logger.warning(f"Failed to delete temp file {file_path}: {e}")
+                            except FSError as e:
+                                logger.warning(f"Failed to delete temp file {file_path}: {e}")
             
             logger.info(f"Cleaned up {deleted_count} temp files, freed {total_size_freed} bytes")
             
@@ -338,8 +342,13 @@ class StorageEngine:
                         cat_size = 0
                         for file_info in fs.scandir(category):
                             if file_info.is_file:
-                                cat_files += 1
-                                cat_size += file_info.size
+                                try:
+                                    details = fs.getinfo(f"{category}/{file_info.name}", namespaces=['details'])
+                                    cat_files += 1
+                                    cat_size += details.size
+                                except FSError:
+                                    # Skip files we can't read
+                                    continue
                         
                         type_stats["categories"][category] = {
                             "files": cat_files,

@@ -1,49 +1,95 @@
 # Project Architectural and Organizational Issues
 
-This document outlines the architectural, organizational, and pattern-related issues found during a review of the project.
+This document captures current architectural, organizational, and software engineering issues in the repository, with concrete recommendations for remediation. Use it as a backlog for refactors and hardening work.
 
-## Architectural Issues
+## Architectural
+- Monolith coupling: AI, charts, PDFs, documents, and images live in one FastAPI app, making scaling and deploys tightly coupled. Consider module boundaries per domain (or separate services) with clear contracts.
+- Storage layering: Business services (e.g., `ChartService._save_chart`) persist files directly. Introduce storage adapters/gateways and return domain results (bytes/structs) from services; let routes orchestrate persistence.
+- Service locator: `AITextGeneratorFactory` + `get_ai_service()` hides dependencies. Prefer explicit DI via FastAPI dependencies initialized at startup (or a small container) and pass services explicitly to routes.
 
-1.  **Monolithic Structure:** The project combines several unrelated services (AI, charts, PDF, image processing) into a single application. This monolithic approach can lead to:
-    *   **High Coupling:** Changes in one service might unintentionally affect others.
-    *   **Scalability Challenges:** It's difficult to scale individual services based on their specific needs. For example, the AI service might require more resources than the chart service.
-    *   **Maintenance Overhead:** The codebase can become complex and hard to manage as it grows.
-    *   **Recommendation:** Consider breaking down the application into smaller, independent microservices for each domain (e.g., an `AIService`, a `ChartService`, etc.). This would improve modularity, scalability, and maintainability.
+### Refactor Checklist
+- [ ] Define domain boundaries and packages for `ai/`, `charts/`, `documents/`, `images/`, `pdf/` with clear interfaces.
+- [ ] Introduce a `StoragePort` interface and concrete adapter for `StorageEngine` (ports/adapters pattern).
+- [ ] Refactor `ChartService` to return SVG bytes/struct; move persistence to a storage adapter at the route layer.
+- [ ] Replace service locator with explicit FastAPI dependencies initialized in startup (e.g., `lifespan` factory wiring).
 
-2.  **Lack of a Service Layer in `chart_routes`:** The `chart_routes.py` file directly calls `create_chart`, which in turn calls `save_svg`. This violates the principle of separation of concerns.
-    *   **Recommendation:** The `chart_service.py` should be responsible for the business logic of creating the chart, while the route handles the HTTP request and response. The service should not be responsible for saving the file. Instead, it should return the chart data, and the route or a dedicated file-handling service should manage saving it.
+## Organization
+- Duplicate extractors: `app/services/documents/base.py` and `.../unstructured_extractor.py` overlap while routes only use the unstructured version. Consolidate on one implementation; remove legacy.
+- Image stack inconsistency: `app/services/image_service.py` uses Wand/ImageMagick while `app/utils/image_helpers.py` uses PIL with a parallel builder API. Standardize on one library and one service surface.
+- Router import style drift: `app/api/v1/endpoints/__init__.py` re-exports routers, but `app/main.py` imports concrete modules. Pick one convention (prefer named imports from `endpoints/__init__.py`).
 
-3.  **Inconsistent Abstraction in AI Service:**
-    *   The `BaseAITextGenerator` provides a good abstraction for different AI providers.
-    *   However, the `OpenAIDriver` contains pricing information, which is a business-level concern. This information should be moved to a separate configuration or a pricing service to keep the driver focused on interacting with the OpenAI API.
-    *   **Recommendation:** Decouple pricing logic from the driver.
+### Refactor Checklist
+- [ ] Remove `app/services/documents/base.py` (or migrate anything needed) and standardize on `UnstructuredExtractor`.
+- [ ] Decide on image engine (Wand or PIL); delete the alternative and consolidate a single `ImageService` API.
+- [ ] Standardize router registration via `from app.api.v1.endpoints import chart_router, ...` in `app/main.py`.
 
-## Organizational Issues
+## SE Principles & Patterns
+- SRP violations:
+  - `ChartService` both renders and persists.
+  - `document_routes.cleanup_temp_files()` manages temp files while `StorageEngine` already owns this concern.
+- Framework leakage: Services (e.g., `UnstructuredExtractor`) raise `HTTPException`. Raise domain errors and translate to HTTP in routes.
+- Config duplication: `AIProvider` enum is defined in both `app/config/ai_models.py` and `app/services/ai/schemas.py`. Unify the source of truth.
+- Hardcoded pricing/config: AI model pricing and defaults live in code. Externalize to YAML/JSON and load via settings for maintainability.
 
-1.  **Configuration Management:**
-    *   The AI service relies on `settings.AI_DEFAULT_PROVIDER`, `settings.AI_MAX_TOKENS_DEFAULT`, etc. While using a central configuration object is good, it's not ideal for a service to be so tightly coupled to the global settings.
-    *   **Recommendation:** Inject configuration into services and drivers through their constructors. This improves testability and makes the components more reusable.
+### Refactor Checklist
+- [ ] Make services raise domain errors (e.g., `ServiceError`, `ValidationError`) instead of `HTTPException`.
+- [ ] Remove manual temp cleanup in routes; expose cleanup via `StorageEngine` only.
+- [ ] Unify `AIProvider` enum (choose one module) and update imports across codebase.
+- [ ] Move AI pricing/models to `config/ai_models.yaml` and implement a loader in `app/config`.
 
-2.  **Hardcoded Values:**
-    *   The `OpenAIDriver` has hardcoded model names and pricing. This makes it difficult to update without changing the code.
-    *   **Recommendation:** Externalize this information into a configuration file (e.g., a YAML or JSON file) that can be loaded at runtime.
+## Async & Concurrency
+- Event loop misuse: `document_routes` wraps `asyncio.run(...)` inside `run_in_threadpool`. Either make the extractor synchronous and run it in a thread, or call the async method directly; do not nest loops.
+- Blocking in async: `pdf_service.generate_pdf` uses WeasyPrint synchronously in an `async` function. Offload to a worker thread (`anyio.to_thread.run_sync`).
 
-3.  **Missing `__init__.py` in `app/services/ai/drivers`:** The `drivers` directory is missing an `__init__.py` file, which can cause issues with packaging and imports.
-    *   **Recommendation:** Add an empty `__init__.py` file to the `app/services/ai/drivers` directory.
+### Refactor Checklist
+- [ ] Remove `asyncio.run(...)` from `document_routes`; directly `await` or use `anyio.to_thread.run_sync` for sync paths.
+- [ ] Wrap WeasyPrint PDF generation with `anyio.to_thread.run_sync` and keep function synchronous.
+- [ ] Audit other blocking IO (Wand, PIL, filesystem) and offload as needed.
 
-## Patterns and Principles
+## API & Validation
+- Reliance on `UploadFile.size`: Starlette’s `UploadFile` does not guarantee `size`. Validate using `Content-Length` or stream to a capped buffer; enforce max size via middleware.
+- Response consistency: Endpoints declare `response_model` and manually return `JSONResponse`. Return Pydantic models (FastAPI will serialize) for validation and consistency.
 
-1.  **Dependency Injection:**
-    *   The AI service uses a factory pattern (`AITextGeneratorFactory`) to create and manage the service instance, which is good.
-    *   However, the `get_ai_service` dependency in `ai_routes.py` is a bit of a "service locator" pattern, which can hide dependencies and make testing harder.
-    *   **Recommendation:** Use a proper dependency injection framework (like `fastapi-injector` or `punq`) to manage dependencies more explicitly. This would make the application more modular and easier to test.
+### Refactor Checklist
+- [ ] Add upload size middleware (based on `Content-Length`) and streaming validators for unknown sizes.
+- [ ] Update image/document endpoints to use validated size checks; remove `UploadFile.size` usage.
+- [ ] Return Pydantic models from routes; remove direct `JSONResponse` where `response_model` exists.
+- [ ] Add/align error response models where appropriate.
 
-2.  **Single Responsibility Principle (SRP):**
-    *   The `chart_service.py` violates SRP by being responsible for both creating the chart and saving it.
-    *   The `OpenAIDriver` violates SRP by being responsible for both API interaction and pricing calculation.
-    *   **Recommendation:** Refactor these components to have a single, well-defined responsibility.
+## Logging & Error Handling
+- `print()` in background tasks and extractor warnings. Use `logging` with structured fields and levels.
+- Broad `except Exception` patterns risk leaking internals. Map to typed, user‑safe errors; log details server‑side.
 
-3.  **Error Handling:**
-    *   The error handling in `ai_routes.py` is extensive and well-structured, with custom exceptions. This is a good practice.
-    *   However, the `chart_routes.py` has no explicit error handling.
-    *   **Recommendation:** Add robust error handling to all routes and services to ensure the application is resilient.
+### Refactor Checklist
+- [ ] Replace `print()` with `logging` across services/routes; configure app logger on startup.
+- [ ] Narrow `except Exception` blocks; map to typed exceptions with safe client messages.
+- [ ] Add structured context (e.g., `request_id`, `operation`) using `logger.bind()` or `extra`.
+
+## Security & Configuration
+- Secrets committed: `.env` is present in git and contains keys. Remove from history, rotate credentials, and rely on environment plus `.env.example` only.
+- CORS env parsing: `BACKEND_CORS_ORIGINS` is a CSV string but typed as `List[AnyHttpUrl]`. Add parsing/validation in settings.
+
+### Refactor Checklist
+- [ ] Purge `.env` from git history and rotate keys; rely on env vars and `.env.example` only.
+- [ ] Implement CSV parsing for `BACKEND_CORS_ORIGINS` with validation in `Settings`.
+- [ ] Remove default secrets from settings; ensure no sensitive defaults exist.
+
+## Testing & Tooling
+- Settings mutation: Tests monkeypatch `settings`, but modules may have captured earlier instances. Prefer an app factory with injected settings/services or dependency overrides in tests.
+- Gaps: Add tests for image/document endpoints (size checks, error paths) and storage engine behaviors.
+
+### Refactor Checklist
+- [ ] Introduce an application factory that accepts `Settings` and service instances for tests.
+- [ ] Use FastAPI dependency overrides to inject mocked services (storage, AI) in integration tests.
+- [ ] Add tests for image/document size enforcement and error paths.
+- [ ] Add tests for storage engine list/read/delete and cleanup routines.
+- [ ] Add AI route tests with mocked driver covering success/error paths.
+
+## Recommended Next Steps
+1. Define domain module boundaries and extract storage adapters; stop persisting in services.
+2. Replace service locator with explicit FastAPI dependencies and startup wiring.
+3. Consolidate document extractor and image processing to a single implementation each.
+4. Fix async issues (remove nested `asyncio.run`, move blocking work to threads).
+5. Unify `AIProvider` enum and externalize AI pricing/config.
+6. Replace `JSONResponse` returns with response models; fix file size validation.
+7. Remove committed secrets; add CORS parsing; expand tests for the above changes.

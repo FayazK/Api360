@@ -19,20 +19,24 @@ class TestChartEndpoints:
             }
         }
         
-        with patch('app.services.chart_service.save_svg') as mock_save_svg:
-            mock_save_svg.return_value = {
-                "url": "http://test.com/chart.svg",
-                "filename": "chart.svg"
-            }
-            
-            response = client.post(
-                "/api/charts/?chart_type=bar&title=Test Chart",
-                json=chart_data
-            )
-            
-            assert response.status_code == 200
-            result = response.json()
-            assert result["url"] == "http://test.com/chart.svg"
+        # Mock the storage engine's store_bytes method
+        mock_storage_engine.store_bytes.return_value = {
+            "url": "/storage/charts/test-chart.svg",
+            "filename": "test-chart.svg",
+            "path": "charts/test-chart.svg",
+            "size": 1024,
+            "content_type": "image/svg+xml"
+        }
+        
+        response = client.post(
+            "/api/charts/?chart_type=bar&title=Test Chart",
+            json=chart_data
+        )
+        
+        assert response.status_code == 200
+        result = response.json()
+        assert result["url"].startswith("/storage/charts/")
+        assert result["url"].endswith(".svg")
     
     def test_create_pie_chart(self, client: TestClient, mock_storage_engine):
         """Test creating a pie chart."""
@@ -44,20 +48,24 @@ class TestChartEndpoints:
             }
         }
         
-        with patch('app.services.chart_service.save_svg') as mock_save_svg:
-            mock_save_svg.return_value = {
-                "url": "http://test.com/pie.svg",
-                "filename": "pie.svg"
-            }
-            
-            response = client.post(
-                "/api/charts/?chart_type=pie",
-                json=chart_data
-            )
-            
-            assert response.status_code == 200
-            result = response.json()
-            assert result["url"] == "http://test.com/pie.svg"
+        # Mock the storage engine's store_bytes method
+        mock_storage_engine.store_bytes.return_value = {
+            "url": "/storage/charts/test-pie.svg",
+            "filename": "test-pie.svg",
+            "path": "charts/test-pie.svg", 
+            "size": 1024,
+            "content_type": "image/svg+xml"
+        }
+        
+        response = client.post(
+            "/api/charts/?chart_type=pie",
+            json=chart_data
+        )
+        
+        assert response.status_code == 200
+        result = response.json()
+        assert result["url"].startswith("/storage/charts/")
+        assert result["url"].endswith(".svg")
     
     def test_create_chart_invalid_type(self, client: TestClient):
         """Test creating chart with invalid type."""
@@ -147,7 +155,7 @@ class TestDocumentEndpoints:
         with open(sample_document_file, 'rb') as f:
             files = {"file": ("test.txt", f, "text/plain")}
             
-            with patch('app.services.documents.base.DocumentExtractor.extract') as mock_extract:
+            with patch('app.services.documents.base.DocumentExtractor.extract_text') as mock_extract:
                 mock_extract.return_value = {
                     "text": "Extracted text content",
                     "metadata": {"filename": "test.txt"}
@@ -171,27 +179,30 @@ class TestDocumentEndpoints:
 class TestImageEndpoints:
     """Test image processing API endpoints."""
     
-    def test_process_image(self, client: TestClient, mock_file_upload):
-        """Test image processing endpoint."""
-        with patch('app.services.image_service.process_image') as mock_process:
-            mock_process.return_value = {
-                "url": "http://test.com/processed.png",
-                "filename": "processed.png"
-            }
-            
-            files = {"file": ("test.jpg", b"fake image data", "image/jpeg")}
-            response = client.post(
-                "/api/images/process?format=png&width=800",
-                files=files
-            )
-            
-            assert response.status_code == 200
-            result = response.json()
-            assert result["url"] == "http://test.com/processed.png"
+    def test_process_image(self, client: TestClient, mock_storage_engine):
+        """Test image conversion endpoint."""
+        # Mock the storage engine's store_bytes method
+        mock_storage_engine.store_bytes.return_value = {
+            "url": "/storage/images/processed.png",
+            "filename": "processed.png",
+            "path": "images/processed.png",
+            "size": 2048,
+            "content_type": "image/png"
+        }
+        
+        files = {"file": ("test.jpg", b"fake image data", "image/jpeg")}
+        response = client.post(
+            "/api/images/convert?output_format=png&width=800",
+            files=files
+        )
+        
+        assert response.status_code == 200
+        result = response.json()
+        assert result["url"] == "/storage/images/processed.png"
     
     def test_process_image_no_file(self, client: TestClient):
-        """Test image processing without file."""
-        response = client.post("/api/images/process")
+        """Test image conversion without file."""
+        response = client.post("/api/images/convert")
         
         assert response.status_code == 422
 
@@ -209,20 +220,24 @@ class TestAsyncEndpoints:
             }
         }
         
-        with patch('app.services.chart_service.save_svg') as mock_save_svg:
-            mock_save_svg.return_value = {
-                "url": "http://test.com/async-chart.svg",
-                "filename": "async-chart.svg"
-            }
-            
-            response = await async_client.post(
-                "/api/charts/?chart_type=line",
-                json=chart_data
-            )
-            
-            assert response.status_code == 200
-            result = response.json()
-            assert result["url"] == "http://test.com/async-chart.svg"
+        # Mock the storage engine's store_bytes method
+        mock_storage_engine.store_bytes.return_value = {
+            "url": "/storage/charts/async-chart.svg",
+            "filename": "async-chart.svg",
+            "path": "charts/async-chart.svg",
+            "size": 1024,
+            "content_type": "image/svg+xml"
+        }
+        
+        response = await async_client.post(
+            "/api/charts/?chart_type=line",
+            json=chart_data
+        )
+        
+        assert response.status_code == 200
+        result = response.json()
+        assert result["url"].startswith("/storage/charts/")
+        assert result["url"].endswith(".svg")
     
     @pytest.mark.asyncio
     async def test_async_pdf_generation(self, async_client: AsyncClient):
@@ -255,19 +270,22 @@ class TestEndpointPerformance:
             }
         }
         
-        with patch('app.services.chart_service.save_svg') as mock_save_svg:
-            mock_save_svg.return_value = {
-                "url": "http://test.com/perf.svg",
-                "filename": "perf.svg"
-            }
-            
-            # Send multiple requests
-            for i in range(5):
-                response = client.post(
-                    f"/api/charts/?chart_type=bar&title=Performance Test {i}",
-                    json=chart_data
-                )
-                assert response.status_code == 200
+        # Mock the storage engine's store_bytes method
+        mock_storage_engine.store_bytes.return_value = {
+            "url": "/storage/charts/perf.svg",
+            "filename": "perf.svg",
+            "path": "charts/perf.svg",
+            "size": 2048,
+            "content_type": "image/svg+xml"
+        }
+        
+        # Send multiple requests
+        for i in range(5):
+            response = client.post(
+                f"/api/charts/?chart_type=bar&title=Performance Test {i}",
+                json=chart_data
+            )
+            assert response.status_code == 200
     
     def test_large_chart_data(self, client: TestClient, mock_storage_engine):
         """Test handling large chart datasets."""
@@ -278,18 +296,21 @@ class TestEndpointPerformance:
             }
         }
         
-        with patch('app.services.chart_service.save_svg') as mock_save_svg:
-            mock_save_svg.return_value = {
-                "url": "http://test.com/large.svg",
-                "filename": "large.svg"
-            }
-            
-            response = client.post(
-                "/api/charts/?chart_type=line&title=Large Dataset",
-                json=large_data
-            )
-            
-            assert response.status_code == 200
+        # Mock the storage engine's store_bytes method
+        mock_storage_engine.store_bytes.return_value = {
+            "url": "/storage/charts/large.svg",
+            "filename": "large.svg",
+            "path": "charts/large.svg",
+            "size": 10240,
+            "content_type": "image/svg+xml"
+        }
+        
+        response = client.post(
+            "/api/charts/?chart_type=line&title=Large Dataset",
+            json=large_data
+        )
+        
+        assert response.status_code == 200
 
 
 @pytest.mark.integration
