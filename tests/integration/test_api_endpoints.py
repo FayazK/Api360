@@ -135,54 +135,6 @@ class TestPdfEndpoints:
         assert response.status_code == 422
 
 
-@pytest.mark.integration
-class TestAIEndpoints:
-    """Test AI API endpoints."""
-    
-    def test_generate_product_description(self, client: TestClient, mock_anthropic_client):
-        """Test product description generation."""
-        request_data = {
-            "product_description": "Wireless headphones",
-            "image_url": "https://example.com/headphones.jpg",
-            "target_audience": "Music lovers",
-            "tone": "professional",
-            "style": "informative"
-        }
-        
-        with patch('app.services.ai.base.AIService._fetch_image') as mock_fetch_image:
-            mock_fetch_image.return_value = {
-                'data': 'base64data',
-                'mime_type': 'image/jpeg'
-            }
-            
-            response = client.post("/api/ai/product-description", json=request_data)
-            
-            assert response.status_code == 200
-            result = response.json()
-            assert "description" in result
-            assert result["description"] == "Generated product description"
-    
-    def test_generate_product_description_missing_required_fields(self, client: TestClient):
-        """Test product description generation with missing required fields."""
-        request_data = {
-            "target_audience": "Music lovers"
-        }
-        
-        response = client.post("/api/ai/product-description", json=request_data)
-        
-        assert response.status_code == 422
-    
-    def test_generate_product_description_invalid_url(self, client: TestClient):
-        """Test product description generation with invalid URL."""
-        request_data = {
-            "product_description": "Test product",
-            "image_url": "not-a-valid-url"
-        }
-        
-        response = client.post("/api/ai/product-description", json=request_data)
-        
-        assert response.status_code == 422
-
 
 @pytest.mark.integration
 class TestDocumentEndpoints:

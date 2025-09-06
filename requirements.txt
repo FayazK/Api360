@@ -56,9 +56,6 @@ fs
 python-dotenv==1.0.1
 PyYAML==6.0.2
 
-# AI Integration
-openai
-anthropic
 
 # Core Dependencies
 certifi==2024.8.30

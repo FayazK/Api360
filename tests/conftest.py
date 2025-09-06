@@ -32,8 +32,6 @@ def test_storage_dir():
 def mock_env_vars(test_storage_dir, monkeypatch):
     """Mock environment variables for testing."""
     monkeypatch.setenv("STORAGE_BASE_PATH", test_storage_dir)
-    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-anthropic-key")
     monkeypatch.setenv("SECRET_KEY", "test-secret-key")
     
     # Reload settings with test values
@@ -94,30 +92,6 @@ def sample_chart_data():
     }
 
 
-@pytest.fixture
-def mock_openai_client():
-    """Mock OpenAI client."""
-    mock_client = Mock()
-    mock_response = Mock()
-    mock_response.choices = [Mock()]
-    mock_response.choices[0].message.content = "Generated product description"
-    mock_client.chat.completions.create.return_value = mock_response
-    
-    with patch('app.services.ai.base.OpenAI', return_value=mock_client):
-        yield mock_client
-
-
-@pytest.fixture
-def mock_anthropic_client():
-    """Mock Anthropic client."""
-    mock_client = Mock()
-    mock_response = Mock()
-    mock_response.content = [Mock()]
-    mock_response.content[0].text = "Generated product description"
-    mock_client.messages.create.return_value = mock_response
-    
-    with patch('app.services.ai.base.Anthropic', return_value=mock_client):
-        yield mock_client
 
 
 @pytest.fixture

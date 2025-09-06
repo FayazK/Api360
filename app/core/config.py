@@ -36,9 +36,6 @@ class Settings(BaseSettings):
     TEMPLATES_DIR: str = "app/templates"
     TEMPLATE_CACHE_SIZE: int = 100
 
-    # AI Settings
-    OPENAI_API_KEY: str = None
-    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
 
     class Config:
         case_sensitive = True
