@@ -186,3 +186,4 @@ def get_pricing_service() -> PricingService:
     if _pricing_service is None:
         _pricing_service = PricingService()
     return _pricing_service
+
