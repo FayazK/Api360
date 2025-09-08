@@ -89,17 +89,22 @@ class OpenAIDriver(BaseAIDriver):
                 "content": request.prompt
             })
             
-            # Prepare API parameters
+            # Prepare API parameters, only include values explicitly provided
             api_params = {
                 "model": request.model or self.default_model,
                 "messages": messages,
-                "max_tokens": request.max_tokens,
-                "temperature": request.temperature,
-                "top_p": request.top_p,
-                "frequency_penalty": request.frequency_penalty,
-                "presence_penalty": request.presence_penalty,
             }
-            
+
+            if request.max_tokens is not None:
+                api_params["max_tokens"] = request.max_tokens
+            if request.temperature is not None:
+                api_params["temperature"] = request.temperature
+            if request.top_p is not None:
+                api_params["top_p"] = request.top_p
+            if request.frequency_penalty is not None:
+                api_params["frequency_penalty"] = request.frequency_penalty
+            if request.presence_penalty is not None:
+                api_params["presence_penalty"] = request.presence_penalty
             if request.stop_sequences:
                 api_params["stop"] = request.stop_sequences
             
@@ -119,6 +124,14 @@ class OpenAIDriver(BaseAIDriver):
             )
             
             # Create metadata
+            # Build parameters metadata reflecting only what was sent
+            parameters_meta: Dict[str, Any] = {
+                "model": api_params["model"],
+            }
+            for key in ("temperature", "max_tokens", "top_p", "frequency_penalty", "presence_penalty"):
+                if key in api_params:
+                    parameters_meta[key] = api_params[key]
+
             metadata = AIGenerationMetadata(
                 provider=self.provider_name,
                 model=api_params["model"],
@@ -132,14 +145,7 @@ class OpenAIDriver(BaseAIDriver):
                     cost_usd=cost
                 ),
                 finish_reason=finish_reason,
-                parameters={
-                    "model": api_params["model"],
-                    "temperature": request.temperature,
-                    "max_tokens": request.max_tokens,
-                    "top_p": request.top_p,
-                    "frequency_penalty": request.frequency_penalty,
-                    "presence_penalty": request.presence_penalty,
-                }
+                parameters=parameters_meta
             )
             
             return AITextResponse(

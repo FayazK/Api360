@@ -7,13 +7,15 @@ from app.config.ai_models import AIProvider
 class AITextRequest(BaseModel):
     prompt: str = Field(..., description="The text prompt for generation")
     system_prompt: Optional[str] = Field(None, description="System prompt for context")
-    provider: AIProvider = Field(default=AIProvider.OPENAI, description="AI provider to use")
+    # Make provider optional; service picks default if None
+    provider: Optional[AIProvider] = Field(None, description="AI provider to use (service default if not specified)")
     model: Optional[str] = Field(None, description="Specific model to use (provider default if not specified)")
-    max_tokens: Optional[int] = Field(1000, description="Maximum tokens to generate")
-    temperature: Optional[float] = Field(0.7, description="Creativity level (0.0-1.0)")
-    top_p: Optional[float] = Field(1.0, description="Nucleus sampling parameter")
-    frequency_penalty: Optional[float] = Field(0.0, description="Frequency penalty (-2.0 to 2.0)")
-    presence_penalty: Optional[float] = Field(0.0, description="Presence penalty (-2.0 to 2.0)")
+    # Keep all tunables optional so drivers can omit when not provided
+    max_tokens: Optional[int] = Field(None, description="Maximum tokens to generate")
+    temperature: Optional[float] = Field(None, description="Creativity level (0.0-2.0)")
+    top_p: Optional[float] = Field(None, description="Nucleus sampling parameter")
+    frequency_penalty: Optional[float] = Field(None, description="Frequency penalty (-2.0 to 2.0)")
+    presence_penalty: Optional[float] = Field(None, description="Presence penalty (-2.0 to 2.0)")
     stop_sequences: Optional[List[str]] = Field(None, description="Stop sequences")
     template_variables: Optional[Dict[str, Any]] = Field(None, description="Variables for prompt template")
     

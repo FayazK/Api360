@@ -4,6 +4,7 @@ from ..template_manager import TemplateManager
 
 from .base import BaseAITextGenerator
 from .drivers.openai_driver import OpenAIDriver
+from .drivers.gemini_driver import GeminiDriver
 from .schemas import AITextGenerationError
 from app.config.ai_models import get_ai_model_config, AIProvider
 
@@ -31,6 +32,16 @@ class AITextGeneratorService(BaseAITextGenerator):
                 organization=getattr(settings, 'OPENAI_ORGANIZATION', None)
             )
             self.register_driver(AIProvider.OPENAI, openai_driver)
+        
+        # Register Gemini driver if API key is available
+        if settings.GEMINI_API_KEY:
+            gemini_config = ai_config.get_provider_config(AIProvider.GEMINI)
+            if gemini_config:
+                gemini_driver = GeminiDriver(
+                    api_key=settings.GEMINI_API_KEY,
+                    config=gemini_config,
+                )
+                self.register_driver(AIProvider.GEMINI, gemini_driver)
         
         # TODO: Add other providers as they become available
         # if settings.ANTHROPIC_API_KEY:

@@ -42,19 +42,15 @@ async def generate_text(
     """
     
     try:
-        # Use configured defaults if not specified
-        provider = request.provider or AIProvider(settings.AI_DEFAULT_PROVIDER)
-        max_tokens = request.max_tokens or settings.AI_MAX_TOKENS_DEFAULT
-        temperature = request.temperature or settings.AI_TEMPERATURE_DEFAULT
-        
-        # Create internal request
+        # Create internal request with only user-provided params;
+        # service/drivers will apply required defaults.
         ai_request = AITextRequest(
             prompt=request.prompt,
             system_prompt=request.system_prompt,
-            provider=provider,
-            model=request.model or settings.AI_DEFAULT_MODEL,
-            max_tokens=max_tokens,
-            temperature=temperature,
+            provider=request.provider,
+            model=request.model,
+            max_tokens=request.max_tokens,
+            temperature=request.temperature,
             top_p=request.top_p,
             frequency_penalty=request.frequency_penalty,
             presence_penalty=request.presence_penalty,
@@ -196,15 +192,13 @@ async def validate_request(
     """
     
     try:
-        provider = request.provider or AIProvider(settings.AI_DEFAULT_PROVIDER)
-        
         ai_request = AITextRequest(
             prompt=request.prompt,
             system_prompt=request.system_prompt,
-            provider=provider,
-            model=request.model or settings.AI_DEFAULT_MODEL,
-            max_tokens=request.max_tokens or settings.AI_MAX_TOKENS_DEFAULT,
-            temperature=request.temperature or settings.AI_TEMPERATURE_DEFAULT,
+            provider=request.provider,
+            model=request.model,
+            max_tokens=request.max_tokens,
+            temperature=request.temperature,
             top_p=request.top_p,
             frequency_penalty=request.frequency_penalty,
             presence_penalty=request.presence_penalty,
@@ -214,9 +208,11 @@ async def validate_request(
         
         is_valid = await ai_service.validate_request(ai_request)
         
+        # Provider/model may be resolved by service; attempt to echo what would be used
+        resolved_provider = ai_request.provider.value if ai_request.provider else settings.AI_DEFAULT_PROVIDER
         return {
             "valid": is_valid,
-            "provider": provider.value,
+            "provider": resolved_provider,
             "model": ai_request.model,
             "message": "Request is valid" if is_valid else "Request validation failed"
         }

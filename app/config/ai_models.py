@@ -99,6 +99,7 @@ class AIModelConfig:
         """Initialize all provider configurations"""
         return {
             AIProvider.OPENAI: self._get_openai_config(),
+            AIProvider.GEMINI: self._get_gemini_config(),
             # Add other providers here as they become available
         }
     
@@ -165,6 +166,40 @@ class AIModelConfig:
             provider=AIProvider.OPENAI,
             default_model="gpt-4o-mini",
             models=models
+        )
+
+    def _get_gemini_config(self) -> ProviderConfig:
+        """Get Google Gemini provider configuration"""
+        models = {
+            "gemini-2.0-flash-001": ModelConfig(
+                name="gemini-2.0-flash-001",
+                provider=AIProvider.GEMINI,
+                pricing=ModelPricing(
+                    input_cost_per_token=0.0,
+                    output_cost_per_token=0.0,
+                ),
+                context_length=128000,
+                supports_functions=False,
+                supports_vision=True,
+            ),
+            "gemini-1.5-pro-latest": ModelConfig(
+                name="gemini-1.5-pro-latest",
+                provider=AIProvider.GEMINI,
+                pricing=ModelPricing(
+                    input_cost_per_token=0.0,
+                    output_cost_per_token=0.0,
+                ),
+                context_length=128000,
+                supports_functions=False,
+                supports_vision=True,
+            ),
+        }
+
+        return ProviderConfig(
+            name="Gemini",
+            provider=AIProvider.GEMINI,
+            default_model="gemini-2.0-flash-001",
+            models=models,
         )
     
     def get_provider_config(self, provider: AIProvider) -> Optional[ProviderConfig]:

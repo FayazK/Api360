@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cp .env.example .env
+
 # Create a virtual environment
 python3 -m venv fastenv
 

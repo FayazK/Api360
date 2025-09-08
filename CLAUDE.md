@@ -67,6 +67,7 @@ app/
   - `base.py` - BaseAITextGenerator abstract service
   - `factory.py` - AITextGeneratorFactory and service management
   - `drivers/openai_driver.py` - OpenAI API implementation
+  - `drivers/gemini_driver.py` - Google Gemini API implementation
   - `schemas.py` - Internal AI service data models
 - `image_service.py` - Image processing and format conversion
 - `template_manager.py` - Jinja2 template management for AI prompts
@@ -87,20 +88,34 @@ The application follows a layered architecture:
 The AI service implements a driver pattern for multi-provider support:
 - **BaseAITextGenerator** - Abstract service class defining the unified interface
 - **AITextGeneratorFactory** - Singleton factory managing driver registration and service instantiation
-- **Provider Drivers** - Implement BaseAIDriver interface (OpenAI complete, others planned)
+- **Provider Drivers** - Implement BaseAIDriver interface (OpenAI and Gemini available)
 - **Automatic Registration** - Drivers auto-register based on available API keys in environment
 - **Template Integration** - Built-in Jinja2 template processing for dynamic prompt generation
 - **Error Handling** - Structured error responses with provider-specific error codes
 - **Cost Management** - Automatic token counting and cost estimation per provider
 
+#### AI Service Parameter Policy
+- Required: only `prompt` is required in both API and internal requests.
+- Optional: `provider`, `model`, `max_tokens`, `temperature`, `top_p`, `frequency_penalty`, `presence_penalty`, `stop_sequences`, `system_prompt`, `template_variables` are optional.
+- Routes: pass only user-provided fields; do not inject defaults.
+- Service: resolves defaults (provider via `settings.AI_DEFAULT_PROVIDER`, model via selected driver’s `default_model`).
+- Drivers: send only explicitly provided params to SDKs/APIs; metadata reflects only sent params (plus `model`).
+
 ### Adding New AI Providers
 To add a new AI provider (e.g., Anthropic, Gemini):
 1. Create driver class extending `BaseAIDriver` in `app/services/ai/drivers/`
 2. Implement abstract methods: `provider_name`, `default_model`, `supported_models`, `generate_text`, etc.
-3. Add provider enum to `AIProvider` in `schemas.py`
+3. Add provider enum to `AIProvider` in `app/config/ai_models.py`
 4. Register driver in `AITextGeneratorService._register_available_drivers()`
 5. Add configuration variables to `app/core/config.py`
 6. Update factory validation methods
+
+### Gemini Driver
+- Location: `app/services/ai/drivers/gemini_driver.py`.
+- SDK: uses `google-genai` (`from google import genai`). See `docs/google.sdk.md`.
+- Enablement: set `GEMINI_API_KEY` (or `GOOGLE_API_KEY`). Factory registers the driver when configured.
+- Defaults: Gemini provider defaults defined in `app/config/ai_models.py` (override/add via `config/ai_models.yaml`).
+- Behavior: follows parameter policy (only sends user-provided params; lets API defaults apply). Extracts `response.text`.
 
 ### Document Processing
 - Multi-format support: PDF, DOCX, TXT, images, emails

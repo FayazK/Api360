@@ -4,7 +4,9 @@ from datetime import datetime
 import uuid
 import time
 
-from .schemas import AITextRequest, AITextResponse, AIProvider, AITextGenerationError
+from .schemas import AITextRequest, AITextResponse, AITextGenerationError
+from app.config.ai_models import AIProvider
+from app.core.config import settings
 from .drivers.base_driver import BaseAIDriver
 from ..template_manager import TemplateManager
 
@@ -72,19 +74,37 @@ class BaseAITextGenerator(ABC):
         processed_request = request.copy()
         processed_request.prompt = processed_prompt
         
+        # Resolve provider: use request provider if given, otherwise service default
+        resolved_provider: AIProvider
+        if request.provider is None:
+            try:
+                resolved_provider = AIProvider(settings.AI_DEFAULT_PROVIDER)
+            except Exception:
+                # Fallback to first available driver if default not valid
+                if not self.drivers:
+                    raise AITextGenerationError(
+                        "No AI providers are configured",
+                        "unknown"
+                    )
+                resolved_provider = next(iter(self.drivers.keys()))
+        else:
+            resolved_provider = request.provider
+
         # Get the appropriate driver
-        driver = self.get_driver(request.provider)
+        driver = self.get_driver(resolved_provider)
         
         # Validate model
         model = request.model or driver.default_model
         if not driver.validate_model(model):
             raise AITextGenerationError(
-                f"Model {model} is not supported by {request.provider.value}",
-                request.provider.value
+                f"Model {model} is not supported by {resolved_provider.value}",
+                resolved_provider.value
             )
         
         # Set the model if it wasn't specified
         processed_request.model = model
+        # Ensure provider is set on processed request for downstream use
+        processed_request.provider = resolved_provider
         
         # Generate text using the driver
         start_time = time.time()
@@ -95,7 +115,7 @@ class BaseAITextGenerator(ABC):
         except Exception as e:
             raise AITextGenerationError(
                 f"Text generation failed: {str(e)}",
-                request.provider.value
+                resolved_provider.value
             )
     
     async def _process_prompt_template(self, prompt: str, variables: Optional[Dict[str, Any]] = None) -> str:
@@ -137,10 +157,20 @@ class BaseAITextGenerator(ABC):
             if not request.prompt.strip():
                 return False
             
-            if request.provider not in self.drivers:
+            # Resolve provider as in generate_text
+            resolved_provider: AIProvider
+            if request.provider is None:
+                try:
+                    resolved_provider = AIProvider(settings.AI_DEFAULT_PROVIDER)
+                except Exception:
+                    return False
+            else:
+                resolved_provider = request.provider
+
+            if resolved_provider not in self.drivers:
                 return False
             
-            driver = self.get_driver(request.provider)
+            driver = self.get_driver(resolved_provider)
             model = request.model or driver.default_model
             
             return driver.validate_model(model)

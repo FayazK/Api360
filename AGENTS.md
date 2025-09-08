@@ -36,3 +36,17 @@
 ## Security & Configuration Tips
 - Do not commit secrets. Copy `.env.example` to `.env` locally; production uses environment variables.
 - Review `app/core/config.py` and `docs/AI_SERVICE_README.md` for provider keys and settings.
+
+## AI Service Parameter Policy
+- Required: only `prompt` is required in both API and internal service requests.
+- Optional params: `provider`, `model`, `max_tokens`, `temperature`, `top_p`, `frequency_penalty`, `presence_penalty`, `stop_sequences`, `system_prompt`, and `template_variables` are optional.
+- Route behavior: routes must not inject defaults for optional params. Pass through only user-specified fields to the service.
+- Service defaults: the service resolves defaults when needed (e.g., provider from `settings.AI_DEFAULT_PROVIDER`, model from the selected driver’s `default_model`).
+- Driver behavior: drivers must not send unset params to provider SDKs/APIs, allowing providers to apply their own defaults. Metadata should reflect only parameters actually sent, plus `model`.
+
+## Gemini Driver
+- Location: `app/services/ai/drivers/gemini_driver.py`.
+- SDK: uses `google-genai` (`from google import genai`). See docs at `docs/google.sdk.md`.
+- Configuration: enable by setting `GEMINI_API_KEY` (or `GOOGLE_API_KEY`). Registered by the factory when configured.
+- Models: defaults provided in code (`gemini-2.0-flash-001`, `gemini-1.5-pro-latest`). You can override/add via `config/ai_models.yaml`.
+- Semantics: follows the parameter policy above — only sends user-provided params; uses provider defaults otherwise; extracts `response.text`.
