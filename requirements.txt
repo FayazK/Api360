@@ -28,7 +28,7 @@ openai
 google-genai
 
 # Document Processing
-unstructured[all-docs]
+docling[all]
 python-multipart
 
 # Image Processing

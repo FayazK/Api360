@@ -41,6 +41,14 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: Optional[str] = None
     GEMINI_API_KEY: Optional[str] = None
     OPENROUTER_API_KEY: Optional[str] = None
+    # Google GenAI (alternative to GEMINI_API_KEY) and Vertex flags
+    GOOGLE_API_KEY: Optional[str] = None
+    GOOGLE_GENAI_USE_VERTEXAI: bool = False
+    GOOGLE_CLOUD_PROJECT: Optional[str] = None
+    GOOGLE_CLOUD_LOCATION: Optional[str] = None
+    
+    # Replicate SDK token
+    REPLICATE_API_TOKEN: Optional[str] = None
     
     # AI Service Configuration
     AI_DEFAULT_PROVIDER: str = "openai"
@@ -48,6 +56,10 @@ class Settings(BaseSettings):
     AI_MAX_TOKENS_DEFAULT: int = 1000
     AI_TEMPERATURE_DEFAULT: float = 0.7
     AI_REQUEST_TIMEOUT: int = 60  # seconds
+    
+    # Image generation defaults (leave empty to require explicit provider)
+    IMAGE_DEFAULT_PROVIDER: Optional[str] = None
+    IMAGE_DEFAULT_MODEL: Optional[str] = None
 
     class Config:
         case_sensitive = True

@@ -1,5 +1,5 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
-from typing import List
+from fastapi import APIRouter, UploadFile, File, HTTPException, Query
+from typing import List, Optional
 import asyncio
 from app.schemas.documents.extraction import (
     ExtractionResponse,
@@ -7,18 +7,19 @@ from app.schemas.documents.extraction import (
     SupportedFormatsResponse,
     ExtractedDocument,
 )
-from app.services.documents.unstructured_extractor import UnstructuredExtractor
+from app.services.documents.docling_extractor import DoclingExtractor
 from app.services.common.exceptions import ValidationError, ServiceError
 
 router = APIRouter()
 
 # Initialize document extractor
-document_extractor = UnstructuredExtractor()
+document_extractor = DoclingExtractor()
 
 
 @router.post("/extract", response_model=ExtractionResponse)
 async def extract_document(
     file: UploadFile = File(...),
+    use_ocr: bool = Query(False, description="Enable OCR for scanned documents"),
 ):
     """
     Extract text and metadata from a document and convert to markdown format.
@@ -31,8 +32,8 @@ async def extract_document(
         JSONResponse containing extracted text, markdown content, and enhanced metadata
     """
     try:
-        # Extract document content using unstructured library (async)
-        result = await document_extractor.extract_text(file)
+        # Extract document content using Docling library (async)
+        result = await document_extractor.extract_text(file, use_ocr=use_ocr)
 
         # Create ExtractedDocument response
         extracted_doc = ExtractedDocument(
@@ -60,6 +61,7 @@ async def extract_document(
 @router.post("/batch-extract", response_model=BatchExtractionResponse)
 async def batch_extract_documents(
     files: List[UploadFile] = File(...),
+    use_ocr: bool = Query(False, description="Enable OCR for scanned documents (applies to all files)"),
 ):
     """
     Extract text and metadata from multiple documents in parallel and convert to markdown.
@@ -74,7 +76,7 @@ async def batch_extract_documents(
     try:
         # Process documents in parallel using thread pool
         async def process_single_file(file: UploadFile):
-            return await document_extractor.extract_text(file)
+            return await document_extractor.extract_text(file, use_ocr=use_ocr)
 
         extraction_tasks = [process_single_file(file) for file in files]
         results = await asyncio.gather(*extraction_tasks, return_exceptions=True)
@@ -121,3 +123,35 @@ async def get_supported_formats() -> SupportedFormatsResponse:
     formats_info = document_extractor.get_supported_formats()
 
     return SupportedFormatsResponse(**formats_info)
+
+
+@router.post("/extract-url", response_model=ExtractionResponse)
+async def extract_document_from_url(
+    url: str = Query(..., description="Remote document URL"),
+    filename: Optional[str] = Query(None, description="Optional filename hint"),
+    use_ocr: bool = Query(False, description="Enable OCR for scanned documents"),
+):
+    """Fetch a remote document by URL and extract markdown/text using Docling."""
+    try:
+        result = await document_extractor.extract_text_from_url(url=url, filename=filename, use_ocr=use_ocr)
+
+        extracted_doc = ExtractedDocument(
+            filename=result["metadata"].get("filename") or "document",
+            mime_type=result["metadata"].get("mime_type", ""),
+            text=result["text"],
+            markdown=result["markdown"],
+            metadata=result["metadata"],
+        )
+
+        return ExtractionResponse(
+            status="success",
+            data=extracted_doc,
+            message="Remote document extracted and converted to markdown successfully",
+        )
+
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail={"error": e.error_code or "VALIDATION_ERROR", "message": e.message, "details": e.details})
+    except ServiceError as e:
+        raise HTTPException(status_code=502, detail={"error": e.error_code or "SERVICE_ERROR", "message": e.message, "details": e.details})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing remote document: {str(e)}")

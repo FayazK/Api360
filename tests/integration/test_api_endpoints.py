@@ -4,6 +4,7 @@ from httpx import AsyncClient
 from unittest.mock import patch, Mock, AsyncMock
 from app.main import app
 from app.services.ai.factory import AITextGeneratorFactory
+from app.services.common.exceptions import ValidationError, ServiceError
 
 
 @pytest.mark.integration
@@ -155,7 +156,7 @@ class TestDocumentEndpoints:
         with open(sample_document_file, 'rb') as f:
             files = {"file": ("test.txt", f, "text/plain")}
             
-            with patch('app.services.documents.unstructured_extractor.UnstructuredExtractor.extract_text') as mock_extract:
+            with patch('app.services.documents.docling_extractor.DoclingExtractor.extract_text') as mock_extract:
                 mock_extract.return_value = {
                     "text": "Extracted text content",
                     "markdown": "Extracted text content",
@@ -168,6 +169,87 @@ class TestDocumentEndpoints:
                 result = response.json()
                 assert result.get("status")
                 assert result.get("data", {}).get("markdown")
+
+    def test_extract_document_with_ocr_true(self, client: TestClient, sample_document_file):
+        """Ensure use_ocr=true is passed to the service layer."""
+        with open(sample_document_file, 'rb') as f:
+            files = {"file": ("test.txt", f, "text/plain")}
+            with patch('app.services.documents.docling_extractor.DoclingExtractor.extract_text', new_callable=AsyncMock) as mock_extract:
+                mock_extract.return_value = {
+                    "text": "T",
+                    "markdown": "M",
+                    "metadata": {"filename": "test.txt", "mime_type": "text/plain"}
+                }
+                resp = client.post("/api/documents/extract?use_ocr=true", files=files)
+                assert resp.status_code == 200
+                # Verify the service received the OCR flag
+                assert mock_extract.call_args.kwargs.get("use_ocr") is True
+
+    def test_extract_document_with_ocr_default_false(self, client: TestClient, sample_document_file):
+        """Ensure use_ocr defaults to false when not provided."""
+        with open(sample_document_file, 'rb') as f:
+            files = {"file": ("test.txt", f, "text/plain")}
+            with patch('app.services.documents.docling_extractor.DoclingExtractor.extract_text', new_callable=AsyncMock) as mock_extract:
+                mock_extract.return_value = {
+                    "text": "T",
+                    "markdown": "M",
+                    "metadata": {"filename": "test.txt", "mime_type": "text/plain"}
+                }
+                resp = client.post("/api/documents/extract", files=files)
+                assert resp.status_code == 200
+                assert mock_extract.call_args.kwargs.get("use_ocr") is False
+
+    def test_extract_url_success(self, client: TestClient):
+        """Test extracting a remote document via URL endpoint."""
+        with patch('app.services.documents.docling_extractor.DoclingExtractor.extract_text_from_url', new_callable=AsyncMock) as mock_extract_url:
+            mock_extract_url.return_value = {
+                "text": "Remote text",
+                "markdown": "Remote markdown",
+                "metadata": {"filename": "remote.pdf", "mime_type": "application/pdf", "source_url": "https://example.com/remote.pdf"}
+            }
+            resp = client.post("/api/documents/extract-url?url=https://example.com/remote.pdf&use_ocr=true")
+            assert resp.status_code == 200
+            data = resp.json()
+            assert data.get("status") == "success"
+            assert mock_extract_url.call_args.kwargs.get("use_ocr") is True
+
+    def test_extract_url_validation_error(self, client: TestClient):
+        """Test URL validation error surfaces as 400."""
+        with patch('app.services.documents.docling_extractor.DoclingExtractor.extract_text_from_url', new_callable=AsyncMock) as mock_extract_url:
+            mock_extract_url.side_effect = ValidationError("Unsupported content-type", field="content_type", value="application/zip")
+            resp = client.post("/api/documents/extract-url?url=https://example.com/bad.zip")
+            assert resp.status_code == 400
+
+    def test_extract_url_service_error(self, client: TestClient):
+        """Test remote fetch/service error surfaces as 502."""
+        with patch('app.services.documents.docling_extractor.DoclingExtractor.extract_text_from_url', new_callable=AsyncMock) as mock_extract_url:
+            mock_extract_url.side_effect = ServiceError("Failed to fetch URL", error_code="REMOTE_FETCH_FAILED")
+            resp = client.post("/api/documents/extract-url?url=https://example.com/404.pdf")
+            assert resp.status_code == 502
+
+    def test_extract_url_missing_param(self, client: TestClient):
+        """Test missing URL param yields 422 validation error."""
+        resp = client.post("/api/documents/extract-url")
+        assert resp.status_code == 422
+
+    def test_batch_extract_with_ocr_true(self, client: TestClient, sample_document_file):
+        """Ensure OCR flag propagates to each batch extraction call."""
+        with open(sample_document_file, 'rb') as f1, open(sample_document_file, 'rb') as f2:
+            files = [
+                ("files", ("t1.txt", f1, "text/plain")),
+                ("files", ("t2.txt", f2, "text/plain")),
+            ]
+            with patch('app.services.documents.docling_extractor.DoclingExtractor.extract_text', new_callable=AsyncMock) as mock_extract:
+                mock_extract.return_value = {
+                    "text": "T",
+                    "markdown": "M",
+                    "metadata": {"filename": "t.txt", "mime_type": "text/plain"}
+                }
+                resp = client.post("/api/documents/batch-extract?use_ocr=true", files=files)
+                assert resp.status_code == 200
+                assert mock_extract.call_count == 2
+                for call in mock_extract.call_args_list:
+                    assert call.kwargs.get("use_ocr") is True
     
     def test_extract_document_no_file(self, client: TestClient):
         """Test document extraction without file."""
