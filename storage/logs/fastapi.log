@@ -22,3 +22,29 @@
 2025-09-10 09:35:25.315 | INFO     | logging:callHandlers:1762 | AFC remote call 1 is done.
 2025-09-10 09:35:25.315 | DEBUG    | app.services.ai.drivers.gemini_driver:generate_text:107 | Gemini raw response (model=gemini-2.0-flash-001, request_id=9af5739d-d213-45b4-bc6d-9f972f5c09c2): "sdk_http_response=HttpResponse(\n  headers=<dict len=11>\n) candidates=[Candidate(\n  avg_logprobs=-0.49188995361328125,\n  content=Content(\n    parts=[\n      Part(\n        text=\"\"\"Why did the AI cross the road?\n\nBecause its training data showed a high probability of crossing the road when presented with the stimulus of being on one side of the road and desiring to be on the other.\n\n... Or maybe it just wanted to get to the other side. I'm still learning humor.\n\"\"\"\n      ),\n    ],\n    role='model'\n  ),\n  finish_reason=<FinishReason.STOP: 'STOP'>\n)] create_time=None model_version='gemini-2.0-flash-001' prompt_feedback=None response_id='DADBaNb-FoWpqtsPi8O4CQ' usage_metadata=GenerateContentResponseUsageMetadata(\n  candidates_token_count=64,\n  candidates_tokens_details=[\n    ModalityTokenCount(\n      modality=<MediaModality.TEXT: 'TEXT'>,\n      token_count=64\n    ),\n  ],\n  prompt_token_count=6,\n  prompt_tokens_details=[\n    ModalityTokenCount(\n      modality=<MediaModality.TEXT: 'TEXT'>,\n      token_count=6\n    ),\n  ],\n  total_token_count=70\n) automatic_function_calling_history=[] parsed=None"
 2025-09-10 09:35:25.316 | INFO     | logging:callHandlers:1762 | 127.0.0.1:34494 - "POST /api/ai/generate HTTP/1.1" 200
+2025-09-10 09:37:40.470 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47838 - "POST /api/ai/providers HTTP/1.1" 405
+2025-09-10 09:37:43.152 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47838 - "POST /api/ai/providers HTTP/1.1" 405
+2025-09-10 09:37:48.987 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-10 09:37:51.330 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-10 09:37:51.773 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-10 09:37:51.777 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47838 - "GET /api/ai/providers HTTP/1.1" 200
+2025-09-10 09:38:12.712 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-10 09:38:14.796 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-10 09:38:15.234 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-10 09:38:15.237 | INFO     | logging:callHandlers:1762 | 127.0.0.1:37136 - "GET /api/ai/providers HTTP/1.1" 200
+2025-09-10 09:47:14.509 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-10 09:47:16.111 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-10 09:47:16.539 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-10 09:47:16.548 | INFO     | logging:callHandlers:1762 | 127.0.0.1:38818 - "GET /api/ai/providers HTTP/1.1" 200
+2025-09-10 09:54:45.490 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-10 09:54:47.857 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-10 09:54:48.322 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-10 09:54:48.327 | INFO     | logging:callHandlers:1762 | 127.0.0.1:35376 - "GET /api/ai/health HTTP/1.1" 200
+2025-09-10 09:54:56.854 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-10 09:54:59.035 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-10 09:54:59.483 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-10 09:54:59.488 | INFO     | logging:callHandlers:1762 | 127.0.0.1:58730 - "GET /api/ai/providers HTTP/1.1" 200
+2025-09-10 09:55:26.798 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-10 09:55:28.904 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-10 09:55:29.360 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-10 09:55:29.361 | INFO     | logging:callHandlers:1762 | 127.0.0.1:52648 - "GET /api/ai/health HTTP/1.1" 200
