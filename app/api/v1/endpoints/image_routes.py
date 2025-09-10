@@ -124,21 +124,21 @@ async def generate_ai_image(
 
         result = engine.generate(req)
 
-    return ImageGenerationAPIResponse(
-        provider=result.provider,
-        model=result.model,
-        images=[
-            ImageGenImage(
-                b64_data=img.b64_data,
-                mime_type=img.mime_type,
-                url=img.url,
-                path=img.path,
-                metadata=img.metadata,
-            )
-            for img in result.images
-        ],
-        metadata=result.metadata,
-    )
+        return ImageGenerationAPIResponse(
+            provider=result.provider,
+            model=result.model,
+            images=[
+                ImageGenImage(
+                    b64_data=img.b64_data,
+                    mime_type=img.mime_type,
+                    url=img.url,
+                    path=img.path,
+                    metadata=img.metadata,
+                )
+                for img in result.images
+            ],
+            metadata=result.metadata,
+        )
     except HTTPException:
         raise
     except Exception as e:

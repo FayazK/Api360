@@ -3,7 +3,8 @@ from datetime import datetime
 from fastapi import UploadFile
 
 try:
-    from docling.pipeline import Pipeline, PipelineConfig
+    from docling.document_converter import DocumentConverter
+    from docling.datamodel.base_models import InputFormat
 except ImportError:
     raise ImportError("docling library is required. Install with: pip install docling")
 
@@ -76,23 +77,16 @@ class DoclingExtractor:
             # Use filename hint for better parsing
             filename = file.filename or f"document.{self.SUPPORTED_MIMETYPES[mime_type]}"
 
-            # Configure Docling pipeline
-            config = PipelineConfig(
-                use_ocr=bool(use_ocr),
-                extract_tables=True,
-                extract_math=True,
-                extract_images=True,
-                extract_metadata=True,
-                output_format="markdown",
-            )
-            pipe = Pipeline(config)
+            # Configure Docling document converter
+            converter = DocumentConverter()
 
-            # Build Docling document from bytes
-            doc = pipe.from_bytes(content, filename=filename)
+            # Convert document from bytes
+            result = converter.convert_single_document(content, filename=filename)
 
             # Extract outputs
-            markdown_content = doc.to_markdown()
-            text_content = doc.to_text()
+            doc = result.document
+            markdown_content = doc.export_to_markdown()
+            text_content = doc.export_to_text()
 
             # Basic metadata (Docling exposes more via doc.metadata; keep schema stable)
             metadata: Dict[str, Any] = {
@@ -200,20 +194,13 @@ class DoclingExtractor:
                     value=mime_type,
                 )
 
-            # Configure pipeline (OCR optional)
-            config = PipelineConfig(
-                use_ocr=bool(use_ocr),
-                extract_tables=True,
-                extract_math=True,
-                extract_images=True,
-                extract_metadata=True,
-                output_format="markdown",
-            )
-            pipe = Pipeline(config)
-            doc = pipe.from_bytes(content, filename=resolved_filename)
+            # Configure document converter
+            converter = DocumentConverter()
+            result = converter.convert_single_document(content, filename=resolved_filename)
 
-            markdown_content = doc.to_markdown()
-            text_content = doc.to_text()
+            doc = result.document
+            markdown_content = doc.export_to_markdown()
+            text_content = doc.export_to_text()
 
             metadata: Dict[str, Any] = {
                 "filename": resolved_filename,

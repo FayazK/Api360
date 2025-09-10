@@ -10,11 +10,22 @@ import asyncio
 import logging
 from enum import Enum
 
-from fs import open_fs
-from fs.base import FS
-from fs.osfs import OSFS
-from fs.memoryfs import MemoryFS
-from fs.errors import FSError
+FS_IMPORT_ERROR = None
+try:
+    from fs import open_fs
+    from fs.base import FS
+    from fs.osfs import OSFS
+    from fs.memoryfs import MemoryFS
+    from fs.errors import FSError
+except ModuleNotFoundError as e:
+    # Defer failure until initialization, to give a clear message
+    FS_IMPORT_ERROR = e
+    open_fs = None  # type: ignore
+    FS = object  # type: ignore
+    OSFS = None  # type: ignore
+    MemoryFS = None  # type: ignore
+    class FSError(Exception):  # type: ignore
+        pass
 from fastapi import HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
@@ -406,6 +417,10 @@ storage_engine: Optional[StorageEngine] = None
 def get_storage_engine() -> StorageEngine:
     """Get the global storage engine instance."""
     global storage_engine
+    if FS_IMPORT_ERROR is not None:
+        raise RuntimeError(
+            "PyFilesystem2 dependencies are missing. Install with: pip install fs six (recommended six==1.16.0)."
+        ) from FS_IMPORT_ERROR
     if storage_engine is None:
         from app.core.config import settings
         storage_engine = StorageEngine(
@@ -419,6 +434,10 @@ def get_storage_engine() -> StorageEngine:
 def init_storage_engine(config_settings) -> StorageEngine:
     """Initialize storage engine with configuration."""
     global storage_engine
+    if FS_IMPORT_ERROR is not None:
+        raise RuntimeError(
+            "PyFilesystem2 dependencies are missing. Install with: pip install fs six (recommended six==1.16.0)."
+        ) from FS_IMPORT_ERROR
     storage_engine = StorageEngine(
         base_path=config_settings.STORAGE_BASE_PATH,
         temp_cleanup_hours=config_settings.TEMP_FILE_CLEANUP_HOURS, 

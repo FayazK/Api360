@@ -86,8 +86,7 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(image_router, prefix="/api/images", tags=["images"])
     app.include_router(ai_router, prefix="/api/ai", tags=["ai"])
 
-    # Static/public mounts
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    # Public storage mount
     app.mount("/storage", StaticFiles(directory="storage/public"), name="storage")
 
     @app.get("/api/storage/stats")
