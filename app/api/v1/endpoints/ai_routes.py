@@ -42,6 +42,16 @@ async def generate_text(
     """
     
     try:
+        # If provider explicitly requested, ensure it is configured
+        if request.provider is not None:
+            prov = request.provider.value if hasattr(request.provider, "value") else str(request.provider)
+            if not AITextGeneratorFactory.validate_provider_configuration(prov):
+                raise HTTPException(status_code=400, detail={
+                "message": f"Provider '{prov}' is not configured.",
+                "provider": prov,
+                "error_code": None,
+            })
+
         # Create internal request with only user-provided params;
         # service/drivers will apply required defaults.
         ai_request = AITextRequest(

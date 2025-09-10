@@ -26,6 +26,9 @@ class AITextGeneratorService(BaseAITextGenerator):
         # Register OpenAI driver if API key is available
         if settings.OPENAI_API_KEY:
             openai_config = ai_config.get_provider_config(AIProvider.OPENAI)
+            # Fallback to built-in defaults if YAML omitted provider
+            if not openai_config and hasattr(ai_config, "_get_openai_config"):
+                openai_config = ai_config._get_openai_config()
             openai_driver = OpenAIDriver(
                 api_key=settings.OPENAI_API_KEY,
                 config=openai_config,
@@ -33,12 +36,16 @@ class AITextGeneratorService(BaseAITextGenerator):
             )
             self.register_driver(AIProvider.OPENAI, openai_driver)
         
-        # Register Gemini driver if API key is available
-        if settings.GEMINI_API_KEY:
+        # Register Gemini driver if API key is available (support GOOGLE_API_KEY alias)
+        gemini_key = settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY
+        if gemini_key:
             gemini_config = ai_config.get_provider_config(AIProvider.GEMINI)
+            # Fallback to built-in defaults if YAML omitted provider
+            if not gemini_config and hasattr(ai_config, "_get_gemini_config"):
+                gemini_config = ai_config._get_gemini_config()
             if gemini_config:
                 gemini_driver = GeminiDriver(
-                    api_key=settings.GEMINI_API_KEY,
+                    api_key=gemini_key,
                     config=gemini_config,
                 )
                 self.register_driver(AIProvider.GEMINI, gemini_driver)
@@ -109,7 +116,7 @@ class AITextGeneratorFactory:
         return bool(
             settings.OPENAI_API_KEY or 
             settings.ANTHROPIC_API_KEY or 
-            settings.GEMINI_API_KEY or
+            settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY or
             settings.OPENROUTER_API_KEY
         )
     
@@ -124,7 +131,7 @@ class AITextGeneratorFactory:
         if settings.ANTHROPIC_API_KEY:
             providers.append(AIProvider.ANTHROPIC.value)
         
-        if settings.GEMINI_API_KEY:
+        if settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY:
             providers.append(AIProvider.GEMINI.value)
             
         if settings.OPENROUTER_API_KEY:
@@ -138,7 +145,7 @@ class AITextGeneratorFactory:
         provider_key_mapping = {
             AIProvider.OPENAI.value: settings.OPENAI_API_KEY,
             AIProvider.ANTHROPIC.value: settings.ANTHROPIC_API_KEY,
-            AIProvider.GEMINI.value: settings.GEMINI_API_KEY,
+            AIProvider.GEMINI.value: settings.GEMINI_API_KEY or settings.GOOGLE_API_KEY,
             AIProvider.OPENROUTER.value: settings.OPENROUTER_API_KEY,
         }
         

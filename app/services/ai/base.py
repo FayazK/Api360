@@ -84,11 +84,22 @@ class BaseAITextGenerator(ABC):
                 if not self.drivers:
                     raise AITextGenerationError(
                         "No AI providers are configured",
-                        "unknown"
+                        "unknown",
                     )
                 resolved_provider = next(iter(self.drivers.keys()))
         else:
-            resolved_provider = request.provider
+            # Coerce provider to enum if a plain string was provided
+            try:
+                resolved_provider = (
+                    request.provider
+                    if isinstance(request.provider, AIProvider)
+                    else AIProvider(str(request.provider))
+                )
+            except Exception:
+                raise AITextGenerationError(
+                    f"Invalid provider: {request.provider}",
+                    str(request.provider),
+                )
 
         # Get the appropriate driver
         driver = self.get_driver(resolved_provider)
@@ -165,7 +176,14 @@ class BaseAITextGenerator(ABC):
                 except Exception:
                     return False
             else:
-                resolved_provider = request.provider
+                try:
+                    resolved_provider = (
+                        request.provider
+                        if isinstance(request.provider, AIProvider)
+                        else AIProvider(str(request.provider))
+                    )
+                except Exception:
+                    return False
 
             if resolved_provider not in self.drivers:
                 return False

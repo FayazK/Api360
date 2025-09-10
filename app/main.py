@@ -2,8 +2,9 @@ import asyncio
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
 from app.api.v1.endpoints import (
@@ -17,22 +18,18 @@ from app.core.config import Settings, settings
 from app.core.storage_engine import init_storage_engine, get_storage_engine
 from app.core.middleware import UploadSizeLimitMiddleware
 from app.services.ai.factory import AITextGeneratorFactory
+from app.core.logging_config import setup_logging
+from loguru import logger as loguru_logger
 
 
 logger = logging.getLogger("app")
 
 
-def _configure_logging():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
-    )
-
-
 def _lifespan_factory(app_settings: Settings):
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        _configure_logging()
+        # Initialize Loguru logging: storage/logs/fastapi.log
+        setup_logging(app_settings.STORAGE_BASE_PATH)
         # Startup: Initialize storage engine
         init_storage_engine(app_settings)
 
@@ -65,7 +62,7 @@ def _lifespan_factory(app_settings: Settings):
 
 def create_app(app_settings: Settings | None = None) -> FastAPI:
     s = app_settings or settings
-    app = FastAPI(title=s.PROJECT_NAME, lifespan=_lifespan_factory(s))
+    app = FastAPI(title=s.PROJECT_NAME, lifespan=_lifespan_factory(s), debug=True)
 
     # CORS middleware
     app.add_middleware(
@@ -99,6 +96,27 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
         storage = get_storage_engine()
         background_tasks.add_task(storage.async_cleanup_temp_files)
         return {"message": "Cleanup task started"}
+    
+    # Register global exception handlers
+    async def unhandled_exception_handler(request: Request, exc: Exception):
+        loguru_logger.exception(f"Unhandled exception for {request.method} {request.url}")
+        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+
+    app.add_exception_handler(Exception, unhandled_exception_handler)
+
+    # Log HTTPExceptions as well (to capture 4xx/5xx raised intentionally)
+    from fastapi import HTTPException
+
+    async def http_exception_handler(request: Request, exc: HTTPException):
+        # Use warning for 4xx, error for 5xx
+        if 500 <= exc.status_code:
+            loguru_logger.error(f"HTTP {exc.status_code} on {request.method} {request.url}: {exc.detail}")
+        else:
+            loguru_logger.warning(f"HTTP {exc.status_code} on {request.method} {request.url}: {exc.detail}")
+        # Defer to default JSON structure
+        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+    app.add_exception_handler(HTTPException, http_exception_handler)
 
     return app
 

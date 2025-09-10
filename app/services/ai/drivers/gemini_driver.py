@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import Dict, Any, List, Optional
+import json
 import asyncio
 
 try:
@@ -18,6 +19,7 @@ from ..schemas import (
     AITextGenerationError,
 )
 from app.config.ai_models import ProviderConfig, AIProvider, get_ai_model_config
+from loguru import logger
 
 
 class GeminiDriver(BaseAIDriver):
@@ -89,6 +91,26 @@ class GeminiDriver(BaseAIDriver):
                 lambda: self._client.models.generate_content(**api_params)
             )
 
+            # Log raw provider response for debugging (tokens/cost extraction)
+            def _safe_dump(obj: Any) -> str:
+                try:
+                    # google-genai objects may have to_dict()
+                    if hasattr(obj, "to_dict"):
+                        return json.dumps(obj.to_dict(), default=str)
+                    return json.dumps(obj, default=str)
+                except Exception:
+                    try:
+                        return str(obj)
+                    except Exception:
+                        return "<unserializable>"
+
+            logger.debug(
+                "Gemini raw response (model={}, request_id={}): {}",
+                api_params.get("model"),
+                request_id,
+                _safe_dump(response),
+            )
+
             # Extract response text
             text = getattr(response, "text", None)
             if text is None:
@@ -106,10 +128,30 @@ class GeminiDriver(BaseAIDriver):
             if text is None:
                 text = ""
 
-            # Usage metrics may not be provided; default to zeros
+            # Usage metrics (if available)
             prompt_tokens = 0
             completion_tokens = 0
             total_tokens = 0
+            try:
+                usage = getattr(response, "usage_metadata", None)
+                if usage is not None:
+                    prompt_tokens = int(getattr(usage, "prompt_token_count", 0) or 0)
+                    completion_tokens = int(getattr(usage, "candidates_token_count", 0) or 0)
+                    total_tokens = int(getattr(usage, "total_token_count", prompt_tokens + completion_tokens) or (prompt_tokens + completion_tokens))
+            except Exception:
+                pass
+
+            # Finish reason (if available)
+            finish_reason = "stop"
+            try:
+                candidates = getattr(response, "candidates", [])
+                if candidates:
+                    fr = getattr(candidates[0], "finish_reason", None)
+                    if fr is not None:
+                        finish_reason = getattr(fr, "value", None) or getattr(fr, "name", None) or str(fr)
+                        finish_reason = str(finish_reason).lower()
+            except Exception:
+                pass
 
             # Build metadata; parameters only include what was actually sent
             parameters_meta: Dict[str, Any] = {"model": api_params["model"]}
@@ -126,13 +168,18 @@ class GeminiDriver(BaseAIDriver):
                     total_tokens=total_tokens,
                     cost_usd=self.calculate_cost(api_params["model"], prompt_tokens, completion_tokens),
                 ),
-                finish_reason="stop",
+                finish_reason=finish_reason,
                 parameters=parameters_meta,
             )
 
             return AITextResponse(text=text, metadata=metadata, success=True)
 
         except Exception as e:
+            # Log raw error for debugging
+            try:
+                logger.exception("Gemini API error for model {}: {}", request.model or self.default_model, str(e))
+            except Exception:
+                pass
             raise AITextGenerationError(
                 f"Gemini API error: {str(e)}",
                 self.provider_name,
@@ -162,4 +209,3 @@ class GeminiDriver(BaseAIDriver):
             return True
         except Exception:
             return False
-

@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import Dict, Any, List, Optional
+import json
 import time
 
 try:
@@ -11,6 +12,7 @@ except ImportError:
 from .base_driver import BaseAIDriver
 from ..schemas import AITextRequest, AITextResponse, AIGenerationMetadata, AIUsageMetadata, AITextGenerationError
 from app.config.ai_models import ProviderConfig, AIProvider, get_ai_model_config
+from loguru import logger
 
 
 class OpenAIDriver(BaseAIDriver):
@@ -110,6 +112,28 @@ class OpenAIDriver(BaseAIDriver):
             
             # Make API call
             completion = await self._client.chat.completions.create(**api_params)
+
+            # Log raw provider response for debugging (tokens/cost extraction)
+            def _safe_dump(obj: Any) -> str:
+                try:
+                    # OpenAI SDK objects are pydantic models
+                    if hasattr(obj, "model_dump_json"):
+                        return obj.model_dump_json()
+                    if hasattr(obj, "model_dump"):
+                        return json.dumps(obj.model_dump(), default=str)
+                    return json.dumps(obj, default=str)
+                except Exception:
+                    try:
+                        return str(obj)
+                    except Exception:
+                        return "<unserializable>"
+
+            logger.debug(
+                "OpenAI raw response (model={}, request_id={}): {}",
+                api_params.get("model"),
+                request_id,
+                _safe_dump(completion),
+            )
             
             # Extract response data
             message = completion.choices[0].message
@@ -165,6 +189,12 @@ class OpenAIDriver(BaseAIDriver):
                 except:
                     pass
             
+            # Log raw error for debugging
+            try:
+                logger.exception("OpenAI API error for model {}: {}", api_params.get("model"), error_message)
+            except Exception:
+                pass
+
             raise AITextGenerationError(
                 f"OpenAI API error: {error_message}",
                 self.provider_name,
