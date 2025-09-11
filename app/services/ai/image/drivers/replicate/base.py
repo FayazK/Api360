@@ -75,14 +75,21 @@ class BaseReplicateDriver(ImageDriver, ABC):
         mapped_params = self.map_parameters(request)
         self.validate_parameters(mapped_params)
         
-        # Prepare API payload
-        model_ref = self.model_id
-        if self.model_version:
-            model_ref = f"{self.model_id}:{self.model_version}"
-        
+        # Prepare API payload. Replicate requires a concrete model version ID.
+        # If a subclass doesn't pin a version, resolve the latest/default version
+        # dynamically via the Models API.
+        version_id = self.model_version or self._resolve_model_version()
+
+        if not version_id:
+            raise RuntimeError(
+                f"Unable to resolve Replicate model version for '{self.model_id}'."
+            )
+
+        model_ref = f"{self.model_id}:{version_id}"
+
         prediction_data = {
-            "version": self.model_version or "latest",
-            "input": mapped_params
+            "version": version_id,
+            "input": mapped_params,
         }
         
         # Create prediction
@@ -114,6 +121,44 @@ class BaseReplicateDriver(ImageDriver, ABC):
             images=images,
             metadata=metadata,
         )
+
+    def _resolve_model_version(self) -> Optional[str]:
+        """Resolve a usable model version ID for the configured model.
+
+        Tries the model details endpoint first to find a latest/default version,
+        then falls back to listing versions. Returns None if no version can be
+        determined.
+        """
+        # Try model details for latest/default version id
+        try:
+            resp = self._client.get(f"/models/{self.model_id}")
+            if resp.status_code == 200:
+                data = resp.json() or {}
+                latest = data.get("latest_version") or data.get("default_version") or {}
+                if isinstance(latest, dict):
+                    vid = latest.get("id")
+                    if vid:
+                        return vid
+        except Exception:
+            # Don't fail here; attempt fallback below
+            pass
+
+        # Fallback: list versions and pick the first result
+        try:
+            resp = self._client.get(f"/models/{self.model_id}/versions")
+            if resp.status_code == 200:
+                data = resp.json() or {}
+                versions = data.get("results") or data.get("versions") or []
+                if versions and isinstance(versions, list):
+                    first = versions[0]
+                    if isinstance(first, dict):
+                        vid = first.get("id")
+                        if vid:
+                            return vid
+        except Exception:
+            pass
+
+        return None
     
     def _wait_for_completion(self, prediction_id: str) -> Dict[str, Any]:
         """Poll prediction until completion."""

@@ -455,6 +455,21 @@ async def generate_ai_image_multipart(
             extra=parsed_extra,
         )
 
+        # Replicate-specific parameter validation (mirror JSON endpoint)
+        if provider == "replicate":
+            try:
+                # Determine model and get driver class
+                model_id = model or "bytedance/seedream-4"
+                driver_class = ReplicateModelRegistry.get_driver_class(model_id)
+                if driver_class:
+                    driver = driver_class()
+                    mapped_params = driver.map_parameters(req)
+                    driver.validate_parameters(mapped_params)
+            except ValueError as e:
+                raise HTTPException(status_code=400, detail=f"Replicate validation error: {str(e)}")
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Replicate validation failed: {str(e)}")
+
         result = engine.generate(req)
 
         # Persist output images to public storage and include local URL
