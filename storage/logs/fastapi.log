@@ -1,50 +1,394 @@
-2025-09-10 09:31:15.485 | INFO     | logging:callHandlers:1762 | AFC is enabled with max remote calls: 10.
-2025-09-10 09:31:18.241 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent "HTTP/1.1 200 OK"
-2025-09-10 09:31:18.242 | INFO     | logging:callHandlers:1762 | AFC remote call 1 is done.
-2025-09-10 09:31:18.242 | DEBUG    | app.services.ai.drivers.gemini_driver:generate_text:107 | Gemini raw response (model=gemini-2.0-flash-001, request_id=26edfdfd-781b-4d07-845b-78b35b8932fe): "sdk_http_response=HttpResponse(\n  headers=<dict len=11>\n) candidates=[Candidate(\n  avg_logprobs=-0.7829464039904006,\n  content=Content(\n    parts=[\n      Part(\n        text=\"\"\"Why did the AI cross the road?\n\nBecause it analyzed traffic patterns and determined that crossing at that precise moment would optimize its route to achieve its objective, while minimizing potential risks, and also, because a chicken told it to.\n\"\"\"\n      ),\n    ],\n    role='model'\n  ),\n  finish_reason=<FinishReason.STOP: 'STOP'>\n)] create_time=None model_version='gemini-2.0-flash-001' prompt_feedback=None response_id='Ff_AaLmZGMywqtsPsb_l2A4' usage_metadata=GenerateContentResponseUsageMetadata(\n  candidates_token_count=47,\n  candidates_tokens_details=[\n    ModalityTokenCount(\n      modality=<MediaModality.TEXT: 'TEXT'>,\n      token_count=47\n    ),\n  ],\n  prompt_token_count=6,\n  prompt_tokens_details=[\n    ModalityTokenCount(\n      modality=<MediaModality.TEXT: 'TEXT'>,\n      token_count=6\n    ),\n  ],\n  total_token_count=53\n) automatic_function_calling_history=[] parsed=None"
-2025-09-10 09:31:18.242 | INFO     | logging:callHandlers:1762 | 127.0.0.1:36014 - "POST /api/ai/generate HTTP/1.1" 200
-2025-09-10 09:34:20.693 | INFO     | logging:callHandlers:1762 | Shutting down
-2025-09-10 09:34:20.792 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
-2025-09-10 09:34:20.792 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
-2025-09-10 09:34:25.006 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
-2025-09-10 09:34:27.164 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:34:28.681 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:34:29.056 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:34:29.058 | INFO     | logging:callHandlers:1762 | Application startup complete.
-2025-09-10 09:35:14.649 | INFO     | logging:callHandlers:1762 | Shutting down
-2025-09-10 09:35:19.351 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
-2025-09-10 09:35:20.601 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:35:22.760 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:35:23.212 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:35:23.215 | INFO     | logging:callHandlers:1762 | Application startup complete.
-2025-09-10 09:35:24.008 | INFO     | logging:callHandlers:1762 | AFC is enabled with max remote calls: 10.
-2025-09-10 09:35:25.312 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent "HTTP/1.1 200 OK"
-2025-09-10 09:35:25.315 | INFO     | logging:callHandlers:1762 | AFC remote call 1 is done.
-2025-09-10 09:35:25.315 | DEBUG    | app.services.ai.drivers.gemini_driver:generate_text:107 | Gemini raw response (model=gemini-2.0-flash-001, request_id=9af5739d-d213-45b4-bc6d-9f972f5c09c2): "sdk_http_response=HttpResponse(\n  headers=<dict len=11>\n) candidates=[Candidate(\n  avg_logprobs=-0.49188995361328125,\n  content=Content(\n    parts=[\n      Part(\n        text=\"\"\"Why did the AI cross the road?\n\nBecause its training data showed a high probability of crossing the road when presented with the stimulus of being on one side of the road and desiring to be on the other.\n\n... Or maybe it just wanted to get to the other side. I'm still learning humor.\n\"\"\"\n      ),\n    ],\n    role='model'\n  ),\n  finish_reason=<FinishReason.STOP: 'STOP'>\n)] create_time=None model_version='gemini-2.0-flash-001' prompt_feedback=None response_id='DADBaNb-FoWpqtsPi8O4CQ' usage_metadata=GenerateContentResponseUsageMetadata(\n  candidates_token_count=64,\n  candidates_tokens_details=[\n    ModalityTokenCount(\n      modality=<MediaModality.TEXT: 'TEXT'>,\n      token_count=64\n    ),\n  ],\n  prompt_token_count=6,\n  prompt_tokens_details=[\n    ModalityTokenCount(\n      modality=<MediaModality.TEXT: 'TEXT'>,\n      token_count=6\n    ),\n  ],\n  total_token_count=70\n) automatic_function_calling_history=[] parsed=None"
-2025-09-10 09:35:25.316 | INFO     | logging:callHandlers:1762 | 127.0.0.1:34494 - "POST /api/ai/generate HTTP/1.1" 200
-2025-09-10 09:37:40.470 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47838 - "POST /api/ai/providers HTTP/1.1" 405
-2025-09-10 09:37:43.152 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47838 - "POST /api/ai/providers HTTP/1.1" 405
-2025-09-10 09:37:48.987 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:37:51.330 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:37:51.773 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:37:51.777 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47838 - "GET /api/ai/providers HTTP/1.1" 200
-2025-09-10 09:38:12.712 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:38:14.796 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:38:15.234 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:38:15.237 | INFO     | logging:callHandlers:1762 | 127.0.0.1:37136 - "GET /api/ai/providers HTTP/1.1" 200
-2025-09-10 09:47:14.509 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:47:16.111 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:47:16.539 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:47:16.548 | INFO     | logging:callHandlers:1762 | 127.0.0.1:38818 - "GET /api/ai/providers HTTP/1.1" 200
-2025-09-10 09:54:45.490 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:54:47.857 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:54:48.322 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:54:48.327 | INFO     | logging:callHandlers:1762 | 127.0.0.1:35376 - "GET /api/ai/health HTTP/1.1" 200
-2025-09-10 09:54:56.854 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:54:59.035 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:54:59.483 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:54:59.488 | INFO     | logging:callHandlers:1762 | 127.0.0.1:58730 - "GET /api/ai/providers HTTP/1.1" 200
-2025-09-10 09:55:26.798 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
-2025-09-10 09:55:28.904 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
-2025-09-10 09:55:29.360 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
-2025-09-10 09:55:29.361 | INFO     | logging:callHandlers:1762 | 127.0.0.1:52648 - "GET /api/ai/health HTTP/1.1" 200
+2025-09-11 08:33:34.678 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 08:33:37.433 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 08:33:38.837 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 08:33:39.011 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 08:33:39.012 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 08:35:25.915 | WARNING  | app.main:http_exception_handler:115 | HTTP 400 on POST http://127.0.0.1:8000/api/images/generate: Image generation failed: replicate SDK not installed. Install with: pip install replicate
+2025-09-11 08:35:25.916 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47090 - "POST /api/images/generate HTTP/1.1" 400
+2025-09-11 08:36:29.258 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 08:36:29.357 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 08:36:33.919 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 08:36:36.581 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 08:36:38.694 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 08:36:39.147 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 08:36:39.151 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 08:39:49.745 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 08:39:54.497 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 08:39:57.287 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 08:39:58.592 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 08:39:58.968 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 08:39:58.974 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 08:40:05.442 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/black-forest-labs/flux-krea-dev/predictions "HTTP/1.1 401 Unauthorized"
+2025-09-11 08:40:05.442 | WARNING  | app.main:http_exception_handler:115 | HTTP 400 on POST http://127.0.0.1:8000/api/images/generate: Image generation failed: ReplicateError Details:
+title: Unauthenticated
+status: 401
+detail: You did not pass an authentication token
+2025-09-11 08:40:05.443 | INFO     | logging:callHandlers:1762 | 127.0.0.1:40706 - "POST /api/images/generate HTTP/1.1" 400
+2025-09-11 08:44:30.417 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/black-forest-labs/flux-krea-dev/predictions "HTTP/1.1 401 Unauthorized"
+2025-09-11 08:44:30.418 | WARNING  | app.main:http_exception_handler:115 | HTTP 400 on POST http://127.0.0.1:8000/api/images/generate: Image generation failed: ReplicateError Details:
+title: Unauthenticated
+status: 401
+detail: You did not pass an authentication token
+2025-09-11 08:44:30.418 | INFO     | logging:callHandlers:1762 | 127.0.0.1:51964 - "POST /api/images/generate HTTP/1.1" 400
+2025-09-11 08:49:37.368 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 08:49:41.991 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 08:49:44.704 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 08:49:45.980 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 08:49:47.007 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 08:49:47.012 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 08:50:18.881 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 08:50:23.558 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 08:50:24.770 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 08:50:26.870 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 08:50:27.316 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 08:50:27.320 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 08:51:42.230 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/black-forest-labs/flux-krea-dev/predictions "HTTP/1.1 202 Accepted"
+2025-09-11 08:51:43.162 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/73gshsw309rme0cs6vkbprgj50 "HTTP/1.1 200 OK"
+2025-09-11 08:51:43.172 | INFO     | logging:callHandlers:1762 | 127.0.0.1:54930 - "POST /api/images/generate HTTP/1.1" 500
+2025-09-11 08:51:43.172 | ERROR    | logging:callHandlers:1762 | Exception in ASGI application
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 76, in collapse_excgroups
+  |     yield
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    |     return await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |   File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    |     return await call_next(request)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    |     response = await f(request)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    |     content = await serialize_response(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 181, in serialize_response
+    |     return field.serialize(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/_compat.py", line 152, in serialize
+    |     return self._type_adapter.dump_python(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/pydantic/type_adapter.py", line 572, in dump_python
+    |     return self.serializer.to_python(
+    | pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unknown type: <class 'replicate.helpers.FileOutput'>
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+> File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    with collapse_excgroups():
+  File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    return await call_next(request)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 181, in serialize_response
+    return field.serialize(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/_compat.py", line 152, in serialize
+    return self._type_adapter.dump_python(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/pydantic/type_adapter.py", line 572, in dump_python
+    return self.serializer.to_python(
+pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unknown type: <class 'replicate.helpers.FileOutput'>
+2025-09-11 08:59:17.286 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 08:59:17.387 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 08:59:17.387 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 08:59:21.754 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 08:59:24.884 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 08:59:25.996 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 08:59:26.284 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 08:59:26.290 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 09:00:53.725 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/black-forest-labs/flux-krea-dev/predictions "HTTP/1.1 202 Accepted"
+2025-09-11 09:00:55.277 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/y0kaxgp8b5rmc0cs6vqa7f4prr "HTTP/1.1 200 OK"
+2025-09-11 09:00:55.657 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/ErZbMKScWx4VF5a6Cw54IedV1rBByiDCdvt9fm8goQd1tfnqA/out-0.webp "HTTP/1.1 200 OK"
+2025-09-11 09:00:55.710 | INFO     | logging:callHandlers:1762 | 127.0.0.1:49740 - "POST /api/images/generate HTTP/1.1" 200
+2025-09-11 09:04:26.038 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 09:04:30.418 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 09:04:33.505 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 09:04:34.492 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 09:04:35.821 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 09:04:35.825 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 09:04:50.858 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 09:04:50.959 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 09:04:55.261 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 09:04:57.138 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 09:04:59.500 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 09:04:59.951 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 09:04:59.955 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 09:06:26.844 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 09:06:31.795 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 09:06:34.453 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 09:06:36.623 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 09:06:38.332 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 09:06:38.336 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 09:06:46.965 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/black-forest-labs/flux-krea-dev/predictions "HTTP/1.1 202 Accepted"
+2025-09-11 09:06:47.880 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9kv0hjthmsrma0cs6vt9vh0x9m "HTTP/1.1 200 OK"
+2025-09-11 09:06:48.263 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/DsMifelqJ3iDJUahaOnoTbSwsiTqeGQbrdU5ZUfkjve0aefpKA/out-0.webp "HTTP/1.1 200 OK"
+2025-09-11 09:06:48.315 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47956 - "POST /api/images/generate HTTP/1.1" 200
+2025-09-11 09:18:32.472 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/files "HTTP/1.1 201 Created"
+2025-09-11 09:18:50.641 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/bytedance/seedream-4/predictions "HTTP/1.1 201 Created"
+2025-09-11 09:18:51.045 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/QZKuuJoAjdrTMRQq15uK8PiBqvGhGytt5sUaDS096fJVffnqA/tmpaezgefqf.jpg "HTTP/1.1 200 OK"
+2025-09-11 09:18:51.827 | INFO     | logging:callHandlers:1762 | 127.0.0.1:57294 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-11 09:28:52.692 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/files "HTTP/1.1 201 Created"
+2025-09-11 09:29:21.707 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/bytedance/seedream-4/predictions "HTTP/1.1 201 Created"
+2025-09-11 09:29:22.138 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/8NRprLB858aDKBlW7zhrS7TiVQnb0M6jbrCnkU2YG3VICAVF/tmpsxl5nesw.jpg "HTTP/1.1 200 OK"
+2025-09-11 09:29:23.160 | INFO     | logging:callHandlers:1762 | 127.0.0.1:37386 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-11 09:30:31.326 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/files "HTTP/1.1 201 Created"
+2025-09-11 09:30:56.543 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/bytedance/seedream-4/predictions "HTTP/1.1 201 Created"
+2025-09-11 09:30:56.928 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/mErsbeAfSoux5Ucqf1NUvK5kyiHBOI6f7N6Qfywkg9lDQBgqC/tmp2qbba1t9.jpg "HTTP/1.1 200 OK"
+2025-09-11 09:30:58.559 | INFO     | logging:callHandlers:1762 | 127.0.0.1:54344 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-11 09:33:07.596 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/files "HTTP/1.1 201 Created"
+2025-09-11 09:33:11.354 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/qwen/qwen-image-edit/predictions "HTTP/1.1 201 Created"
+2025-09-11 09:33:11.750 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/SRYlJJjYn1KYLxXgZwBU7RK3sx5ZgzlZj0919XJUiPxBDAVF/out-0.webp "HTTP/1.1 200 OK"
+2025-09-11 09:33:12.067 | INFO     | logging:callHandlers:1762 | 127.0.0.1:51712 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-11 09:35:33.216 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/files "HTTP/1.1 201 Created"
+2025-09-11 09:35:48.452 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/bytedance/seedream-4/predictions "HTTP/1.1 201 Created"
+2025-09-11 09:35:48.825 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/UDgtavbc8pJnPp5Y1l6fG2mcgUBcnpu2qz5cViMEaJPSHAqKA/tmpma3x00of.jpg "HTTP/1.1 200 OK"
+2025-09-11 09:35:49.055 | INFO     | logging:callHandlers:1762 | 127.0.0.1:51036 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-11 09:38:04.969 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/models/bytedance/seedream-4/predictions "HTTP/1.1 201 Created"
+2025-09-11 09:38:05.345 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/XmDwuztYL26WExWbMicom8njJADh6L6ELWsiK5aMA4ILEAVF/tmp0syex95q.jpg "HTTP/1.1 200 OK"
+2025-09-11 09:38:05.663 | INFO     | logging:callHandlers:1762 | 127.0.0.1:52694 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-11 10:05:31.676 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:05:31.777 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:05:36.154 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:05:37.597 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:05:39.851 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:05:40.296 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:05:40.301 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:06:10.061 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:06:14.473 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:06:15.870 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:06:17.974 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:06:18.414 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:06:18.418 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:07:34.373 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:07:34.474 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:07:34.474 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:07:38.743 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:07:41.373 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:07:42.187 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:07:43.462 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:07:43.466 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:08:04.006 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:08:04.106 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:08:04.107 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:08:04.107 | INFO     | logging:callHandlers:1762 | Finished server process [249192]
+2025-09-11 10:08:08.394 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:08:10.430 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:08:12.805 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:08:13.255 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:08:13.259 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:08:54.340 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:08:58.737 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:09:00.446 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:09:02.535 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:09:02.978 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:09:02.983 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:09:25.926 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:09:30.330 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:09:31.422 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:09:33.599 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:09:34.040 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:09:34.044 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:09:54.383 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:09:54.483 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:09:58.783 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:10:00.497 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:10:02.686 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:10:03.132 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:10:03.136 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:10:23.182 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:10:23.283 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:10:23.283 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:10:27.586 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:10:29.079 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:10:31.261 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:10:31.705 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:10:31.709 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:10:39.325 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:10:39.426 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:10:39.426 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:10:43.777 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:10:44.924 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:10:46.134 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:10:46.426 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:10:46.432 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:10:55.853 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:10:55.953 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:10:55.954 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:11:00.274 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:11:00.955 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:11:02.055 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:11:03.354 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:11:03.358 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:11:23.900 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:11:24.001 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:11:24.001 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:11:28.345 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:11:29.664 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:11:31.782 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:11:32.223 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:11:32.224 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:25:18.879 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:25:18.980 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:25:18.980 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:25:23.475 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:25:24.627 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:25:26.974 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:25:27.426 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:25:27.430 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:25:52.479 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:25:52.580 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:25:52.580 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:25:57.059 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:25:59.195 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:26:00.371 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:26:01.338 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:26:01.340 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:26:33.104 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:26:33.205 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:26:33.205 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:26:37.638 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:26:39.186 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:26:41.303 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:26:41.747 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:26:41.748 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:33:31.171 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:33:31.272 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:33:31.272 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:33:35.740 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:33:38.562 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:33:39.725 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:33:40.015 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:33:40.020 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:33:53.948 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:33:54.047 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:33:58.512 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:33:59.830 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:34:00.783 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:34:02.059 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:34:02.061 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:34:15.286 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:34:15.387 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:34:19.837 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:34:20.881 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:34:23.134 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:34:23.575 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:34:23.579 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:34:40.311 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:34:40.412 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-11 10:34:40.412 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-11 10:34:44.894 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:34:46.120 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:34:48.238 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:34:48.681 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:34:48.685 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-11 10:35:08.826 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-11 10:35:13.357 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-11 10:35:14.031 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-11 10:35:16.147 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-11 10:35:16.592 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-11 10:35:16.593 | INFO     | logging:callHandlers:1762 | Application startup complete.

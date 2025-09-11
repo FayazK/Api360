@@ -1,0 +1,147 @@
+{
+  "model_id": "black-forest-labs/flux-krea-dev",
+  "version": "ce472e62d34a1f4e5415eb704a032ecf118f067345ef4a9cc1913d01e369b7a3",
+  "type": "object",
+  "title": "FLUX.1 Krea [dev] Input Schema",
+  "required": ["prompt"],
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "title": "Prompt",
+      "description": "Prompt for generated image",
+      "x-order": 0
+    },
+    "aspect_ratio": {
+      "type": "string",
+      "enum": [
+        "1:1",
+        "16:9",
+        "21:9",
+        "3:2",
+        "2:3",
+        "4:5",
+        "5:4",
+        "3:4",
+        "4:3",
+        "9:16",
+        "9:21"
+      ],
+      "title": "Aspect Ratio",
+      "default": "1:1",
+      "description": "Aspect ratio for the generated image",
+      "x-order": 1
+    },
+    "image": {
+      "type": "string",
+      "format": "uri",
+      "title": "Image",
+      "description": "Input image for image to image mode. The aspect ratio of your output will match this image",
+      "x-order": 2
+    },
+    "prompt_strength": {
+      "type": "number",
+      "title": "Prompt Strength",
+      "default": 0.8,
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Prompt strength when using img2img. 1.0 corresponds to full destruction of information in image",
+      "x-order": 3
+    },
+    "num_outputs": {
+      "type": "integer",
+      "title": "Num Outputs",
+      "default": 1,
+      "minimum": 1,
+      "maximum": 4,
+      "description": "Number of outputs to generate",
+      "x-order": 4
+    },
+    "num_inference_steps": {
+      "type": "integer",
+      "title": "Num Inference Steps",
+      "default": 28,
+      "minimum": 1,
+      "maximum": 50,
+      "description": "Number of denoising steps. Recommended range is 28-50, and lower number of steps produce lower quality outputs, faster.",
+      "x-order": 5
+    },
+    "guidance": {
+      "type": "number",
+      "title": "Guidance",
+      "default": 4.5,
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Guidance for generated image. Lower values can give more realistic images. Good values to try are 2, 2.5, 3 and 3.5",
+      "x-order": 6
+    },
+    "seed": {
+      "type": "integer",
+      "title": "Seed",
+      "description": "Random seed. Set for reproducible generation",
+      "x-order": 7
+    },
+    "output_format": {
+      "type": "string",
+      "enum": ["webp", "jpg", "png"],
+      "title": "Output Format",
+      "default": "webp",
+      "description": "Format of the output images",
+      "x-order": 8
+    },
+    "output_quality": {
+      "type": "integer",
+      "title": "Output Quality",
+      "default": 80,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Quality when saving the output images, from 0 to 100. 100 is best quality, 0 is lowest quality. Not relevant for .png outputs",
+      "x-order": 9
+    },
+    "disable_safety_checker": {
+      "type": "boolean",
+      "title": "Disable Safety Checker",
+      "default": false,
+      "description": "Disable safety checker for generated images.",
+      "x-order": 10
+    },
+    "go_fast": {
+      "type": "boolean",
+      "title": "Go Fast",
+      "default": true,
+      "description": "Run faster predictions with additional optimizations.",
+      "x-order": 11
+    },
+    "megapixels": {
+      "type": "string",
+      "enum": ["1", "0.25"],
+      "title": "Megapixels",
+      "default": "1",
+      "description": "Approximate number of megapixels for generated image",
+      "x-order": 12
+    }
+  },
+  "parameter_mapping": {
+    "prompt": "prompt",
+    "image_inputs": "image",
+    "seed": "seed",
+    "num_images": "num_outputs",
+    "steps": "num_inference_steps",
+    "guidance_scale": "guidance",
+    "ratio": "aspect_ratio",
+    "quality": "output_quality",
+    "extra": null
+  },
+  "ratio_mapping": {
+    "1:1": "1:1",
+    "16:9": "16:9",
+    "9:16": "9:16",
+    "4:3": "4:3",
+    "3:4": "3:4",
+    "3:2": "3:2",
+    "2:3": "2:3",
+    "21:9": "21:9",
+    "4:5": "4:5",
+    "5:4": "5:4",
+    "9:21": "9:21"
+  }
+}

@@ -27,6 +27,7 @@ sniffio==1.3.1
 openai==1.107.0
 google-genai==1.35.0
 loguru==0.7.2
+replicate
 
 # Document Processing
 docling[all]

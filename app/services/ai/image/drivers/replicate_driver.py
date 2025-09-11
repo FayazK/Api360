@@ -1,157 +1,77 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
-from io import BytesIO
-import re
-
-try:
-    import replicate
-except Exception:  # pragma: no cover - optional dependency at import time
-    replicate = None  # type: ignore
+from typing import Any, Dict, Optional
 
 from app.services.ai.image.factory import ImageDriver, ImageDriverFactory
 from app.services.ai.image.types import (
-    GeneratedImage,
     ImageGenerationRequest,
     ImageGenerationResult,
 )
 
+from .replicate.registry import ReplicateModelRegistry
+
 
 class ReplicateImageDriver(ImageDriver):
-    """Replicate image generation driver (generic).
+    """Model-specific Replicate image generation driver.
 
-    Uses the official `replicate` Python SDK and `Client.run` to invoke models.
-    Default model: `stability-ai/sdxl`. You can override per request by setting
-    `request.model` to another model slug (e.g., `black-forest-labs/flux-1`), or
-    a pinned version (`owner/name@<version_hash>`).
+    This driver only supports models with dedicated implementations. Each model
+    has precise parameter mapping and validation for reliable generation.
 
-    Inputs vary by model. This driver forwards commonly used fields if present:
-      - prompt → `prompt`
-      - negative_prompt → `negative_prompt`
-      - width → `width`, height → `height`
-      - steps → `num_inference_steps`
-      - guidance_scale → `guidance_scale`
-      - seed → `seed`
-      - image_inputs[0] → `image` (as file-like)
-      - mask → `mask` (as file-like)
-      - extra → merged verbatim into input
+    Supported models:
+      - bytedance/seedream-4: Advanced text-to-image and editing up to 4K
+      - black-forest-labs/flux-krea-dev: Distinctive aesthetic style and realism
+
+    Aliases supported:
+      - seedream-4, seedream4 → bytedance/seedream-4
+      - flux-krea-dev, flux-krea, krea-dev → black-forest-labs/flux-krea-dev
     """
 
     provider = "replicate"
-    default_model = "stability-ai/sdxl"
+    default_model = "bytedance/seedream-4"
 
     def __init__(self) -> None:
-        if replicate is None:
-            raise ImportError(
-                "replicate SDK not installed. Install with: pip install replicate"
-            )
-        self._client = replicate.Client()
+        self._model_drivers = {}
 
     def generate(self, request: ImageGenerationRequest) -> ImageGenerationResult:
-        model_slug = request.model or self.default_model
-
-        input_payload: Dict[str, Any] = {"prompt": request.prompt}
-
-        if request.negative_prompt:
-            input_payload["negative_prompt"] = request.negative_prompt
-        if request.width is not None:
-            input_payload["width"] = request.width
-        if request.height is not None:
-            input_payload["height"] = request.height
-        if request.steps is not None:
-            input_payload["num_inference_steps"] = request.steps
-        if request.guidance_scale is not None:
-            input_payload["guidance_scale"] = request.guidance_scale
-        if request.seed is not None:
-            input_payload["seed"] = request.seed
-        if request.num_images is not None:
-            # Many models support this as `num_outputs` or `num_images`; prefer num_outputs
-            input_payload["num_outputs"] = request.num_images
-
-        # Attach the first image/mask if provided (img2img / inpainting)
-        if request.image_inputs:
-            first = request.image_inputs[0]
-            input_payload["image"] = BytesIO(first)
-        if request.mask:
-            input_payload["mask"] = BytesIO(request.mask)
-
-        # Merge extra keys verbatim (overrides defaults if collisions occur)
-        if request.extra:
-            input_payload.update(request.extra)
-
-        # Run the model synchronously
-        output = self._client.run(model_slug, input=input_payload)
-
-        images: List[GeneratedImage] = []
-
-        def is_url(val: str) -> bool:
-            return isinstance(val, str) and re.match(r"^https?://", val) is not None
-
-        def add_url(u: str):
-            images.append(GeneratedImage(url=u))
-
-        def add_bytes(b: bytes, mime: Optional[str] = None):
-            import base64
-
-            images.append(
-                GeneratedImage(
-                    b64_data=base64.b64encode(b).decode("utf-8"),
-                    mime_type=mime or "image/png",
-                )
+        model_id = request.model or self.default_model
+        
+        # Get model-specific driver
+        driver = self._get_model_driver(model_id)
+        if not driver:
+            supported_models = list(ReplicateModelRegistry.get_supported_models())
+            raise ValueError(
+                f"Model '{model_id}' is not supported. "
+                f"Supported models: {', '.join(supported_models)}"
             )
-
-        # Normalize possible output shapes
-        if isinstance(output, list):
-            for item in output:
-                if isinstance(item, str) and is_url(item):
-                    add_url(item)
-                elif isinstance(item, (bytes, bytearray)):
-                    add_bytes(item)
-                elif isinstance(item, dict):
-                    # Common patterns: {"image": url}, {"images": [urls]}, {"url": url}
-                    if "images" in item and isinstance(item["images"], list):
-                        for u in item["images"]:
-                            if is_url(u):
-                                add_url(u)
-                    elif "image" in item and is_url(item["image"]):
-                        add_url(item["image"])
-                    elif "url" in item and is_url(item["url"]):
-                        add_url(item["url"])
-                    else:
-                        # Unknown dict shape: stash as metadata on a placeholder image
-                        images.append(GeneratedImage(metadata={"raw": item}))
-                else:
-                    images.append(GeneratedImage(metadata={"raw": item}))
-        elif isinstance(output, str) and is_url(output):
-            add_url(output)
-        elif isinstance(output, (bytes, bytearray)):
-            add_bytes(output)
-        elif isinstance(output, dict):
-            if "images" in output and isinstance(output["images"], list):
-                for u in output["images"]:
-                    if is_url(u):
-                        add_url(u)
-            elif "image" in output and is_url(output["image"]):
-                add_url(output["image"])
-            elif "url" in output and is_url(output["url"]):
-                add_url(output["url"])
+        
+        return driver.generate(request)
+    
+    def _get_model_driver(self, model_id: str) -> Optional[Any]:
+        """Get cached model-specific driver for the given model ID."""
+        # Cache drivers to avoid recreating them
+        if model_id not in self._model_drivers:
+            driver_class = ReplicateModelRegistry.get_driver_class(model_id)
+            if driver_class:
+                try:
+                    self._model_drivers[model_id] = driver_class()
+                except Exception as e:
+                    raise RuntimeError(f"Failed to initialize driver for {model_id}: {e}")
             else:
-                images.append(GeneratedImage(metadata={"raw": output}))
-        else:
-            images.append(GeneratedImage(metadata={"raw": output}))
-
-        metadata: Dict[str, Any] = {
-            "parameters": {k: v for k, v in input_payload.items() if k != "image" and k != "mask"},
-        }
-
-        return ImageGenerationResult(
-            provider=self.provider,
-            model=model_slug,
-            images=images,
-            metadata=metadata,
-        )
+                return None
+        
+        return self._model_drivers.get(model_id)
+    
+    def get_supported_models(self) -> Dict[str, str]:
+        """Get list of all supported models and their driver information."""
+        models = {}
+        for model_id, info in ReplicateModelRegistry.list_models().items():
+            models[model_id] = info['driver_class']
+        return models
+    
+    def is_model_supported(self, model_id: str) -> bool:
+        """Check if a model is supported."""
+        return ReplicateModelRegistry.is_supported(model_id)
 
 
 # Register driver on import
 ImageDriverFactory.register(ReplicateImageDriver)
-

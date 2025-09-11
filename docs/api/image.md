@@ -1,6 +1,6 @@
 # Image Generation API
 
-Provider‑agnostic image generation and editing via a unified engine with pluggable drivers (Gemini Nano Banana, Imagen 4, Replicate).
+Provider‑agnostic image generation and editing via a unified engine with pluggable drivers (Gemini Nano Banana, Imagen 4, Replicate with model-specific drivers).
 
 Base path: `/api/images`
 
@@ -16,7 +16,7 @@ No defaults are injected by routes; only fields you provide are forwarded to the
 - Set environment variables for providers you plan to use:
   - Google GenAI: `GOOGLE_API_KEY` (or Vertex: `GOOGLE_GENAI_USE_VERTEXAI=true`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION`)
   - Replicate: `REPLICATE_API_TOKEN`
-- Install SDKs in `requirements.txt` are already present: `google-genai`, `replicate`.
+- Install SDKs in `requirements.txt` are already present: `google-genai`, `httpx` (for Replicate direct API).
 
 ---
 
@@ -86,26 +86,51 @@ curl -X POST http://localhost:8000/api/images/generate \
 }
 ```
 
-### Sample: Replicate SDXL (Text → Image)
+### Sample: Replicate Seedream-4 (Text → Image)
 
 ```json
 {
-  "prompt": "A minimalist poster of Karachi skyline, vector style, 4:5",
+  "prompt": "A cozy cabin in a snowy forest, watercolor style, ultra-detailed",
   "provider": "replicate",
-  "model": "stability-ai/sdxl",
-  "width": 1024,
-  "height": 1280,
-  "steps": 30,
-  "guidance_scale": 7.5,
-  "seed": 42,
-  "num_images": 1,
-  "extra": {
-    "scheduler": "K_EULER_ANCESTRAL"
-  }
+  "model": "bytedance/seedream-4",
+  "width": 2048,
+  "height": 1024,
+  "ratio": "16:9",
+  "num_images": 1
 }
 ```
 
-Note: For Replicate, `width`, `height`, `steps`→`num_inference_steps`, `guidance_scale`, `seed`, `num_images`→`num_outputs` are forwarded when present. Other model‑specific inputs can be passed via `extra`.
+### Sample: Replicate FLUX Krea [dev] (Text → Image)
+
+```json
+{
+  "prompt": "Professional portrait photography, studio lighting, shallow depth of field",
+  "provider": "replicate",
+  "model": "black-forest-labs/flux-krea-dev",
+  "guidance_scale": 3.5,
+  "steps": 35,
+  "ratio": "3:4",
+  "seed": 42
+}
+```
+
+### Sample: Replicate Seedream-4 (Image Editing)
+
+```json
+{
+  "prompt": "Remove the person in the background, keep everything else the same",
+  "provider": "replicate",
+  "model": "seedream-4",
+  "images_b64": ["<base64-encoded-image>"],
+  "ratio": "match_input_image"
+}
+```
+
+**Note:** Replicate provider now supports only specific models with dedicated drivers:
+- `bytedance/seedream-4` (aliases: `seedream-4`, `seedream4`): Advanced text-to-image and editing up to 4K
+- `black-forest-labs/flux-krea-dev` (aliases: `flux-krea-dev`, `flux-krea`, `krea-dev`): Distinctive aesthetic style
+
+Parameters are automatically mapped to model-specific requirements with validation.
 
 ### Example Response
 
@@ -169,16 +194,28 @@ curl -X POST http://localhost:8000/api/images/generate-multipart \
   -F 'files=@living_room.jpg'
 ```
 
-### cURL: Replicate SDXL with width/height and extra
+### cURL: Replicate Seedream-4 with high resolution
 
 ```bash
 curl -X POST http://localhost:8000/api/images/generate-multipart \
-  -F 'prompt=A minimalist poster of Karachi skyline, vector style, 4:5' \
+  -F 'prompt=A minimalist poster of Karachi skyline, vector style, ultra-detailed' \
   -F 'provider=replicate' \
-  -F 'model=stability-ai/sdxl' \
-  -F 'temperature=0.2' \
-  -F 'extra={"scheduler":"K_EULER_ANCESTRAL"}' \
-  -F 'files=@seed.png'
+  -F 'model=bytedance/seedream-4' \
+  -F 'width=4096' \
+  -F 'height=2048' \
+  -F 'ratio=21:9'
+```
+
+### cURL: Replicate FLUX Krea [dev] with image-to-image
+
+```bash
+curl -X POST http://localhost:8000/api/images/generate-multipart \
+  -F 'prompt=Transform into a professional headshot with studio lighting' \
+  -F 'provider=replicate' \
+  -F 'model=flux-krea-dev' \
+  -F 'guidance_scale=3.0' \
+  -F 'steps=40' \
+  -F 'files=@portrait.jpg'
 ```
 
 ---
@@ -200,21 +237,82 @@ Postman cURL equivalents are provided in each sample for quick copy/paste.
 
 ## Providers & Models
 
-- Gemini Nano Banana: `provider = gemini-nano-banana`, model default `gemini-2.5-flash-image-preview`
-- Imagen 4: `provider = imagen`, models `imagen-4.0-ultra-generate-001`, `imagen-4.0-generate-001` (default), `imagen-4.0-fast-generate-001`
-- Replicate: `provider = replicate`, default `stability-ai/sdxl` (override with any `owner/name` or `owner/name@version`)
+- **Gemini Nano Banana**: `provider = gemini-nano-banana`, model default `gemini-2.5-flash-image-preview`
+- **Imagen 4**: `provider = imagen`, models `imagen-4.0-ultra-generate-001`, `imagen-4.0-generate-001` (default), `imagen-4.0-fast-generate-001`
+- **Replicate**: `provider = replicate`, model-specific drivers only:
+  - `bytedance/seedream-4` (default): Advanced text-to-image and editing up to 4K resolution
+    - Aliases: `seedream-4`, `seedream4`
+    - Features: Multi-resolution (1K/2K/4K/custom), image editing, up to 10 input images
+  - `black-forest-labs/flux-krea-dev`: Distinctive aesthetic style with exceptional realism
+    - Aliases: `flux-krea-dev`, `flux-krea`, `krea-dev`
+    - Features: Photorealistic generation, single image input, optimized performance
 
-See also:
+**See detailed documentation:**
 - docs/image_gemini_nano_banana.md
 - docs/image_imagen.md
-- docs/image_replicate.md
+- docs/api/replicate-usage.md (comprehensive Replicate guide)
 
 ---
 
 ## Notes & Limits
 
-- Aspect ratio for Gemini/Imagen is guided via prompt text (no direct width/height in preview tiers). Default outputs ~1024 px.
-- Replicate models define their own input schemas; pass model‑specific knobs via `extra` as needed.
-- Safety policies apply; providers may refuse certain prompts or images.
-- For production, download and persist images if providers return URLs (e.g., Replicate); URLs can be temporary.
+- **Aspect ratio** for Gemini/Imagen is guided via prompt text (no direct width/height in preview tiers). Default outputs ~1024 px.
+- **Replicate models** use dedicated drivers with automatic parameter mapping and validation:
+  - Each model has specific parameter requirements and limits
+  - Unsupported models will return clear error messages with available alternatives
+  - Image input limits: Seedream-4 (max 10 images), FLUX Krea [dev] (max 1 image)
+- **Safety policies** apply; providers may refuse certain prompts or images.
+- **Image persistence**: Generated images are automatically downloaded and stored locally with public URLs.
+- **Error handling**: Model-specific validation provides detailed error messages for parameter issues.
+
+### Replicate-Specific Validation
+
+The API validates Replicate requests and provides helpful errors:
+
+```json
+// Unsupported model error
+{
+  "detail": "Replicate model 'stability-ai/sdxl' is not supported. Supported models: bytedance/seedream-4, black-forest-labs/flux-krea-dev"
+}
+
+// Parameter validation error  
+{
+  "detail": "Replicate validation error: Parameter 'max_images' must be <= 15"
+}
+
+// File limit error
+{
+  "detail": "FLUX Krea [dev] supports only 1 input image"
+}
+```
+
+### Parameter Mapping for Replicate Models
+
+The API automatically maps unified parameters to model-specific requirements:
+
+#### Seedream-4 Parameter Mapping
+```
+Unified API → Seedream-4 API
+─────────────────────────────
+prompt → prompt
+images_b64 → image_input (array of data URIs)
+num_images → max_images (when > 1, enables sequential generation)
+width/height → size="custom" + width/height
+ratio → aspect_ratio (with value mapping)
+extra → additional model-specific parameters
+```
+
+#### FLUX Krea [dev] Parameter Mapping  
+```
+Unified API → FLUX Krea API
+───────────────────────────
+prompt → prompt
+images_b64[0] → image (first image only as data URI)
+seed → seed
+num_images → num_outputs (max 4)
+steps → num_inference_steps
+guidance_scale → guidance  
+ratio → aspect_ratio
+extra → additional model-specific parameters
+```
 

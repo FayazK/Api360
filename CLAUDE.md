@@ -5,23 +5,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ### Running the Application
-- Local development: `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
-- Docker: `docker-compose up --build` (runs on port 8778, maps to internal port 8000)
-- Production Docker: `docker build -t three60_fastapi:v1.0 .`
+- Local development: `./run_dev.sh` or `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
+- Docker development: `docker-compose up --build` (runs on port 8778, maps to internal port 8000)
+- Production: `./run_prod.sh` or `docker compose up -d --build`
+- Docker production: `./run_docker_prod.sh` or `docker build -t three60_fastapi:v1.0 .`
 
 ### Environment Setup
+- Setup development environment: `./setup_dev.sh` (creates virtual environment and installs dependencies)
 - Copy `.env.example` to `.env` and configure environment variables
-- AI Provider Keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`
+- AI Provider Keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, `GOOGLE_API_KEY`, `REPLICATE_API_TOKEN`
 - Optional: `DATABASE_URL`, `SECRET_KEY`, `BACKEND_CORS_ORIGINS`
 - AI defaults: `AI_DEFAULT_PROVIDER`, `AI_DEFAULT_MODEL`, `AI_MAX_TOKENS_DEFAULT`, `AI_TEMPERATURE_DEFAULT`
+- Image defaults: `IMAGE_DEFAULT_PROVIDER`, `IMAGE_DEFAULT_MODEL`
 
 ### Dependencies
-- Install: `pip install -r requirements.txt`
-- Core dependencies: FastAPI, Uvicorn, Pydantic, OpenAI, PyFilesystem2
+- Install: `pip install -r requirements.txt` (or use `./setup_dev.sh` for complete setup)
+- Core dependencies: FastAPI, Uvicorn, Pydantic, OpenAI, Google GenAI, Replicate, Docling, PyFilesystem2, Loguru
 
 ### Code Quality
 - No linting/formatting tools configured - manual code review required
 - Follow PEP 8 style guidelines
+- Structured logging using Loguru (configured in `app/core/logging_config.py`)
 
 ### Testing Commands
 - Run all tests: `pytest`
@@ -71,6 +75,11 @@ app/
   - `schemas.py` - Internal AI service data models
 - `image_service.py` - Image processing and format conversion
 - `template_manager.py` - Jinja2 template management for AI prompts
+- `ai/image/` - AI image generation with driver pattern architecture
+  - `base.py` - ImageEngine for multi-provider image generation
+  - `factory.py` - ImageDriverFactory and driver management
+  - `types.py` - Common types and request/response models
+  - `drivers/` - Provider-specific drivers (Gemini, Imagen, Replicate)
 
 **Configuration** (`app/core/config.py`):
 - Centralized settings using Pydantic BaseSettings
@@ -118,10 +127,18 @@ To add a new AI provider (e.g., Anthropic, Gemini):
 - Behavior: follows parameter policy (only sends user-provided params; lets API defaults apply). Extracts `response.text`.
 
 ### Document Processing
-- Multi-format support: PDF, DOCX, TXT, images, emails
+- Multi-format support: PDF, DOCX, TXT, images, emails using Docling
 - OCR capabilities for scanned documents
 - Table extraction and metadata parsing
 - Email parsing with attachment handling
+- Advanced document AI extraction with structured output
+
+### Image Generation Service
+- Provider-agnostic image generation with pluggable driver architecture
+- Available drivers: Gemini Nano (2.5 Flash), Imagen 4, Replicate
+- Unified API with consistent request/response models
+- Parameter policy: only required `prompt`, optional provider-specific parameters
+- Automatic driver registration based on available API keys
 
 ### Storage Engine
 - **PyFilesystem2-based unified storage** replacing scattered file operations
@@ -176,7 +193,8 @@ storage/
 - Unit tests mock external dependencies and use factory reset methods
 - Integration tests use real FastAPI TestClient but expect service unavailability
 - AI service tests require provider API keys or will return 503 responses
-- Use pytest markers: `@pytest.mark.slow`, `@pytest.mark.integration`, `@pytest.mark.external_api`
+- Use pytest markers: `@pytest.mark.slow`, `@pytest.mark.integration`, `@pytest.mark.unit`, `@pytest.mark.external_api`
+- Test configuration: `pytest.ini` includes asyncio auto mode and warning filters
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
