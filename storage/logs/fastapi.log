@@ -526,3 +526,35 @@ pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unk
 2025-09-11 12:50:14.920 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/j8hr874jc5rme0cs6z0brvhjyg "HTTP/1.1 200 OK"
 2025-09-11 12:50:15.294 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/1fqDjopFU50UQio0nkfrQ9qJpOff9UsxjobIl9cRzbdVTMQVB/out-0.webp "HTTP/1.1 200 OK"
 2025-09-11 12:50:15.367 | INFO     | logging:callHandlers:1762 | 127.0.0.1:42760 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-15 08:36:47.224 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-15 08:36:49.844 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-15 08:36:50.937 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-15 08:36:51.101 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-15 08:36:51.102 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-15 08:36:56.518 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/predictions "HTTP/1.1 201 Created"
+2025-09-15 08:36:56.956 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/c5ngt1kn0drm80cs9ds8q3mndm "HTTP/1.1 200 OK"
+2025-09-15 08:36:59.390 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/c5ngt1kn0drm80cs9ds8q3mndm "HTTP/1.1 200 OK"
+2025-09-15 08:36:59.908 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/U1czO2wwwcZuA96J652gHmOxJuvCDXNCboFEh7PSXda27UVF/out-0.webp "HTTP/1.1 200 OK"
+2025-09-15 08:36:59.942 | INFO     | logging:callHandlers:1762 | 127.0.0.1:41462 - "POST /api/images/generate HTTP/1.1" 200
+2025-09-15 08:37:30.508 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/models/bytedance/seedream-4 "HTTP/1.1 200 OK"
+2025-09-15 08:37:30.983 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/predictions "HTTP/1.1 201 Created"
+2025-09-15 08:37:31.423 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/mvfnm4zvn9rma0cs9dsbzf5404 "HTTP/1.1 200 OK"
+2025-09-15 08:37:33.856 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/mvfnm4zvn9rma0cs9dsbzf5404 "HTTP/1.1 200 OK"
+2025-09-15 08:37:36.291 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/mvfnm4zvn9rma0cs9dsbzf5404 "HTTP/1.1 200 OK"
+2025-09-15 08:37:38.714 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/mvfnm4zvn9rma0cs9dsbzf5404 "HTTP/1.1 200 OK"
+2025-09-15 08:37:41.149 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/mvfnm4zvn9rma0cs9dsbzf5404 "HTTP/1.1 200 OK"
+2025-09-15 08:37:44.196 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/mvfnm4zvn9rma0cs9dsbzf5404 "HTTP/1.1 200 OK"
+2025-09-15 08:37:44.577 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/NfeKvfPcedveAgW2eyEdhW1fB6V09MwjUoK0MfFB8FFjGwTVVA/tmp2xeygpwk.jpg "HTTP/1.1 200 OK"
+2025-09-15 08:37:45.135 | INFO     | logging:callHandlers:1762 | 127.0.0.1:41780 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-15 08:39:42.723 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/models/bytedance/seedream-4 "HTTP/1.1 200 OK"
+2025-09-15 08:39:45.704 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/predictions "HTTP/1.1 201 Created"
+2025-09-15 08:39:46.142 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:39:48.679 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:39:51.106 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:39:53.542 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:39:56.573 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:39:58.998 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:40:01.426 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:40:03.857 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
+2025-09-15 08:40:04.235 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/avnRtdjhpE57EZtgFaqSibmOUGeo833IIJ5xwpnVdIZJ5pqKA/tmp5gllfhp4.jpg "HTTP/1.1 200 OK"
+2025-09-15 08:40:04.542 | INFO     | logging:callHandlers:1762 | 127.0.0.1:54118 - "POST /api/images/generate-multipart HTTP/1.1" 200
