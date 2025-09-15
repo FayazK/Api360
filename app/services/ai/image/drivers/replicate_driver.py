@@ -29,7 +29,8 @@ class ReplicateImageDriver(ImageDriver):
     provider = "replicate"
     default_model = "bytedance/seedream-4"
 
-    def __init__(self) -> None:
+    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+        super().__init__(config)
         self._model_drivers = {}
 
     def generate(self, request: ImageGenerationRequest) -> ImageGenerationResult:

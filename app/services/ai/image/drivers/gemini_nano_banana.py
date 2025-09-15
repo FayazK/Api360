@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 try:
     from google import genai
@@ -27,7 +27,8 @@ class GeminiNanoBananaDriver(ImageDriver):
     provider = "gemini-nano-banana"
     default_model = "gemini-2.5-flash-image-preview"
 
-    def __init__(self) -> None:
+    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+        super().__init__(config)
         if genai is None:
             raise ImportError(
                 "google-genai is not installed. Install with: pip install google-genai"

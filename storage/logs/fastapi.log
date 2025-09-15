@@ -559,3 +559,37 @@ pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unk
 2025-09-15 08:40:04.235 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/avnRtdjhpE57EZtgFaqSibmOUGeo833IIJ5xwpnVdIZJ5pqKA/tmp5gllfhp4.jpg "HTTP/1.1 200 OK"
 2025-09-15 08:40:04.542 | INFO     | logging:callHandlers:1762 | 127.0.0.1:54118 - "POST /api/images/generate-multipart HTTP/1.1" 200
 2025-09-15 09:36:47.225 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-15 10:04:17.686 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-15 10:04:21.777 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-15 10:04:22.481 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-15 10:04:24.188 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-15 10:04:24.615 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-15 10:04:24.624 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-15 10:10:55.669 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-15 10:10:55.770 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-15 10:10:55.770 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-15 10:10:59.995 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-15 10:11:01.487 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:02.999 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:03.428 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-15 10:11:03.436 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-15 10:11:08.747 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-15 10:11:08.847 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-15 10:11:08.848 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-15 10:11:13.048 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-15 10:11:14.197 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:16.373 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:16.822 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-15 10:11:16.823 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-15 10:11:21.332 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-15 10:11:21.432 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-15 10:11:21.432 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-15 10:11:25.686 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-15 10:11:27.165 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:29.262 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:29.722 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-15 10:11:33.975 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-15 10:11:35.078 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:37.336 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-15 10:11:37.781 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-15 10:11:37.783 | INFO     | logging:callHandlers:1762 | Application startup complete.

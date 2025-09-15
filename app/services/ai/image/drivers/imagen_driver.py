@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 try:
     from google import genai
@@ -30,7 +30,8 @@ class ImagenDriver(ImageDriver):
     provider = "imagen"
     default_model = "imagen-4.0-generate-001"
 
-    def __init__(self) -> None:
+    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+        super().__init__(config)
         if genai is None:
             raise ImportError(
                 "google-genai is not installed. Install with: pip install google-genai"
@@ -160,4 +161,3 @@ class ImagenDriver(ImageDriver):
 
 # Register driver on import
 ImageDriverFactory.register(ImagenDriver)
-

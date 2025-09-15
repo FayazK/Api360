@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Type
+from typing import Any, Dict, Optional, Type
 
 from .types import ImageGenerationRequest
+from app.config.image_models import get_image_models_config
 
 
 class ImageDriver:
@@ -15,6 +16,15 @@ class ImageDriver:
     provider: str = ""
     # A sensible default model for this driver (driver-level default).
     default_model: str = ""
+
+    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:  # pragma: no cover - base
+        # Raw provider config from YAML (if any)
+        self.config: Dict[str, Any] = config or {}
+        # Allow YAML to override default model per provider, if specified
+        yaml_default = self.config.get("default_model")
+        if isinstance(yaml_default, str) and yaml_default.strip():
+            # Instance-level default_model can override class-level default
+            self.default_model = yaml_default.strip()
 
     def generate(self, request: ImageGenerationRequest):  # pragma: no cover - interface
         raise NotImplementedError
@@ -45,7 +55,11 @@ class ImageDriverFactory:
         key = provider.lower().strip()
         if key not in cls._registry:
             raise KeyError(f"No image driver registered for provider '{provider}'.")
-        return cls._registry[key]()
+        # Pass through provider configuration from YAML if present
+        cfg = get_image_models_config()
+        providers_cfg = (cfg or {}).get("providers", {}) or {}
+        provider_cfg = providers_cfg.get(key) or {}
+        return cls._registry[key](config=provider_cfg)
 
     @classmethod
     def providers(cls):
@@ -59,4 +73,3 @@ except Exception:
     # Import errors should not break the app at import time; drivers will be
     # resolved when actually requested.
     pass
-
