@@ -558,3 +558,4 @@ pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unk
 2025-09-15 08:40:03.857 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/8vzjvb89thrme0cs9dtrymkmc0 "HTTP/1.1 200 OK"
 2025-09-15 08:40:04.235 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/avnRtdjhpE57EZtgFaqSibmOUGeo833IIJ5xwpnVdIZJ5pqKA/tmp5gllfhp4.jpg "HTTP/1.1 200 OK"
 2025-09-15 08:40:04.542 | INFO     | logging:callHandlers:1762 | 127.0.0.1:54118 - "POST /api/images/generate-multipart HTTP/1.1" 200
+2025-09-15 09:36:47.225 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes

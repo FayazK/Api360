@@ -51,7 +51,7 @@ client = genai.Client(http_options=types.HttpOptions(api_version="v1"))
 ## 2) Model IDs & When to Use What
 
 | Family                  | Model ID (Vertex/Dev API)                            | Best for                                                               | Latency | Text fidelity | Typical output                               |
-| ----------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------- | ------- | ------------- | -------------------------------------------- |
+|-------------------------|------------------------------------------------------|------------------------------------------------------------------------|---------|---------------|----------------------------------------------|
 | **Imagen 4 Ultra**      | `imagen-4.0-ultra-generate-001`                      | Highest quality, complex scenes, typography, product/marketing renders | High    | Excellent     | \~1024 px (square default; prompt‑guided AR) |
 | **Imagen 4 (Standard)** | `imagen-4.0-generate-001`                            | General purpose, strong text rendering, balanced speed/quality         | Medium  | Very good     | \~1024 px                                    |
 | **Imagen 4 Fast**       | `imagen-4.0-fast-generate-001`                       | Rapid iteration, high‑volume batches, prototyping                      | Low     | Good          | \~1024 px                                    |
@@ -165,7 +165,7 @@ for chunk in client.models.generate_content_stream(
 Use `GenerateContentConfig` with the familiar decoding and safety knobs. Image‑specific controls are **prompt‑guided**.
 
 | Field                | Type           | Use                                                                                     |
-| -------------------- | -------------- | --------------------------------------------------------------------------------------- |
+|----------------------|----------------|-----------------------------------------------------------------------------------------|
 | `temperature`        | `float`        | Style/variation randomness; 0–0.3 for deterministic artboards, 0.6–0.9 for exploration. |
 | `top_p`, `top_k`     | `float`, `int` | Decoding controls; defaults typically fine.                                             |
 | `candidate_count`\*  | `int`          | Number of candidates to return (may be fixed to 1 on some tiers).                       |

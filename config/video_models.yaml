@@ -1,0 +1,150 @@
+# Video model catalog for providers used in this app.
+# Source for Veo details: docs/sdk/google/imagen-and-veo.md
+
+providers:
+  gemini:
+    name: Gemini
+    # Default video model for Gemini provider (keep stable; can be adjusted later)
+    default_model: veo-2.0-generate-001
+    models:
+      veo-3.0-generate-001:
+        description: "Veo 3 — Text-to-Video and Image-to-Video, MP4 with native audio"
+        capabilities:
+          text_to_video: true
+          image_to_video: true
+          native_audio: true
+          typical_max_duration_seconds: 8
+          fps: 24
+          resolutions_supported: ["720p", "1080p (16:9 only)"]
+          aspect_ratios_supported: ["16:9", "9:16 (720p only)"]
+        io:
+          input_modalities: [text, image]
+          output_mime_types: [video/mp4]
+          response_payload: inline_data
+        limits:
+          text_input_tokens: 1024
+          videos_per_request: 1
+          max_duration_seconds: 8
+          fps: 24
+        supported_parameters:
+          prompt:
+            type: string
+          negativePrompt:
+            type: string
+            optional: true
+          image:
+            type: image
+            mime_types: [image/png, image/jpeg]
+            max_bytes: 20971520
+          aspectRatio:
+            enum: ["16:9", "9:16"]
+          resolution:
+            enum: ["720p", "1080p"]
+            notes: "1080p available only with 16:9"
+          personGeneration:
+            text_to_video:
+              enum: ["allow_all"]
+            image_to_video:
+              enum: ["allow_adult"]
+            regional_notes: "EU/UK/CH/MENA: Veo 3 allows 'allow_adult' only"
+          seed:
+            type: integer
+            notes: "Improves repeatability; not fully deterministic"
+        pricing:
+          video_with_audio_per_second_usd: 0.40
+        sources:
+          pricing: https://ai.google.dev/gemini-api/docs/pricing
+          specs: https://ai.google.dev/gemini-api/docs/video
+
+      veo-3.0-fast-generate-001:
+        description: "Veo 3 Fast — Lower cost/latency, MP4 with native audio"
+        capabilities:
+          text_to_video: true
+          image_to_video: true
+          native_audio: true
+          typical_max_duration_seconds: 8
+          fps: 24
+          resolutions_supported: ["720p", "1080p (16:9 only)"]
+          aspect_ratios_supported: ["16:9", "9:16 (720p only)"]
+        io:
+          input_modalities: [text, image]
+          output_mime_types: [video/mp4]
+          response_payload: inline_data
+        limits:
+          text_input_tokens: 1024
+          videos_per_request: 1
+          max_duration_seconds: 8
+          fps: 24
+        supported_parameters:
+          prompt:
+            type: string
+          negativePrompt:
+            type: string
+            optional: true
+          image:
+            type: image
+            mime_types: [image/png, image/jpeg]
+            max_bytes: 20971520
+          aspectRatio:
+            enum: ["16:9", "9:16"]
+          resolution:
+            enum: ["720p", "1080p"]
+            notes: "1080p available only with 16:9"
+          personGeneration:
+            text_to_video:
+              enum: ["allow_all"]
+            image_to_video:
+              enum: ["allow_adult"]
+            regional_notes: "EU/UK/CH/MENA: Veo 3 allows 'allow_adult' only"
+          seed:
+            type: integer
+            notes: "Improves repeatability; not fully deterministic"
+        pricing:
+          video_with_audio_per_second_usd: 0.15
+        sources:
+          pricing: https://ai.google.dev/gemini-api/docs/pricing
+          specs: https://ai.google.dev/gemini-api/docs/video
+
+      veo-2.0-generate-001:
+        description: "Veo 2 — Text-to-Video and Image-to-Video, MP4 silent (no audio)"
+        capabilities:
+          text_to_video: true
+          image_to_video: true
+          native_audio: false
+          typical_max_duration_seconds: 8
+          fps: 24
+          resolutions_supported: ["720p"]
+          aspect_ratios_supported: ["16:9", "9:16"]
+        io:
+          input_modalities: [text, image]
+          output_mime_types: [video/mp4]
+          response_payload: inline_data
+        limits:
+          videos_per_request: 2
+          duration_seconds: "5-8"
+          fps: 24
+          resolutions: ["720p"]
+          aspect_ratios: ["16:9", "9:16"]
+        supported_parameters:
+          prompt:
+            type: string
+          negativePrompt:
+            type: string
+            optional: true
+          image:
+            type: image
+            mime_types: [image/png, image/jpeg]
+            max_bytes: 20971520
+          aspectRatio:
+            enum: ["16:9", "9:16"]
+          personGeneration:
+            text_to_video:
+              enum: ["allow_all", "allow_adult", "dont_allow"]
+            image_to_video:
+              enum: ["allow_adult", "dont_allow"]
+            regional_notes: "EU/UK/CH/MENA: default 'dont_allow'"
+        pricing:
+          video_per_second_usd: 0.35
+        sources:
+          pricing: https://ai.google.dev/gemini-api/docs/pricing
+          specs: https://ai.google.dev/gemini-api/docs/video
