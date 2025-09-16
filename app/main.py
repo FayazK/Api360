@@ -13,6 +13,7 @@ from app.api.v1.endpoints import (
     pdf_router,
     image_router,
     ai_router,
+    video_router,
 )
 from app.core.config import Settings, settings
 from app.core.storage_engine import init_storage_engine, get_storage_engine
@@ -81,6 +82,7 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(chart_router, prefix="/api/charts", tags=["charts"])
     app.include_router(pdf_router, prefix="/api/pdf", tags=["pdf"])
     app.include_router(image_router, prefix="/api/images", tags=["images"])
+    app.include_router(video_router, prefix="/api/video", tags=["videos"])
     app.include_router(ai_router, prefix="/api/ai", tags=["ai"])
 
     # Public storage mount

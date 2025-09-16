@@ -148,3 +148,39 @@ providers:
         sources:
           pricing: https://ai.google.dev/gemini-api/docs/pricing
           specs: https://ai.google.dev/gemini-api/docs/video
+
+  replicate:
+    name: Replicate
+    default_model: runwayml/gen2
+    models:
+      runwayml/gen2:
+        description: "Runway Gen-2 text-to-video and image-to-video"
+        capabilities:
+          text_to_video: true
+          image_to_video: true
+          native_audio: false
+          typical_max_duration_seconds: 8
+        io:
+          input_modalities: [text, image, video]
+          output_mime_types: [video/mp4]
+        limits:
+          videos_per_request: 1
+          max_duration_seconds: 8
+        supported_parameters:
+          prompt:
+            type: string
+          negative_prompt:
+            type: string
+            optional: true
+          aspect_ratio:
+            type: string
+            enum: ["16:9", "9:16", "1:1"]
+          duration:
+            type: number
+            optional: true
+          seed:
+            type: integer
+            optional: true
+        sources:
+          pricing: https://replicate.com/runwayml/gen2
+          docs: https://docs.runwayml.com

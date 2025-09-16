@@ -2,6 +2,13 @@ from .factory import AITextGeneratorFactory
 from .base import BaseAITextGenerator
 from .schemas import AITextRequest, AITextResponse, AIGenerationMetadata
 from .pricing_service import PricingService, get_pricing_service
+from .video import (
+    VideoEngine,
+    VideoGenerationError,
+    VideoGenerationRequest,
+    VideoGenerationResult,
+    GeneratedVideo,
+)
 
 __all__ = [
     "AITextGeneratorFactory",
@@ -11,4 +18,9 @@ __all__ = [
     "AIGenerationMetadata",
     "PricingService",
     "get_pricing_service",
+    "VideoEngine",
+    "VideoGenerationError",
+    "VideoGenerationRequest",
+    "VideoGenerationResult",
+    "GeneratedVideo",
 ]

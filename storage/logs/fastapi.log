@@ -593,3 +593,6 @@ pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unk
 2025-09-15 10:11:37.336 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
 2025-09-15 10:11:37.781 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
 2025-09-15 10:11:37.783 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-15 10:22:37.172 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-15 10:22:37.273 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-15 10:22:37.273 | INFO     | logging:callHandlers:1762 | Application shutdown complete.

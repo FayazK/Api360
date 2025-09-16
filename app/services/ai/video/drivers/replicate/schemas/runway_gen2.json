@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "required": ["prompt"],
+  "properties": {
+    "prompt": {"type": "string"},
+    "negative_prompt": {"type": "string"},
+    "aspect_ratio": {"type": "string"},
+    "duration": {"type": "number"},
+    "seed": {"type": "integer"},
+    "audio": {"type": "object"},
+    "image": {"type": "string"},
+    "input_video": {"type": "string"},
+    "cfg_scale": {"type": "number"}
+  }
+}

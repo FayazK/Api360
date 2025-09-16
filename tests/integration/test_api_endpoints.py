@@ -1,3 +1,4 @@
+import base64
 import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
@@ -5,6 +6,8 @@ from unittest.mock import patch, Mock, AsyncMock
 from app.main import app
 from app.services.ai.factory import AITextGeneratorFactory
 from app.services.common.exceptions import ValidationError, ServiceError
+from app.services.ai.video.types import GeneratedVideo, VideoGenerationResult
+from app.schemas.ai_video import VideoGenVideo
 
 
 @pytest.mark.integration
@@ -419,3 +422,91 @@ class TestAIEndpoints:
         response = client.post("/api/ai/validate", json={"prompt": "Test"})
         # Should be 503 (service unavailable) due to invalid API key or 422 (validation error)
         assert response.status_code in [503, 422, 200]
+
+
+@pytest.mark.integration
+class TestVideoEndpoints:
+    def test_generate_video_endpoint(self, client: TestClient):
+        fake_video = GeneratedVideo(
+            b64_data=base64.b64encode(b"video").decode("utf-8"),
+            mime_type="video/mp4",
+        )
+        fake_result = VideoGenerationResult(
+            provider="gemini",
+            model="veo-3.0-generate-001",
+            videos=[fake_video],
+            metadata={"op": "123"},
+        )
+
+        async_mock_response = [
+            VideoGenVideo(url="http://local/video.mp4", mime_type="video/mp4", metadata={}),
+        ]
+
+        with patch("app.api.v1.endpoints.video_routes.VideoEngine") as mock_engine_cls, patch(
+            "app.api.v1.endpoints.video_routes.persist_generated_videos",
+            new_callable=AsyncMock,
+        ) as mock_persist:
+            mock_engine = mock_engine_cls.return_value
+            mock_engine.generate.return_value = fake_result
+            mock_persist.return_value = async_mock_response
+
+            response = client.post(
+                "/api/video/generate",
+                json={"prompt": "Test", "provider": "gemini"},
+            )
+
+            assert response.status_code == 200
+            payload = response.json()
+            assert payload["provider"] == "gemini"
+            assert payload["videos"][0]["url"] == "http://local/video.mp4"
+            mock_engine.generate.assert_called_once()
+
+    def test_generate_video_invalid_base64(self, client: TestClient):
+        response = client.post(
+            "/api/video/generate",
+            json={"prompt": "Test", "images_b64": ["not-base64"]},
+        )
+
+        assert response.status_code == 422
+
+    def test_generate_video_multipart_endpoint(self, client: TestClient):
+        fake_video = GeneratedVideo(
+            b64_data=base64.b64encode(b"video").decode("utf-8"),
+            mime_type="video/mp4",
+        )
+        fake_result = VideoGenerationResult(
+            provider="replicate",
+            model="runwayml/gen2",
+            videos=[fake_video],
+            metadata={},
+        )
+
+        async_mock_response = [
+            VideoGenVideo(url="http://local/video.mp4", mime_type="video/mp4", metadata={}),
+        ]
+
+        with patch("app.api.v1.endpoints.video_routes.VideoEngine") as mock_engine_cls, patch(
+            "app.api.v1.endpoints.video_routes.persist_generated_videos",
+            new_callable=AsyncMock,
+        ) as mock_persist:
+            mock_engine = mock_engine_cls.return_value
+            mock_engine.generate.return_value = fake_result
+            mock_persist.return_value = async_mock_response
+
+            files = [
+                ("image_files", ("frame.png", b"img", "image/png")),
+                ("video_files", ("clip.mp4", b"vid", "video/mp4")),
+            ]
+            data = {
+                "prompt": "Test",
+                "provider": "replicate",
+                "duration_seconds": "4",
+            }
+
+            response = client.post("/api/video/generate-multipart", data=data, files=files)
+
+            assert response.status_code == 200
+            payload = response.json()
+            assert payload["provider"] == "replicate"
+            assert payload["videos"][0]["url"] == "http://local/video.mp4"
+            mock_engine.generate.assert_called_once()

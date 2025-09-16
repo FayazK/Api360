@@ -61,6 +61,10 @@ class Settings(BaseSettings):
     IMAGE_DEFAULT_PROVIDER: Optional[str] = None
     IMAGE_DEFAULT_MODEL: Optional[str] = None
 
+    # Video generation defaults (explicit to honor pass-through policy)
+    VIDEO_DEFAULT_PROVIDER: Optional[str] = None
+    VIDEO_DEFAULT_MODEL: Optional[str] = None
+
     class Config:
         case_sensitive = True
         env_file = ".env"
@@ -83,3 +87,10 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_video_model_catalog() -> dict:
+    """Expose parsed video model configuration from YAML."""
+    from app.config.video_models import get_video_models_config
+
+    return get_video_models_config()

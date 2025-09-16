@@ -1,52 +1,19 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `app/` — FastAPI application code.
-  - `api/v1/endpoints/` (route handlers), `services/` (business logic), `core/` (config, storage), `schemas/`, `templates/`.
-- `tests/` — pytest suite: `unit/`, `integration/`, shared `conftest.py`, and `fixtures/`.
-- `docs/` — architecture and service docs (e.g., `AI_SERVICE_README.md`).
-- `static/`, `storage/public/` — served assets and generated files.
-- Root scripts: `setup_dev.sh`, `run_dev.sh`, `run_prod.sh`, `run_docker_prod.sh`; container files: `Dockerfile`, `docker-compose.yml`.
+Application code lives in `app/`, with HTTP routes in `app/api/v1/endpoints/`, reusable business logic in `app/services/`, configuration in `app/core/`, and data contracts in `app/schemas/`. Templated HTML sits under `app/templates/`. Automated tests mirror this layout in `tests/unit/` and `tests/integration/`; shared fixtures reside in `tests/fixtures/` and `tests/conftest.py`. Static assets are stored in `static/`, while generated files belong in `storage/public/`. Documentation and architecture notes are tracked inside `docs/`.
 
 ## Build, Test, and Development Commands
-- Setup environment: `./setup_dev.sh` (creates `fastenv`, installs deps) or:
-  - `python3 -m venv fastenv && source fastenv/bin/activate && pip install -r requirements.txt`
-- Run locally (dev): `./run_dev.sh` or `uvicorn app.main:app --reload`
-- Run (prod): `./run_prod.sh` or `docker compose up -d --build`
-- Tests (quiet): `pytest -q` (markers: `unit`, `integration`). Examples:
-  - `pytest -m unit`, `pytest -m integration`
-  - Optional coverage: `pytest --cov=app` (plugin installed)
+Run `./setup_dev.sh` to create the `fastenv` virtual environment and install dependencies. Start the API locally with `./run_dev.sh` or `uvicorn app.main:app --reload`. For production-like execution, use `./run_prod.sh` or `docker compose up -d --build`. Execute the full test suite quietly via `pytest -q`; target specific markers with `pytest -m unit` or `pytest -m integration`. Measure coverage using `pytest --cov=app` when preparing releases.
 
 ## Coding Style & Naming Conventions
-- Follow PEP 8, 4‑space indentation, use type hints and docstrings for public functions/classes.
-- Naming: modules/files `snake_case.py`, functions/vars `snake_case`, classes `PascalCase`, constants `UPPER_SNAKE`.
-- Imports: prefer absolute (e.g., `from app.services...`). Keep routes thin; delegate logic to `services/`.
-- FastAPI: keep response models in `schemas/`; configuration in `app/core/config.py`.
+Follow PEP 8 with four-space indentation and meaningful type hints. Modules use `snake_case.py`; classes follow `PascalCase`, while functions, variables, and file-level constants adopt `snake_case` and `UPPER_SNAKE` respectively. Prefer absolute imports such as `from app.services...`. Keep FastAPI route handlers thin—delegate logic to `services/` layers and return schema models from `app/schemas/`.
 
 ## Testing Guidelines
-- Place tests mirroring `app/` structure; files named `test_*.py` and classes `Test*` (see `pytest.ini`).
-- Use provided fixtures from `tests/conftest.py` (e.g., `client`, `async_client`, `mock_storage_engine`). Avoid real network/file side effects.
-- Mark broader flows as `@pytest.mark.integration`; unit tests should isolate services and schemas.
+Use pytest and the provided fixtures (`client`, `async_client`, `mock_storage_engine`) to isolate units from external services. Name tests `test_*.py` and group broader flows under `@pytest.mark.integration`. Avoid writing to disk or hitting real networks; rely on mocks and temporary storage fixtures. Run `pytest -q` before opening a PR, and ensure new features include coverage for success, failure, and edge cases.
 
 ## Commit & Pull Request Guidelines
-- Commit style matches history: `✨ (scope): short summary`, common emojis: ✨ feature, 🐛 fix, ♻️ refactor, 📝 docs, 🔧 config.
-  - Examples: `🐛 (documents): fix temp cleanup`, `♻️ (api): refactor endpoint imports`.
-- PRs: clear description, linked issues, before/after notes or sample API responses, and test plan. Require `pytest -q` green; update `docs/` when endpoints or behavior change.
+Adopt the existing commit style like `✨ (scope): short summary` or `🐛 (module): fix message`. PRs should explain the motivation, list linked issues, include before/after notes or sample responses, and document any new endpoints in `docs/`. Always attach the test plan (e.g., `pytest -q`) and update relevant READMEs when behavior changes.
 
 ## Security & Configuration Tips
-- Do not commit secrets. Copy `.env.example` to `.env` locally; production uses environment variables.
-- Review `app/core/config.py` and `docs/AI_SERVICE_README.md` for provider keys and settings.
-
-## AI Service Parameter Policy
-- Required: only `prompt` is required in both API and internal service requests.
-- Optional params: `provider`, `model`, `max_tokens`, `temperature`, `top_p`, `frequency_penalty`, `presence_penalty`, `stop_sequences`, `system_prompt`, and `template_variables` are optional.
-- Route behavior: routes must not inject defaults for optional params. Pass through only user-specified fields to the service.
-- Service defaults: the service resolves defaults when needed (e.g., provider from `settings.AI_DEFAULT_PROVIDER`, model from the selected driver’s `default_model`).
-- Driver behavior: drivers must not send unset params to provider SDKs/APIs, allowing providers to apply their own defaults. Metadata should reflect only parameters actually sent, plus `model`.
-
-## Gemini Driver
-- Location: `app/services/ai/drivers/gemini_driver.py`.
-- SDK: uses `google-genai` (`from google import genai`). See docs at `docs/google.sdk.md`.
-- Configuration: enable by setting `GEMINI_API_KEY` (or `GOOGLE_API_KEY`). Registered by the factory when configured.
-- Models: defaults provided in code (`gemini-2.0-flash-001`, `gemini-1.5-pro-latest`). You can override/add via `config/ai_models.yaml`.
-- Semantics: follows the parameter policy above — only sends user-provided params; uses provider defaults otherwise; extracts `response.text`.
+Never commit secrets; copy `.env.example` to `.env` for local development and rely on environment variables in production. Review `app/core/config.py` and `docs/AI_SERVICE_README.md` to understand provider keys and AI defaults. Optional AI parameters must pass through untouched so the services layer can apply defaults safely.
