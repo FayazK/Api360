@@ -12,7 +12,28 @@ except Exception:  # pragma: no cover - optional dependency
     genai = None  # type: ignore
     genai_types = None  # type: ignore
 
+from app.services.ai.video.limits import validate_duration
 from app.services.ai.video.types import GeneratedVideo, VideoGenerationRequest, VideoGenerationResult
+
+
+def _safe_metadata_value(value: Any) -> Any:
+    """Convert provider metadata to JSON-serializable primitives."""
+
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="ignore")
+    if isinstance(value, dict):
+        return {k: _safe_metadata_value(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_safe_metadata_value(v) for v in value]
+    return repr(value)
+
+
+def _sanitize_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
+    if not metadata:
+        return {}
+    return {key: _safe_metadata_value(value) for key, value in metadata.items()}
 
 
 class BaseGoogleVideoModel(ABC):
@@ -68,7 +89,8 @@ class BaseGoogleVideoModel(ABC):
         if request.resolution:
             config_kwargs["resolution"] = request.resolution
         if request.duration_seconds is not None:
-            config_kwargs["duration_seconds"] = request.duration_seconds
+            duration = validate_duration("gemini", model, request.duration_seconds)
+            config_kwargs["duration_seconds"] = duration
         if request.fps is not None:
             config_kwargs["fps"] = request.fps
         if request.seed is not None:
@@ -136,7 +158,7 @@ class BaseGoogleVideoModel(ABC):
                 url = getattr(video_asset, "uri", None) or getattr(video_asset, "download_uri", None)
                 metadata["video_name"] = getattr(video_asset, "name", None)
             else:
-                metadata["raw_entry"] = entry
+                metadata["raw_entry"] = _safe_metadata_value(entry)
 
             b64_data: Optional[str] = None
             try:
@@ -162,7 +184,7 @@ class BaseGoogleVideoModel(ABC):
                     height=height,
                     size_bytes=size_bytes,
                     b64_data=b64_data,
-                    metadata=metadata,
+                    metadata=_sanitize_metadata(metadata),
                 )
             )
 
@@ -185,5 +207,4 @@ class BaseGoogleVideoModel(ABC):
                 metadata["parameters"] = {}
         else:
             metadata["parameters"] = {}
-        return metadata
-
+        return _sanitize_metadata(metadata)

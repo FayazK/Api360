@@ -604,3 +604,610 @@ pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unk
 2025-09-17 08:30:20.534 | INFO     | logging:callHandlers:1762 | 127.0.0.1:45084 - "POST /api/video/generate HTTP/1.1" 422
 2025-09-17 08:31:11.895 | WARNING  | app.main:http_exception_handler:117 | HTTP 400 on POST http://127.0.0.1:8000/api/video/generate: Video generation failed: seed parameter is not supported in Gemini API.
 2025-09-17 08:31:11.895 | INFO     | logging:callHandlers:1762 | 127.0.0.1:45032 - "POST /api/video/generate HTTP/1.1" 400
+2025-09-17 08:35:07.555 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001:predictLongRunning "HTTP/1.1 400 Bad Request"
+2025-09-17 08:35:07.555 | WARNING  | app.main:http_exception_handler:117 | HTTP 400 on POST http://127.0.0.1:8000/api/video/generate: Video generation failed: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'The number value for `durationSeconds` is out of bound. Please provide a value between 8 and 8, inclusive.', 'status': 'INVALID_ARGUMENT'}}
+2025-09-17 08:35:07.556 | INFO     | logging:callHandlers:1762 | 127.0.0.1:33252 - "POST /api/video/generate HTTP/1.1" 400
+2025-09-17 08:38:55.828 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-17 08:38:55.928 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-17 08:38:55.929 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-17 08:39:00.684 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:39:04.156 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:39:04.949 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:39:05.505 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:39:05.506 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:39:10.076 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:39:11.467 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:39:14.417 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:39:15.044 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:39:15.045 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:39:20.354 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-17 08:39:25.066 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:39:26.349 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:39:29.026 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:39:29.659 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:39:29.661 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:39:56.711 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-17 08:39:56.812 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-17 08:40:01.556 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:40:02.232 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:40:04.914 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:40:05.536 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:40:05.544 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:40:37.839 | WARNING  | app.main:http_exception_handler:117 | HTTP 400 on POST http://127.0.0.1:8000/api/video/generate: Video generation failed: Model 'veo-3.0-generate-001' from provider 'gemini' only supports durations of one of 8 seconds. Received 3 seconds.
+2025-09-17 08:40:37.839 | INFO     | logging:callHandlers:1762 | 127.0.0.1:39638 - "POST /api/video/generate HTTP/1.1" 400
+2025-09-17 08:40:51.887 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001:predictLongRunning "HTTP/1.1 200 OK"
+2025-09-17 08:40:59.588 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:05.931 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:13.649 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:21.342 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:29.037 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:36.693 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:44.396 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:50.729 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:41:58.367 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:06.046 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:13.695 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:21.381 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:27.992 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:35.686 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:43.347 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:51.005 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:42:58.666 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:06.370 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:14.043 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:21.733 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:29.421 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:37.101 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:44.773 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:52.473 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001/operations/x6l8dcil6g3c "HTTP/1.1 200 OK"
+2025-09-17 08:43:53.084 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/files/5wv04lbvw80j:download?alt=media "HTTP/1.1 302 Found"
+2025-09-17 08:43:54.715 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/download/v1beta/files/5wv04lbvw80j:download?alt=media "HTTP/1.1 200 OK"
+2025-09-17 08:44:03.463 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/files/5wv04lbvw80j:download?alt=media "HTTP/1.1 302 Found"
+2025-09-17 08:44:03.469 | INFO     | logging:callHandlers:1762 | 127.0.0.1:33498 - "POST /api/video/generate HTTP/1.1" 500
+2025-09-17 08:44:03.470 | ERROR    | logging:callHandlers:1762 | Exception in ASGI application
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 76, in collapse_excgroups
+  |     yield
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    |     return await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |   File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    |     return await call_next(request)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    |     response = await f(request)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    |     content = await serialize_response(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 181, in serialize_response
+    |     return field.serialize(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/_compat.py", line 152, in serialize
+    |     return self._type_adapter.dump_python(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/pydantic/type_adapter.py", line 572, in dump_python
+    |     return self.serializer.to_python(
+    | pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unknown type: <class 'function'>
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+> File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    with collapse_excgroups():
+  File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    return await call_next(request)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 181, in serialize_response
+    return field.serialize(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/_compat.py", line 152, in serialize
+    return self._type_adapter.dump_python(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/pydantic/type_adapter.py", line 572, in dump_python
+    return self.serializer.to_python(
+pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unknown type: <class 'function'>
+2025-09-17 08:46:25.924 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-17 08:46:26.025 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
+2025-09-17 08:46:30.365 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:46:31.857 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:46:32.895 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:46:33.060 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:46:33.062 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:46:37.383 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:46:39.159 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:46:41.849 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:46:42.474 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:46:42.481 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:46:45.890 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-17 08:46:50.347 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:46:51.540 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:46:52.899 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:46:54.260 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:46:54.269 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:48:57.213 | WARNING  | app.main:http_exception_handler:117 | HTTP 400 on POST http://127.0.0.1:8000/api/video/generate: Video generation failed: Model 'veo-3.0-fast-generate-001' from provider 'gemini' only supports durations of one of 8 seconds. Received 5 seconds.
+2025-09-17 08:48:57.214 | INFO     | logging:callHandlers:1762 | 127.0.0.1:53480 - "POST /api/video/generate HTTP/1.1" 400
+2025-09-17 08:49:08.289 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001:predictLongRunning "HTTP/1.1 200 OK"
+2025-09-17 08:49:15.968 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:49:23.700 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:49:31.420 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:49:39.116 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:49:46.773 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:49:54.491 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:50:02.154 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:50:09.823 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:50:17.552 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/8848s9ern9sc "HTTP/1.1 200 OK"
+2025-09-17 08:50:18.157 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/files/dmthe4vwm2za:download?alt=media "HTTP/1.1 302 Found"
+2025-09-17 08:50:19.153 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/download/v1beta/files/dmthe4vwm2za:download?alt=media "HTTP/1.1 200 OK"
+2025-09-17 08:50:24.470 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/files/dmthe4vwm2za:download?alt=media "HTTP/1.1 302 Found"
+2025-09-17 08:50:24.473 | INFO     | logging:callHandlers:1762 | 127.0.0.1:53486 - "POST /api/video/generate HTTP/1.1" 500
+2025-09-17 08:50:24.473 | ERROR    | logging:callHandlers:1762 | Exception in ASGI application
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 76, in collapse_excgroups
+  |     yield
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    |     return await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |   File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    |     return await call_next(request)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    |     response = await f(request)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    |     content = await serialize_response(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 181, in serialize_response
+    |     return field.serialize(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/_compat.py", line 152, in serialize
+    |     return self._type_adapter.dump_python(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/pydantic/type_adapter.py", line 572, in dump_python
+    |     return self.serializer.to_python(
+    | pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unknown type: <class 'function'>
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+> File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    with collapse_excgroups():
+  File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    return await call_next(request)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/routing.py", line 181, in serialize_response
+    return field.serialize(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/_compat.py", line 152, in serialize
+    return self._type_adapter.dump_python(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/pydantic/type_adapter.py", line 572, in dump_python
+    return self.serializer.to_python(
+pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unknown type: <class 'function'>
+2025-09-17 08:51:17.175 | INFO     | logging:callHandlers:1762 | Shutting down
+2025-09-17 08:51:21.722 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:51:24.741 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:51:27.724 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:51:28.346 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:51:32.878 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:51:34.898 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:51:36.027 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:51:36.192 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:51:36.193 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:52:36.489 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001:predictLongRunning "HTTP/1.1 200 OK"
+2025-09-17 08:52:44.167 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:52:51.828 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:52:59.537 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:07.207 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:14.920 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:22.602 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:30.260 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:38.006 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:45.679 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:53.308 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-fast-generate-001/operations/y25ppv1wwvrr "HTTP/1.1 200 OK"
+2025-09-17 08:53:53.926 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/files/qhrzt7lcxvya:download?alt=media "HTTP/1.1 302 Found"
+2025-09-17 08:53:54.857 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/download/v1beta/files/qhrzt7lcxvya:download?alt=media "HTTP/1.1 200 OK"
+2025-09-17 08:54:00.838 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/files/qhrzt7lcxvya:download?alt=media "HTTP/1.1 302 Found"
+2025-09-17 08:54:00.839 | INFO     | logging:callHandlers:1762 | 127.0.0.1:47998 - "POST /api/video/generate HTTP/1.1" 200
+2025-09-17 08:55:39.505 | WARNING  | app.main:http_exception_handler:117 | HTTP 400 on POST http://127.0.0.1:8000/api/video/generate: Video generation failed: Parameter 'duration' must be >= 3
+2025-09-17 08:55:39.505 | INFO     | logging:callHandlers:1762 | 127.0.0.1:38264 - "POST /api/video/generate HTTP/1.1" 400
+2025-09-17 08:55:51.929 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/models/bytedance/seedance-1-pro "HTTP/1.1 200 OK"
+2025-09-17 08:55:52.776 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/predictions "HTTP/1.1 201 Created"
+2025-09-17 08:55:53.204 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:55:57.235 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:00.654 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:04.080 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:07.516 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:11.586 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:15.010 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:19.060 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:22.487 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:26.489 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:29.889 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:33.315 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:36.750 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:40.795 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:44.230 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:47.665 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/ytzc7ec3h1rmc0csaq8a571n10 "HTTP/1.1 200 OK"
+2025-09-17 08:56:48.168 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/f8DFwFs1feADKpQzo5t8mLbJzhskUCYcs3cLQcIF1Lft34XVB/tmpka7bk535.mp4 "HTTP/1.1 200 OK"
+2025-09-17 08:56:48.726 | INFO     | logging:callHandlers:1762 | 127.0.0.1:36608 - "POST /api/video/generate HTTP/1.1" 200
+2025-09-17 09:14:10.571 | INFO     | logging:callHandlers:1762 | 127.0.0.1:33022 - "POST /api/video/generate HTTP/1.1" 500
+2025-09-17 09:14:10.571 | ERROR    | logging:callHandlers:1762 | Exception in ASGI application
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 76, in collapse_excgroups
+  |     yield
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    |     return await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    |     with collapse_excgroups():
+    |   File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    |     self.gen.throw(value)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    |     return await call_next(request)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    |     raise app_exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 59, in wrapped_app
+    |     response = await handler(conn, exc)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/exception_handlers.py", line 25, in request_validation_exception_handler
+    |     content={"detail": jsonable_encoder(exc.errors())},
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 303, in jsonable_encoder
+    |     jsonable_encoder(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 289, in jsonable_encoder
+    |     encoded_value = jsonable_encoder(
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 318, in jsonable_encoder
+    |     return ENCODERS_BY_TYPE[type(obj)](obj)
+    |   File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 59, in <lambda>
+    |     bytes: lambda o: o.decode(),
+    | UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 577: invalid start byte
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+> File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    with collapse_excgroups():
+  File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 187, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/home/fayazk/Projects/Api360/app/core/middleware.py", line 39, in dispatch
+    return await call_next(request)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/exception_handlers.py", line 25, in request_validation_exception_handler
+    content={"detail": jsonable_encoder(exc.errors())},
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 303, in jsonable_encoder
+    jsonable_encoder(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 289, in jsonable_encoder
+    encoded_value = jsonable_encoder(
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 318, in jsonable_encoder
+    return ENCODERS_BY_TYPE[type(obj)](obj)
+  File "/home/fayazk/Projects/Api360/fastenv/lib/python3.12/site-packages/fastapi/encoders.py", line 59, in <lambda>
+    bytes: lambda o: o.decode(),
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 577: invalid start byte
+2025-09-17 09:16:09.336 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/models/bytedance/seedance-1-pro "HTTP/1.1 200 OK"
+2025-09-17 09:16:10.901 | INFO     | logging:callHandlers:1762 | HTTP Request: POST https://api.replicate.com/v1/predictions "HTTP/1.1 201 Created"
+2025-09-17 09:16:11.330 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:15.322 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:18.726 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:22.136 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:25.542 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:29.590 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:33.017 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:36.448 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:39.877 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:43.288 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:46.693 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:50.102 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:53.511 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:16:57.542 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:00.962 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:05.010 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:08.447 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:13.035 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:16.454 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:19.879 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:23.296 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.replicate.com/v1/predictions/9cetbvrsv5rma0csaqhsakdhmw "HTTP/1.1 200 OK"
+2025-09-17 09:17:23.733 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://replicate.delivery/xezq/YfZ1f1rn7CglfIrjB4iFAFMC2khAbOambQMq2uhezt3JF6XVB/tmpdnlfgsy8.mp4 "HTTP/1.1 200 OK"
+2025-09-17 09:17:25.485 | INFO     | logging:callHandlers:1762 | 127.0.0.1:45966 - "POST /api/video/generate-multipart HTTP/1.1" 200

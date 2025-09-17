@@ -24,6 +24,7 @@ providers:
         limits:
           text_input_tokens: 1024
           videos_per_request: 1
+          duration_seconds: 8
           max_duration_seconds: 8
           fps: 24
         supported_parameters:
@@ -73,6 +74,7 @@ providers:
         limits:
           text_input_tokens: 1024
           videos_per_request: 1
+          duration_seconds: 8
           max_duration_seconds: 8
           fps: 24
         supported_parameters:

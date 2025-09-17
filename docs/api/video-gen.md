@@ -77,6 +77,22 @@ curl -X POST "http://127.0.0.1:8000/api/v1/video/generate" \
 }'
 ```
 
+#### Multipart Image-to-Video Example
+
+Use multipart form data when you want to upload a local reference frame instead of base64-encoding it. Only the first uploaded image is used as the conditioning frame.
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/v1/video/generate-multipart" \
+-F "prompt=Turn this sketch into a photorealistic cityscape at night" \
+-F "provider=replicate" \
+-F "model=runwayml/gen2" \
+-F "image_files=@./example_frame.png" \
+-F "duration_seconds=4" \
+-F "aspect_ratio=16:9"
+```
+
+Optional extras can be passed with `-F "extra={\"motion_scale\":0.4}"` (JSON object). The API requires `REPLICATE_API_TOKEN` to be configured in the server environment.
+
 ### Model: `bytedance/seedance-1-pro`
 
 **Capabilities**: SeeDance 1 Pro for high-quality Text-to-Video, up to 12 seconds.
