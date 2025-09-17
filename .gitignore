@@ -42,6 +42,7 @@ MANIFEST
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+storage/logs/fastapi.log
 
 # Unit test / coverage reports
 htmlcov/
