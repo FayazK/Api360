@@ -596,3 +596,11 @@ pydantic_core._pydantic_core.PydanticSerializationError: Unable to serialize unk
 2025-09-15 10:22:37.172 | INFO     | logging:callHandlers:1762 | Shutting down
 2025-09-15 10:22:37.273 | INFO     | logging:callHandlers:1762 | Waiting for application shutdown.
 2025-09-15 10:22:37.273 | INFO     | logging:callHandlers:1762 | Application shutdown complete.
+2025-09-17 08:26:20.205 | INFO     | logging:callHandlers:1762 | Cleaned up 0 temp files, freed 0 bytes
+2025-09-17 08:26:22.909 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://api.openai.com/v1/models "HTTP/1.1 200 OK"
+2025-09-17 08:26:24.260 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models "HTTP/1.1 200 OK"
+2025-09-17 08:26:24.424 | INFO     | logging:callHandlers:1762 | HTTP Request: GET https://generativelanguage.googleapis.com/v1beta/models?pageToken=Ch5tb2RlbHMvaW1hZ2VuLTMuMC1nZW5lcmF0ZS0wMDI%3D "HTTP/1.1 200 OK"
+2025-09-17 08:26:24.426 | INFO     | logging:callHandlers:1762 | Application startup complete.
+2025-09-17 08:30:20.534 | INFO     | logging:callHandlers:1762 | 127.0.0.1:45084 - "POST /api/video/generate HTTP/1.1" 422
+2025-09-17 08:31:11.895 | WARNING  | app.main:http_exception_handler:117 | HTTP 400 on POST http://127.0.0.1:8000/api/video/generate: Video generation failed: seed parameter is not supported in Gemini API.
+2025-09-17 08:31:11.895 | INFO     | logging:callHandlers:1762 | 127.0.0.1:45032 - "POST /api/video/generate HTTP/1.1" 400

@@ -184,3 +184,46 @@ providers:
         sources:
           pricing: https://replicate.com/runwayml/gen2
           docs: https://docs.runwayml.com
+
+      bytedance/seedance-1-pro:
+        description: "SeeDance 1 Pro text-to-video with optional image conditioning"
+        capabilities:
+          text_to_video: true
+          image_to_video: true
+          native_audio: false
+          typical_max_duration_seconds: 12
+        io:
+          input_modalities: [text, image]
+          output_mime_types: [video/mp4]
+        limits:
+          videos_per_request: 1
+          min_duration_seconds: 3
+          max_duration_seconds: 12
+          fps: 24
+        supported_parameters:
+          prompt:
+            type: string
+          image:
+            type: image
+            optional: true
+          aspect_ratio:
+            type: string
+            enum: ["16:9", "4:3", "1:1", "3:4", "9:16", "21:9", "9:21"]
+          duration:
+            type: integer
+            notes: "3-12 seconds"
+          resolution:
+            type: string
+            enum: ["480p", "720p", "1080p"]
+          fps:
+            type: integer
+            enum: [24]
+            optional: true
+          seed:
+            type: integer
+            optional: true
+          camera_fixed:
+            type: boolean
+            optional: true
+        sources:
+          docs: https://replicate.com/bytedance/seedance-1-pro

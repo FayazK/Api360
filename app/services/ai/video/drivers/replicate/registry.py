@@ -4,6 +4,7 @@ from typing import Dict, Optional, Type
 
 from .base import BaseReplicateVideoDriver
 from .models.gen2 import RunwayGen2Driver
+from .models.seedance_1_pro import Seedance1ProDriver
 
 
 class ReplicateVideoModelRegistry:
@@ -11,11 +12,14 @@ class ReplicateVideoModelRegistry:
 
     _model_classes: Dict[str, Type[BaseReplicateVideoDriver]] = {
         "runwayml/gen2": RunwayGen2Driver,
+        "bytedance/seedance-1-pro": Seedance1ProDriver,
     }
 
     _aliases: Dict[str, str] = {
         "gen2": "runwayml/gen2",
         "runway-gen2": "runwayml/gen2",
+        "seedance": "bytedance/seedance-1-pro",
+        "seedance-1-pro": "bytedance/seedance-1-pro",
     }
 
     @classmethod
@@ -29,4 +33,3 @@ class ReplicateVideoModelRegistry:
     @classmethod
     def list_models(cls) -> Dict[str, Type[BaseReplicateVideoDriver]]:
         return dict(cls._model_classes)
-
